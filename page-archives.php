@@ -27,7 +27,7 @@ $output = '<div class="archives">';
             $y = $year;
             $m = $mon;
         if ($year > $year_tmp || $mon > $mon_tmp) {
-$output .= '</ul></div>';
+$output .= '</ul>';
         }
     if ($year != $year_tmp || $mon != $mon_tmp) {
         $year = $year_tmp;
