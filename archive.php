@@ -47,11 +47,11 @@
                 </g>
             </svg>
 				 <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('评论', '1 评论', '%d 评论'); ?></a>
-		</div>
             <div class="description">
     			<?php $this->excerpt(180); ?>
 	        </div>
-    
+    		</div>
+
         <?php endwhile; ?>
         <?php else: ?>
         <header class="archive-header archive-header__search">
