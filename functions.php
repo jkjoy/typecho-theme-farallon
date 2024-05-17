@@ -5,29 +5,36 @@ function themeConfig($form) {
     $form->addInput($logoUrl);
     $icoUrl = new Typecho_Widget_Helper_Form_Element_Text('icoUrl', NULL, NULL, _t('站点 Favicon 地址'));
     $form->addInput($icoUrl);
-    $twikooENV = new Typecho_Widget_Helper_Form_Element_Text('twikooENV', NULL, NULL, _t('填入twikooENV'));
-    $form->addInput($twikooENV);
-    $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, NULL, _t('填入INS地址'));
+    $jzyear = new Typecho_Widget_Helper_Form_Element_Text('jzyear', NULL, NULL, _t('建站年份'));
+    $form->addInput($jzyear);
+    $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, NULL, _t('INS'));
     $form->addInput($instagramurl);
-    $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, NULL, _t('填入电报地址'));
+    $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, NULL, _t('电报'));
     $form->addInput($telegramurl);
-    $githuburl = new Typecho_Widget_Helper_Form_Element_Text('githuburl', NULL, NULL, _t('填入github地址'));
+    $githuburl = new Typecho_Widget_Helper_Form_Element_Text('githuburl', NULL, NULL, _t('github'));
     $form->addInput($githuburl);
-    $twitterurl = new Typecho_Widget_Helper_Form_Element_Text('twitterurl', NULL, NULL, _t('填入twitter地址'));
+    $twitterurl = new Typecho_Widget_Helper_Form_Element_Text('twitterurl', NULL, NULL, _t('twitter'));
     $form->addInput($twitterurl);
-    $feedurl = new Typecho_Widget_Helper_Form_Element_Text('feedurl', NULL, NULL, _t('填入网站Feed地址'));
+    $feedurl = new Typecho_Widget_Helper_Form_Element_Text('feedurl', NULL, NULL, _t('网站Feed'));
     $form->addInput($feedurl);
-    $mastodonurl = new Typecho_Widget_Helper_Form_Element_Text('mastodonurl', NULL, NULL, _t('填入mastodon地址'));
+    $mastodonurl = new Typecho_Widget_Helper_Form_Element_Text('mastodonurl', NULL, NULL, _t('mastodon'));
     $form->addInput($mastodonurl);
 
     $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'));
     $form->addInput($twikoo);
-    $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('添加head引用'));
+    $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('添加head'));
     $form->addInput($addhead);
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'));
     $form->addInput($tongji);
 }
-
+function themeFields($layout) {
+    $switchpf = new Typecho_Widget_Helper_Form_Element_Checkbox('switchpf', 
+    array('open'=>'显示作者'), 
+    NULL,
+    _t('是否文章页面显示作者信息'), 
+    _t('勾选后，将在文章页面显示'));
+    $layout->addItem($switchpf);
+}
 function get_post_view($archive) {
     $cid = $archive->cid;
     $db = Typecho_Db::get();

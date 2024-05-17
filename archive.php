@@ -12,7 +12,7 @@
             'author'    =>  _t('作者 <span>%s </span>发布的文章')
         ), '', ''); ?></h2>
         <h3 class="post--single__subtitle"><?php $this->categorydescription(); ?></h3>
-    </header>
+</header>
         <?php while($this->next()): ?>
 
 <article class="post--item" itemtype="http://schema.org/Article" itemscope="itemscope" >
@@ -50,17 +50,21 @@
 		</div>
             <div class="description">
     			<?php $this->excerpt(180); ?>
-	</div>
-           
-</article>
+	        </div>
+    
         <?php endwhile; ?>
         <?php else: ?>
-        <div class="page404">
-        <h2>404 - 页面没找到</h2>
-        <p>你想查看的页面已被转移或删除了</p>
+        <header class="archive-header archive-header__search">
+        <div class="pagination">
+        <h2>Sorry</h2>
+        <p>很遗憾,未找到您想看的内容</p>
         </div>
         <?php endif; ?>
-    <?php $this->pageNav('&laquo; 前一页', '后一页 &raquo;'); ?>
+    <?php $this->pageNav('&laquo; 前一页', '后一页 &raquo;'); ?>     
+    </header>
+   
+</article>
+
 </main>
 </div>
 <?php $this->need('footer.php'); ?>

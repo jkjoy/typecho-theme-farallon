@@ -57,10 +57,23 @@
            
 </article>
 	<?php endwhile; ?>
-    <div class="nav-links">
-
-    <?php $this->pageLink('加载更多','next'); ?>
-    </div>
-
+ 
+    <?php
+            $this->pagenav(
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z" fill="var(--main)"></path></svg>',
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.1714 12.0007L8.22168 7.05093L9.63589 5.63672L15.9999 12.0007L9.63589 18.3646L8.22168 16.9504L13.1714 12.0007Z" fill="var(--main)"></path></svg>',
+                1,
+                '...',
+                array(
+                    'wrapTag' => 'div',
+                    'wrapClass' => 'cat_pagination_page',
+                    'itemTag' => '',
+                    'textTag' => 'a',
+                    'currentClass' => 'active',
+                    'prevClass' => 'prev',
+                    'nextClass' => 'next'
+                )
+            );
+        ?>
  
    
