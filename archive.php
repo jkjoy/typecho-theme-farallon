@@ -57,7 +57,7 @@
         <header class="archive-header archive-header__search">
         <div class="pagination">
         <h2>Sorry</h2>
-        <p>很遗憾,未找到您想看的内容</p>
+        <p>很遗憾,未找到您期待的内容</p>
         </div>
         <?php endif; ?>
     <?php $this->pageNav('&laquo; 前一页', '后一页 &raquo;'); ?>     

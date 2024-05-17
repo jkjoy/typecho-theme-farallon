@@ -74,7 +74,7 @@
     <?php else: ?>
     <?php _e(''); ?>
     <?php endif; ?>   
-    <?php $this->options->twikoo(); ?>
+
 </div>
 </div>
-</main>
+</main> 

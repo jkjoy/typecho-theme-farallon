@@ -28,7 +28,3 @@
     </section>
 </main>
 <?php $this->need('footer.php'); ?>
-<script src="https://cdnjs.sgcd.net/code-highlight/js/prism.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.sgcd.net/code-highlight/css/prism.css"  /> 
-    <script src="<?php $this->options->themeUrl('/dist/js/bundle.js'); ?>"></script>
-<script>Prism.highlightAll()</script>

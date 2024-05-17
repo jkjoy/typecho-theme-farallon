@@ -15,14 +15,14 @@
             </a>
 		</h2>
         <div class="description" itemprop="about">
-        <?php
+            <!-- 本功能实现 借助插件实现 -->
+    <?php
     // 判断是否存在自定义字段summary并输出，否则输出自动生成的摘要
     if($this->fields->summary){
         echo $this->fields->summary;
     } else {
         $this->excerpt(180);
-    }
-    ?>
+    }?>
         </div>
 		<div class="meta">
 			<svg class="icon" viewBox="0 0 1024 1024" width="16" height="16">

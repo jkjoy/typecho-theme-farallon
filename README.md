@@ -8,4 +8,4 @@ https://github.com/bigfa/hugo-theme-farallon
 70%
 
 ## 待实现
--[]豆瓣观影
+-[] 豆瓣观影

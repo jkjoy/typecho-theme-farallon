@@ -24,7 +24,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 </ul>
     </div>
 
-    <?php $this->need('comments.php'); ?>
+    <?php if ($this->allow('comment')): ?>
+       <?php $this->need('comments.php'); ?>
+   <?php endif; ?>
 </section>
 
 
