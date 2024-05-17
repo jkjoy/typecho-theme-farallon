@@ -60,9 +60,9 @@
             <?php $this->tags(' ', true, ' '); ?> 
         </div>     
 <!-- 个人信息-->
-        <?php if($this->fields->switchpf && in_array('open', $this->fields->switchpf)): ?>
-         <?php $this->need('profile.php'); ?>
-        <?php endif; ?>  
+<?php if ($this->options->showProfile): ?>
+    <?php $this->need('profile.php'); ?>
+<?php endif; ?>
 <!--翻页-->
     <nav class="navigation post-navigation is-active">
         <div class="nav-links">

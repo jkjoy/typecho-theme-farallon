@@ -26,15 +26,11 @@ function themeConfig($form) {
     $form->addInput($addhead);
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'));
     $form->addInput($tongji);
-}
-function themeFields($layout) {
-    $switchpf = new Typecho_Widget_Helper_Form_Element_Checkbox('switchpf', 
-    array('open'=>'显示作者'), 
-    NULL,
-    _t('是否文章页面显示作者信息'), 
-    _t('勾选后，将在文章页面显示'));
-    $layout->addItem($switchpf);
-}
+    $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
+    array('0'=> _t('否'), '1'=> _t('是')),
+    '0', _t('是否在文章页面显示显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
+    $form->addInput($showProfile);
+} 
 function get_post_view($archive) {
     $cid = $archive->cid;
     $db = Typecho_Db::get();

@@ -12,9 +12,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <?php Typecho_Widget::widget('Widget_Stat')->to($quantity); ?>
         <h2 class="archive--title__year">共包含 <?php $quantity->publishedPostsNum(); ?> 篇文章</h2>
 </header>
-  
     <div data-target="<?php $this->options->postLinkOpen(); ?>" class="page--archive"  >
-
 <?php
     $stat = Typecho_Widget::widget('Widget_Stat');
             Typecho_Widget::widget('Widget_Contents_Post_Recent', 'pageSize=' . $stat->publishedPostsNum)->to($archives);
@@ -44,8 +42,6 @@ $output .= '<li class="archive--item"><div class="archive--title"><a href="' . $
 $output .= ' </ul></div></div>';
           echo $output;?>
    </div>
-
-
 </main>
 <?php $this->need('footer.php'); ?>
  

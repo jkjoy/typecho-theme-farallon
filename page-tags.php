@@ -8,8 +8,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('header.php'); ?>
 <section class="site--main">
     <header class="archive--header">
-        <h1 class="post--single__title"><?php $this->title() ?></h1>
-         
+        <h1 class="post--single__title"><?php $this->title() ?></h1>   
     </header>
     <div class="post-content">
                         <?php $this->widget('Widget_Metas_Tag_Cloud', 'sort=mid&ignoreZeroCount=1&desc=0')->to($tags); ?>

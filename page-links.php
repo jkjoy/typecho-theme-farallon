@@ -23,11 +23,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         ?>
 </ul>
     </div>
-
     <?php if ($this->allow('comment')): ?>
        <?php $this->need('comments.php'); ?>
    <?php endif; ?>
 </section>
-
-
 <?php $this->need('footer.php'); ?>

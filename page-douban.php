@@ -1,6 +1,6 @@
 <?php 
 /**
- * 豆瓣
+ * 豆瓣页面
  *
  * @package custom
  */
