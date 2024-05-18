@@ -2250,6 +2250,11 @@ textarea {
     border-radius: 100%
 }
 
+
+div.cancel-comment-reply.cancel-comment-reply-link {
+    text-align: right;
+}
+
 .comment-content {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
