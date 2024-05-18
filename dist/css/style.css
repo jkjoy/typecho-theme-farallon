@@ -2251,6 +2251,9 @@ textarea {
 }
 
 .comment-content {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
     color: var(--farallon-text-light)
 }
 
