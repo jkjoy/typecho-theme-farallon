@@ -1,9 +1,12 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php while($this->next()): ?>
-	<article class="post--item" itemtype="http://schema.org/Article" itemscope="itemscope" >
+	<article class="post--item">
     <div class="content">
-        <h2 class="post--title" itemprop="headline">
-			 <a href="<?php $this->permalink() ?>"><?php $this->title() ?><?php if((time() - $this->created) < 60*60*24*3): ?>
+        <h2 class="post--title">
+			 <a href="<?php $this->permalink() ?>">
+             <!--三天内显示火苗-->
+                <?php $this->title() ?>
+                <?php if((time() - $this->created) < 60*60*24*3): ?>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     class="icon--sticky" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round" class="w-4 h-4 text-red-400">
@@ -14,17 +17,17 @@
                 <?php endif; ?>
             </a>
 		</h2>
-        <div class="description" itemprop="about">
-            <!-- 本功能实现 借助插件实现 -->
-    <?php
-    // 判断是否存在自定义字段summary并输出，否则输出自动生成的摘要
-    if($this->fields->summary){
+        <div class="description">
+            <!-- 本功能实现 借助插件 AIsummary 实现 -->
+       <?php
+        // 判断是否存在自定义字段summary并输出，否则输出自动生成的摘要
+        if($this->fields->summary){
         echo $this->fields->summary;
-    } else {
+         } else {
         $this->excerpt(180);
-    }?>
-        </div>
-		<div class="meta">
+        }?>
+         </div>
+	    <div class="meta">
 			<svg class="icon" viewBox="0 0 1024 1024" width="16" height="16">
                 <path
                     d="M512 97.52381c228.912762 0 414.47619 185.563429 414.47619 414.47619s-185.563429 414.47619-414.47619 414.47619S97.52381 740.912762 97.52381 512 283.087238 97.52381 512 97.52381z m0 73.142857C323.486476 170.666667 170.666667 323.486476 170.666667 512s152.81981 341.333333 341.333333 341.333333 341.333333-152.81981 341.333333-341.333333S700.513524 170.666667 512 170.666667z m36.571429 89.697523v229.86362h160.865523v73.142857H512a36.571429 36.571429 0 0 1-36.571429-36.571429V260.388571h73.142858z">
@@ -51,10 +54,8 @@
                 </g>
             </svg>
 				 <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('评论', '1 评论', '%d 评论'); ?></a>
-		</div>
-
-	</div>
-           
+	    </div>
+    </div>         
 </article>
 	<?php endwhile; ?>
  

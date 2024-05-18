@@ -31,6 +31,7 @@ function themeConfig($form) {
     '0', _t('是否在文章页面显示显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
     $form->addInput($showProfile);
 } 
+
 function get_post_view($archive) {
     $cid = $archive->cid;
     $db = Typecho_Db::get();
