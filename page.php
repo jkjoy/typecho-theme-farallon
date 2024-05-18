@@ -8,13 +8,14 @@
         <div class="graph u-marginBottom30">
             <?php $this->content(); ?>
         </div>
-    </article>
+    
     <!-- 判断如果禁止评论则不显示评论的div -->
     <?php if ($this->allow('comment')): ?>
        <?php $this->need('comments.php'); ?>
    <?php endif; ?>
    <!-- 可以使用第三方评论-->
 <?php $this->options->twikoo(); ?> 
+</article>
 </section>
 <?php $this->need('footer.php'); ?>
  

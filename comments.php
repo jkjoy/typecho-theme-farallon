@@ -1,16 +1,10 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<div class="post--ingle__comments">
-<div id="comments" class="responsesWrapper">
+ <div class="post--ingle__comments">
     <?php $this->comments()->to($comments); ?>
     <?php if($this->allow('comment')): ?>
         <?php if ($this->is('attachment')) : ?>
         <?php _e(''); ?>
         <?php else: ?>
-    <div id="<?php $this->respondId(); ?>" class="respond comment-respond">
-        <div class="cancel-comment-reply cancel-comment-reply-link">
-        <?php $comments->cancelReply(); ?>
-    </div>
-
     	<h3 class="comments--title">
             <svg viewBox="0 0 24 24" class="icon" aria-hidden="true" width="16" height="16">
                 <g>
@@ -22,48 +16,6 @@
         </h3>
         <?php if ($comments->have()): ?>
         <?php $comments->listComments(); ?>
-        <?php function threadedComments($comments, $options) {
-    $commentClass = '';
-    if ($comments->authorId) {
-        if ($comments->authorId == $comments->ownerId) {
-            $commentClass .= ' comment-by-author';
-        } else {
-            $commentClass .= ' comment-by-user';
-        }
-    }
- 
-    $commentLevelClass = $comments->levels > 0 ? ' comment-child' : ' comment-parent';
-?>
-        <li id="li-<?php $comments->theId(); ?>" class="comment-body<?php 
-if ($comments->levels > 0) {
-    echo ' comment-child';
-    $comments->levelsAlt(' comment-level-odd', ' comment-level-even');
-} else {
-    echo ' comment-parent';
-}
-$comments->alt(' comment-odd', ' comment-even');
-echo $commentClass;
-?>">
-    <div id="<?php $comments->theId(); ?>">
-        <div class="comment-author">
-            <?php $comments->gravatar('40', ''); ?>
-            <cite class="fn"><?php $comments->author(); ?></cite>
-        </div>
-        <div class="comment-meta">
-            <a href="<?php $comments->permalink(); ?>"><?php $comments->date('Y-m-d H:i'); ?></a>
-            <span class="comment-reply"><?php $comments->reply(); ?></span>
-        </div>
-        <?php $comments->content(); ?>
-		<?php $singleCommentOptions->commentStatus(); ?>
-    </div>
-<?php if ($comments->children) { ?>
-    <div class="comment-children">
-        <?php $comments->threadedComments($options); ?>
-    </div>
-<?php } ?>
-</li>
-<?php } ?>
- 
     <?php
             $comments->pageNav(
                 '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z" fill="var(--main)"></path></svg>',
@@ -82,11 +34,17 @@ echo $commentClass;
             );
         ?>
     <?php endif; ?>
-
+    <div id="<?php $this->respondId(); ?>" class="comment-respond">
+        <div class="cancel-comment-reply cancel-comment-reply-link">
+        <?php $comments->cancelReply(); ?>
+    </div>
     	<form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form" class="comment-form">
             <?php if($this->user->hasLogin()): ?>
     		<p><?php _e('登录身份: '); ?><a href="<?php $this->options->profileUrl(); ?>"><?php $this->user->screenName(); ?></a>. <a href="<?php $this->options->logoutUrl(); ?>" title="Logout"><?php _e('退出'); ?> &raquo;</a></p>
             <?php else: ?>
+            <p class="comment-form-comment">
+            <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('misubmit').click();return false};" placeholder="<?php _e('评论审核后显示，请勿重复提交...'); ?>" required ><?php $this->remember('text'); ?></textarea>
+    		</p>
     		<p class="comment-form-author">
     			<input placeholder="称呼 *" type="text" name="author" id="author" class="text" value="" required />
     		</p>
@@ -96,11 +54,7 @@ echo $commentClass;
     		<p class="comment-form-url">
     			<input type="url" name="url" id="url" class="text" placeholder="http(s)://<?php if ($this->options->commentsRequireURL): ?> *<?php endif; ?>" value=""<?php if ($this->options->commentsRequireURL): ?> required<?php endif; ?> />
     		</p>
-
             <?php endif; ?>
-            <p class="comment-form-comment">
-            <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('misubmit').click();return false};" placeholder="<?php _e('评论审核后显示，请勿重复提交...'); ?>" required ><?php $this->remember('text'); ?></textarea>
-    		</p>
     		<p class="form-submit">
             <button type="submit" class="submit" id="misubmit"><?php _e('提交评论（Ctrl+Enter）'); ?></button>
             </p>
@@ -110,5 +64,57 @@ echo $commentClass;
     <?php else: ?>
     <?php _e(''); ?>
     <?php endif; ?>   
+    <?php $this->options->twikoo(); ?>
 </div>
-</div>
+<?php
+function threadedComments($comments, $options) {
+    $commentClass = '';
+    if ($comments->authorId) {
+        if ($comments->authorId == $comments->ownerId) {
+            $commentClass .= ' comment-by-author';
+        } else {
+            $commentClass .= ' comment-by-user';
+        }
+    }
+    $depth = $comments->levels + 1;
+    ?>
+    <li id="li-<?php $comments->theId(); ?>" class="<?php 
+        if ($comments->levels == 0) {
+            echo 'comment parent';
+        } else {
+            echo 'comment child';
+        }
+        echo $commentClass; 
+    ?>">
+        <div class="comment-body" id="<?php $comments->theId(); ?>">
+            <div class="comment-meta">
+                <div class="comment--avatar">
+                    <?php echo $comments->gravatar('40', ''); ?> 
+                </div>
+                <div class="comment--meta">
+                    <div class="comment--author"><?php echo $comments->author; ?><span class="dot"></span>
+                    <div class="comment--time"><?php $comments->date('Y-m-d'); ?></div>
+                    <span class="comment-reply-link u-cursorPointer">
+                        <?php $comments->reply('<svg viewBox="0 0 24 24" width="14" height="14"  aria-hidden="true" class="" ><g><path d="M12 3.786c-4.556 0-8.25 3.694-8.25 8.25s3.694 8.25 8.25 8.25c1.595 0 3.081-.451 4.341-1.233l1.054 1.7c-1.568.972-3.418 1.534-5.395 1.534-5.661 0-10.25-4.589-10.25-10.25S6.339 1.786 12 1.786s10.25 4.589 10.25 10.25c0 .901-.21 1.77-.452 2.477-.592 1.731-2.343 2.477-3.917 2.334-1.242-.113-2.307-.74-3.013-1.647-.961 1.253-2.45 2.011-4.092 1.78-2.581-.363-4.127-2.971-3.76-5.578.366-2.606 2.571-4.688 5.152-4.325 1.019.143 1.877.637 2.519 1.342l1.803.258-.507 3.549c-.187 1.31.761 2.509 2.079 2.629.915.083 1.627-.356 1.843-.99.2-.585.345-1.224.345-1.83 0-4.556-3.694-8.25-8.25-8.25zm-.111 5.274c-1.247-.175-2.645.854-2.893 2.623-.249 1.769.811 3.143 2.058 3.319 1.247.175 2.645-.854 2.893-2.623.249-1.769-.811-3.144-2.058-3.319z"></path></g></svg>'); ?>
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="comment-content">
+                <?php $comments->content(); ?>
+            </div>
+        </div>
+        <?php if ($comments->children) { ?>
+            <ol class="children">
+                <?php $comments->threadedComments($options); ?>
+            </ol>
+        <?php } ?>
+    </li>
+    <?php
+}
+?>
+<ol class="commentlist">
+    <?php $this->comments()->to($comments); ?>
+    <?php while($comments->next()): ?>        
+    <?php endwhile; ?>
+</ol>
