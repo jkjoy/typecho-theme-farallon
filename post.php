@@ -68,6 +68,11 @@
 <?php if ($this->options->showProfile): ?>
     <?php $this->need('profile.php'); ?>
 <?php endif; ?>
+<!-- 相关文章-->
+<?php if ($this->options->showrelated): ?>
+    <?php $this->need('related.php'); ?>
+<?php endif; ?>
+
     <!-- 判断如果禁止评论则不显示评论的div -->
     <?php if ($this->allow('comment')): ?>
        <?php $this->need('comments.php'); ?>

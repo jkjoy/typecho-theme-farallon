@@ -38,8 +38,12 @@ function themeConfig($form) {
     $form->addInput($showProfile);
     $showallwords = new Typecho_Widget_Helper_Form_Element_Radio('showallwords',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否显示归档字数统计'), _t('选择“是”将归档页面显示全站总字数。'));
+    '0', _t('是否显示归档字数统计'), _t('选择“是”将在归档页面显示全站总字数。'));
     $form->addInput($showallwords);
+    $showrelated = new Typecho_Widget_Helper_Form_Element_Radio('showrelated',
+    array('0'=> _t('否'), '1'=> _t('是')),
+    '0', _t('是否显示相关文章'), _t('选择“是”将在文章页面显示相关文章。'));
+    $form->addInput($showrelated);
 } 
 function get_post_view($archive) {
     $cid = $archive->cid;
