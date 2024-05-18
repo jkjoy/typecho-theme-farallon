@@ -92,7 +92,12 @@ function threadedComments($comments, $options) {
         <div class="comment-body" id="<?php $comments->theId(); ?>">
             <div class="comment-meta">
                 <div class="comment--avatar">
-                    <?php echo $comments->gravatar('40', ''); ?> 
+                <?php if ($comments->url): ?>
+                            <a href="<?php echo $comments->url ?>" target="_blank" rel="external nofollow"><?php echo $comments->gravatar('40', ''); ?> </a>
+                        <?php else: ?>
+                            <?php echo $comments->gravatar('40', ''); ?> 
+                        <?php endif; ?>
+                    
                 </div>
                 <div class="comment--meta">
                     <div class="comment--author"><?php echo $comments->author; ?><span class="dot"></span>
