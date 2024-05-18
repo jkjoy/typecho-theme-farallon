@@ -35,16 +35,15 @@
         ?>
     <?php endif; ?>
     <div id="<?php $this->respondId(); ?>" class="comment-respond">
-        <div class="cancel-comment-reply cancel-comment-reply-link">
-        <?php $comments->cancelReply(); ?>
-    </div>
+        <div class="cancel-comment-reply cancel-comment-reply-link"><?php $comments->cancelReply(); ?></div>
     	<form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form" class="comment-form">
             <?php if($this->user->hasLogin()): ?>
-    		<p><?php _e('登录身份: '); ?><a href="<?php $this->options->profileUrl(); ?>"><?php $this->user->screenName(); ?></a>. <a href="<?php $this->options->logoutUrl(); ?>" title="Logout"><?php _e('退出'); ?> &raquo;</a></p>
+    		<p><?php _e('登录身份: '); ?>
+            <a href="<?php $this->options->profileUrl(); ?>">
+            <?php $this->user->screenName(); ?></a>. 
+            <a href="<?php $this->options->logoutUrl(); ?>" title="Logout"><?php _e('退出'); ?> &raquo;</a></p>
             <?php else: ?>
-            <p class="comment-form-comment">
-            <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('misubmit').click();return false};" placeholder="<?php _e('评论审核后显示，请勿重复提交...'); ?>" required ><?php $this->remember('text'); ?></textarea>
-    		</p>
+
     		<p class="comment-form-author">
     			<input placeholder="称呼 *" type="text" name="author" id="author" class="text" value="" required />
     		</p>
@@ -55,6 +54,10 @@
     			<input type="url" name="url" id="url" class="text" placeholder="http(s)://<?php if ($this->options->commentsRequireURL): ?> *<?php endif; ?>" value=""<?php if ($this->options->commentsRequireURL): ?> required<?php endif; ?> />
     		</p>
             <?php endif; ?>
+            <p class="comment-form-comment">
+            <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('misubmit').click();return false};" placeholder="<?php _e('评论审核后显示，请勿重复提交...'); ?>" required ><?php $this->remember('text'); ?></textarea>
+    		</p>
+            
     		<p class="form-submit">
             <button type="submit" class="submit" id="misubmit"><?php _e('提交评论（Ctrl+Enter）'); ?></button>
             </p>
@@ -110,11 +113,9 @@ function threadedComments($comments, $options) {
             </ol>
         <?php } ?>
     </li>
-    <?php
-}
-?>
+    <?php } ?>
 <ol class="commentlist">
     <?php $this->comments()->to($comments); ?>
-    <?php while($comments->next()): ?>        
+    <?php while($comments->next()): ?>       
     <?php endwhile; ?>
 </ol>

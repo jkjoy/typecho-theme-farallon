@@ -7,9 +7,9 @@
         </div>
             <a href="<?php $this->options->siteUrl(); ?>">
                <?php $this->options->title(); ?>
-            </a>. |
-             Made with 💗
-        <div class="copyright">
+            </a> 💗
+                <a href="https://www.imsun.org">Made with 老孙</a>💗 加载耗时<?php echo timer_stop();?> 💗
+             <div class="copyright">
         版权所有    © <?php $this->options->jzyear() ?>-<?php echo date('Y'); ?> 
             <svg class="icon icon--copryrights" viewBox="0 0 1040 1024" width="16" height="16">
                 <path
