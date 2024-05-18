@@ -5,7 +5,7 @@
         <?php if ($this->is('attachment')) : ?>
         <?php _e(''); ?>
         <?php else: ?>
-    	<h3 class="comments--title">
+    	<h3 class="comments--title" id="comments">
             <svg viewBox="0 0 24 24" class="icon" aria-hidden="true" width="16" height="16">
                 <g>
                     <path
