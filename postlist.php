@@ -55,7 +55,11 @@
             </svg>
 				 <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('评论', '1 评论', '%d 评论'); ?></a>
 	    </div>
-    </div>         
+    </div>    
+    <?php $firstImage = show_first_image($this->content); ?>
+    <?php if($firstImage): ?>
+    <img src="<?php echo $firstImage; ?>" alt="文章图片" class="cover"/>
+    <?php endif; ?>    
 </article>
 	<?php endwhile; ?>
  

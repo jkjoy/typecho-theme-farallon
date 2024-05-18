@@ -156,3 +156,11 @@ function allwords() {
     elseif ($chars>1000000){
     echo '全站共 '.$chars.' 字，已写一本列夫·托尔斯泰的《战争与和平》了！';}
 } 
+function show_first_image($content) {
+    preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches);
+    // 检查是否找到了图片
+    if(isset($matches[1][0])){
+        return $matches[1][0];
+    }
+    return false; // 没有找到图片，返回 false
+}
