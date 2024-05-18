@@ -31,23 +31,33 @@
             <h2 class="post--single__title"><?php $this->title() ?></h2>
             <div class="post--single__content graph" ><?php $this->content(); ?></div>
             
-        <div class="post--single__action">
+        <div class="post--single">
+        <?php if($this->options->donate): ?>
               <!--打赏  -->
-            <script type="text/javascript" src="https://blogcdn.loliko.cn/donate/index_wx.js?121"></script>
-            <link rel="stylesheet" type="text/css" href="https://blogcdn.loliko.cn/donate/style_wx.css?121" />
+        <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/donate.css'); ?>">
+        <script type="text/javascript" src="<?php $this->options->themeUrl('/dist/js/donate.js'); ?>"></script>
             <div class="donate-panel"> 
-                <div id="donate-btn">赏</div> 
+            <div id="donate-btn">
+                <button class="button--like">
+                <svg class="icon--default" viewBox="0 0 1024 1024" width="32" height="32">
+                    <path
+                        d="M332.8 249.6c38.4 0 83.2 19.2 108.8 44.8L467.2 320 512 364.8 556.8 320l25.6-25.6c32-32 70.4-44.8 108.8-44.8 19.2 0 38.4 6.4 57.6 12.8 44.8 25.6 70.4 57.6 76.8 108.8 6.4 44.8-6.4 89.6-38.4 121.6L512 774.4 236.8 492.8C204.8 460.8 185.6 416 192 371.2c6.4-44.8 38.4-83.2 76.8-108.8C288 256 313.6 249.6 332.8 249.6L332.8 249.6M332.8 185.6C300.8 185.6 268.8 192 243.2 204.8 108.8 275.2 89.6 441.6 185.6 537.6l281.6 281.6C480 832 499.2 838.4 512 838.4s32-6.4 38.4-19.2l281.6-281.6c96-96 76.8-262.4-57.6-332.8-25.6-12.8-57.6-19.2-89.6-19.2-57.6 0-115.2 25.6-153.6 64L512 275.2 486.4 249.6C448 211.2 390.4 185.6 332.8 185.6L332.8 185.6z">
+                    </path>
+                </svg>
+                </button>
+                </div> 
                 <div id="qrcode-panel" style="display: none;"> 
                     <div class="qrcode-body"> 
                         <div class="donate-memo"> 
                             <span id="donate-close">关闭</span> 
                         </div> 
                         <div class="donate-qrpay"> 
-                           <img id="wxqr" src="https://blogcdn.loliko.cn/donate/wx.png" /> 
+                           <img id="wxqr" src="<?php $this->options->donate() ?>" /> 
                         </div> 
                     </div> 
                 </div> 
             </div> 
+            <?php endif; ?>
             <!--打赏结束 -->
         </div>
               <!-- TAG -->

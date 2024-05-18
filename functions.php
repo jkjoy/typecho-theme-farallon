@@ -5,7 +5,7 @@ function themeConfig($form) {
     $form->addInput($logoUrl);
     $icoUrl = new Typecho_Widget_Helper_Form_Element_Text('icoUrl', NULL, NULL, _t('站点 Favicon 地址'));
     $form->addInput($icoUrl);
-    $jzyear = new Typecho_Widget_Helper_Form_Element_Text('jzyear', NULL, NULL, _t('建站年份'));
+    $jzyear = new Typecho_Widget_Helper_Form_Element_Text('jzyear', NULL, NULL, _t('建站年份 eg. 2006'));
     $form->addInput($jzyear);
     $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, NULL, _t('ins'));
     $form->addInput($instagramurl);
@@ -21,6 +21,10 @@ function themeConfig($form) {
     $form->addInput($sitemapurl);
     $cnavatar = new Typecho_Widget_Helper_Form_Element_Text('cnavatar', NULL, 'https://cravatar.cn/avatar/', _t('自定义Gravatar镜像服务器,默认https://cravatar.cn/avatar/'));
     $form->addInput($cnavatar);
+    $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'));
+    $form->addInput($donate);
+
+
     $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'));
     $form->addInput($twikoo);
 
