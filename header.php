@@ -39,8 +39,7 @@ error_reporting(E_ALL);if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <header class="site--header">
             <?php if ($this->options->logoUrl): ?>
                 <a href="<?php $this->options->siteUrl(); ?>" class="site--url">
-                    <img src="<?php $this->options->icoUrl() ?>"  class="avatar" alt="<?php $this->options->title() ?>" />
- 
+                    <img src="<?php $this->options->logoUrl() ?>"  class="avatar" alt="<?php $this->options->title() ?>" />
             </a>
             <?php else: ?>
                 <span class="u-xs-show"> 
