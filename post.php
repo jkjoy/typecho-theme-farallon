@@ -29,7 +29,7 @@
             </svg> <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('评论', '1 评论', '%d 评论'); ?></a> 
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
-            <div class="post--single__content graph" ><?php $this->content(); ?></div>
+            <div class="post--single__content graph post-content" ><?php $this->content(); ?></div>
             
         <div class="post--single">
         <?php if($this->options->donate): ?>
@@ -94,6 +94,88 @@
     </nav> 
 </ul>    
 </article>
+<!--TOC 在宽度大于1400px时才会显示-->
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
 
+  const postContent = document.querySelector('.post-content');
+  if (!postContent) return;
+
+  // 依次查找从h1到h6，直到找到存在的标题级别
+  let found = false;
+  for (let i = 1; i <= 6 && !found; i++) {
+    if (postContent.querySelector(`h${i}`)) {
+      found = true;
+    }
+  }
+
+  if (!found) return; // 如果没有标题，则不继续执行
+
+  const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  const toc = document.createElement('div');
+  toc.id = 'toc';
+  toc.innerHTML = '<strong>目录</strong><ul></ul>';
+  document.body.appendChild(toc);
+
+  let currentLevel = 0;
+  let currentList = toc.querySelector('ul ');
+
+  heads.forEach((head, index) => {
+    const level = parseInt(head.tagName.substring(1)); // 提取标题级别
+
+    if (currentLevel === 0) { // 设置初次的级别
+      currentLevel = level;
+    }
+
+    while (level > currentLevel) { // 如果标题级别增加，则创建新的子列表
+      let newList = document.createElement('ul');
+      if(!currentList.lastElementChild) { // 如果当前列表为空，则直接在其中添加元素
+        currentList.appendChild(newList);
+      } else {
+        currentList.lastElementChild.appendChild(newList); // 否则，添加到最后一个列表项中
+      }
+      currentList = newList;
+      currentLevel++;
+    }
+
+    while (level < currentLevel) { // 如果标题级别降低，则向上回溯列表层级
+      currentList = currentList.parentElement;
+      if(currentList.tagName.toLowerCase() === 'li') { // 确保回到上一层列表
+        currentList = currentList.parentElement;
+      }
+      currentLevel--;
+    }
+
+    const item = document.createElement('li');
+    const anchor = `toc${index}`;
+    head.id = anchor;
+
+    const link = document.createElement('a');
+    link.href = `#${anchor}`;
+    link.textContent = head.textContent;
+
+    item.appendChild(link);
+    currentList.appendChild(item);
+  });
+});
+</script>
+<style>
+#toc {
+  position: fixed;
+  top: 100px;
+  right: 50px;
+  max-width: 200px;
+  background-color: var(--farallon-background-gray);
+  padding: 10px;
+  border-radius: 5px;
+  /* 其他样式... */
+}
+
+@media screen and (max-width: 1400px) {
+  #toc {
+    display: none;
+  }
+}
+</style>
 </main>
 <?php $this->need('footer.php'); ?>
