@@ -29,7 +29,7 @@
             </svg> <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('评论', '1 评论', '%d 评论'); ?></a> 
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
-            <div class="post--single__content graph post-content" ><?php $this->content(); ?></div>
+            <div class="post--single__content graph" ><?php $this->content(); ?></div>
             
         <div class="post--single">
         <?php if($this->options->donate): ?>
@@ -98,7 +98,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', (event) => {
 
-  const postContent = document.querySelector('.post-content');
+  const postContent = document.querySelector('.post--single__content');
   if (!postContent) return;
 
   // 依次查找从h1到h6，直到找到存在的标题级别
