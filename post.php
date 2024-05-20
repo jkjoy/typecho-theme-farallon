@@ -82,11 +82,9 @@
 <!--翻页-->
     <nav class="navigation post-navigation is-active">
         <div class="nav-links">
-       
             <div class="nav-previous">
             <span class="meta-nav">  上一篇:  <?php $this->thePrev('%s','没有了'); ?></span>
             </div>
-
             <div class="nav-next">
             <span class="meta-nav"> 下一篇:  <?php $this->theNext('%s','没有了'); ?></span>
             </div>
