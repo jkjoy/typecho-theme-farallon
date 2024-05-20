@@ -9,7 +9,7 @@
             <?php if($this->options->sitemapurl): ?>
             <a href="<?php $this->options->sitemapurl() ?>" target="_blank">💗</a>
             <?php endif; ?>
-            <a href="https://www.typecho.org">Typecho</a>驱动  &nbsp;  <a href="https://www.imsun.org">Made with 老孙</a>💗 加载耗时
+            <a href="https://www.typecho.org">Powered by Typecho</a>  &nbsp;  <a href="https://www.imsun.org">Made with Sun</a>💗 加载耗时
                 <?php echo timer_stop();?> 💗
          <div class="copyright">
          <a href="<?php $this->options->siteUrl(); ?>">
@@ -22,13 +22,9 @@
                     p-id="4007"></path>
             </svg>
         </div>
-    
     </div>
-
-    <?php $this->options->tongji(); ?>
-    
+    <?php $this->options->tongji(); ?>   
 </footer>
- 
 <div class="backToTop">
     <svg xmlns="http://www.w3.org/2000/svg" class="svgIcon" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
         <path
@@ -36,7 +32,6 @@
         </path>
     </svg>
 </div>
-
 <script src="<?php $this->options->themeUrl('/dist/js/bundle.js'); ?>"></script>
 <?php $this->footer(); ?>
 </div>
