@@ -1,16 +1,16 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
- 
 <footer class="site--footer">
     <div class="site--footer__content">
         <div class=site--footer__sns>
            <?php $this->need('sns.php'); ?>
         </div>
-
+            <a href="https://www.typecho.org">Typecho驱动</a>  &nbsp;             
             <?php if($this->options->sitemapurl): ?>
-            <a href="<?php $this->options->sitemapurl() ?>" target="_blank">💗</a>
-            <?php endif; ?>
-            <a href="https://www.typecho.org">Powered by Typecho</a>  &nbsp;  <a href="https://www.imsun.org">Made with Sun</a>💗 加载耗时
-                <?php echo timer_stop();?> 💗
+            <a href="<?php $this->options->sitemapurl() ?>" target="_blank">💗</a>&nbsp;
+            <?php endif; ?> 
+            <a href="https://www.imsun.org">Made with Sun</a> 
+            &nbsp;加载耗时
+                <?php echo timer_stop();?> 
          <div class="copyright">
          <a href="<?php $this->options->siteUrl(); ?>">
                <?php $this->options->title(); ?>
