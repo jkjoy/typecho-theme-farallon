@@ -38,10 +38,9 @@
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
             <div class="post--single__content graph" ><?php $this->content(); ?></div>
-  
-        <div class="post--single">   
-                       <!--打赏  -->
+<!--打赏  -->
         <?php if($this->options->donate): ?> 
+        <div class="post--single__action">   
         <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/donate.css'); ?>">
         <script type="text/javascript" src="<?php $this->options->themeUrl('/dist/js/donate.js'); ?>"></script>
             <div class="donate-panel"> 
@@ -64,10 +63,9 @@
                         </div> 
                     </div> 
                 </div> 
-            </div>         
-            <!--打赏结束 -->
-            <?php endif; ?>
+            </div>                 
         </div>
+        <?php endif; ?>
         <!-- 复制链接 -->
         <?php if($this->options->showshare): ?>
         <div class="post--share">
