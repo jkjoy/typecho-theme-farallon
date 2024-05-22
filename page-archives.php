@@ -15,36 +15,49 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
                 <h3><?php echo allwords(); ?></h3>
 <?php endif; ?>
 </header>
-    <div class="page--archive"  >
-        <?php
-            $stat = Typecho_Widget::widget('Widget_Stat');
-            Typecho_Widget::widget('Widget_Contents_Post_Recent', 'pageSize=' . $stat->publishedPostsNum)->to($archives);
-            $year = 0;
-            $mon = 0;
-            $i = 0;
-            $j = 0;
+<div class="page--archive">
+    <?php
+        $stat = Typecho_Widget::widget('Widget_Stat');
+        Typecho_Widget::widget('Widget_Contents_Post_Recent', 'pageSize=' . $stat->publishedPostsNum)->to($archives);
+        $year = 0; $mon = 0;
         $output = '<div class="archives">';
-          while ($archives->next()) {
+        
+        while ($archives->next()) {
             $year_tmp = date('Y', $archives->created);
             $mon_tmp = date('m', $archives->created);
-            $y = $year;
-            $m = $mon;
-        if ($year > $year_tmp || $mon > $mon_tmp) {
-        $output .= '</ul>';
+            
+            // 检查年份和月份是否变化
+            if ($year != $year_tmp) {
+                if ($year > 0) {
+                    $output .= '</ul></div>'; // 结束上一个年份的ul和div
+                }
+                
+                $year = $year_tmp; $mon = 0; // 更新年份和重置月份
+                $output .= '<h2 class="archive--title__year">' . date('Y', $archives->created) . '</h2>'; // 输出新的年份
+            }
+            
+            if ($mon != $mon_tmp) {
+                if ($mon > 0) {
+                    $output .= '</ul>'; // 结束上一个月份的ul
+                }
+                
+                $mon = $mon_tmp; // 更新月份
+                $output .= '<h3 class="archive--title__month">'. date('M', $archives->created) . '</h3><ul class="archive--list" aria-label="' . date('Y年m月', $archives->created) . '">'; // 输出新的月份和开始新的列表
+            }
+            
+            // 输出文章项
+            $output .= '<li class="archive--item"><div class="archive--title"><a href="' . $archives->permalink . '">' . $archives->title . '</a></div>';
+            $output .= '<div class="archive--meta">' . date('m月d日', $archives->created) . '</div></li>'; 
         }
-        if ($year != $year_tmp || $mon != $mon_tmp) {
-        $year = $year_tmp;
-        $mon = $mon_tmp;
-        $output .= '<h2 class="archive--title__year">' . date('Y年', $archives->created) . '</h2>
-          <h3 class="archive--title__month">'. date('m月', $archives->created) .'</h3><ul class="archive--list" aria-label="' . date('Y年m月', $archives->created) . '">
-          '; //输出年份
+        
+        if ($year > 0) {
+            $output .= '</ul></div>'; // 确保结束最后一个月份列表和div
         }
-        $output .= '<li class="archive--item"><div class="archive--title"><a href="' . $archives->permalink . '">' . $archives->title . '</a></div> 
-          <div class="archive--meta">' . date('m月d日', $archives->created) . '</div> </li>'; //输出文章
-        }
-        $output .= ' </ul></div>';
-          echo $output;?>
-   </div>
+        
+        $output .= '</div>'; // 结束归档div
+        echo $output;
+    ?>
+</div>
 </section>
 <?php $this->need('footer.php'); ?>
  
