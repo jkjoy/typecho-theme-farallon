@@ -38,10 +38,10 @@
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
             <div class="post--single__content graph" ><?php $this->content(); ?></div>
-            
-        <div class="post--single">
-        <?php if($this->options->donate): ?>
-              <!--打赏  -->
+  
+        <div class="post--single">   
+                       <!--打赏  -->
+        <?php if($this->options->donate): ?> 
         <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/donate.css'); ?>">
         <script type="text/javascript" src="<?php $this->options->themeUrl('/dist/js/donate.js'); ?>"></script>
             <div class="donate-panel"> 
@@ -64,11 +64,66 @@
                         </div> 
                     </div> 
                 </div> 
-            </div> 
-            <?php endif; ?>
+            </div>         
             <!--打赏结束 -->
+            <?php endif; ?>
         </div>
-              <!-- TAG -->
+        <!-- 复制链接 -->
+        <?php if($this->options->showshare): ?>
+        <div class="post--share">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <g>
+                            <path d="M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 0 2.73 2.74 2.73 7.17 0 9.9l-1.42 1.42-1.41-1.42 1.41-1.41c1.96-1.96 1.96-5.12 0-7.07zm-2.12 3.53l-7.07 7.07-1.41-1.41 7.07-7.07 1.41 1.41zm-12.02.71l1.42-1.42 1.41 1.42-1.41 1.41c-1.96 1.96-1.96 5.12 0 7.07 1.95 1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z"></path>
+                        </g>
+                    </svg>
+                    <span class="text">复制链接</span>
+                    <span class="link" @click="copy" data-link="<?php $this->permalink(); ?>"><?php $this->permalink(); ?></span>
+                    <script src="<?php $this->options->themeUrl('/dist/js/vue.min.js'); ?>"></script>
+                    <script src="<?php $this->options->themeUrl('/dist/js/clipboard.min.js'); ?>"></script> 
+<script>
+        var app = new Vue({
+        el: '.post--share',  
+        data() {
+            return {
+               msg: "<?php $this->permalink(); ?>",    
+            };
+        },
+        methods: {
+             //复制方法
+            copy: function () {
+            var that = this;
+            //注意vue umd版本ClipboardJS，而ES包请使用Clipboard
+            var clipboard = new ClipboardJS(".link",{
+                text: function (trigger) {
+                //返回字符串
+                return that.msg;
+                }});
+            clipboard.on("success", (e) => {
+                //复制成功，显示提示
+                this.showCopySuccessToast();
+                clipboard.destroy();
+            });
+            clipboard.on("error", (e) => {
+                //复制失败
+                clipboard.destroy();
+            });
+            },
+            showCopySuccessToast: function() {
+                const toast = document.createElement("div");
+                toast.textContent = "复制成功！";
+                toast.className = "notice--wrapper";
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 3000);
+            }
+        }
+    });
+    </script>
+</div>
+<?php endif; ?>
+<!-- TAG -->
         <div class="tag--list artile--tag"> 
             <?php $this->tags(' ', true, ' '); ?> 
         </div>     
@@ -80,7 +135,6 @@
 <?php if ($this->options->showrelated): ?>
     <?php $this->need('related.php'); ?>
 <?php endif; ?>
-
     <!-- 判断如果禁止评论则不显示评论的div -->
     <?php if ($this->allow('comment')): ?>
        <?php $this->need('comments.php'); ?>
@@ -100,13 +154,12 @@
     </nav> 
 </ul>    
 </article>
+<?php if($this->options->showtoc): ?>
 <!--TOC 在宽度大于1400px时才会显示-->
 <script>
 document.addEventListener('DOMContentLoaded', (event) => {
-
   const postContent = document.querySelector('.post--single__content');
   if (!postContent) return;
-
   // 依次查找从h1到h6，直到找到存在的标题级别
   let found = false;
   for (let i = 1; i <= 6 && !found; i++) {
@@ -114,25 +167,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
       found = true;
     }
   }
-
   if (!found) return; // 如果没有标题，则不继续执行
-
   const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
   const toc = document.createElement('div');
   toc.id = 'toc';
   toc.innerHTML = '<strong>目录</strong><ul></ul>';
   document.body.appendChild(toc);
-
   let currentLevel = 0;
   let currentList = toc.querySelector('ul ');
-
   heads.forEach((head, index) => {
     const level = parseInt(head.tagName.substring(1)); // 提取标题级别
-
     if (currentLevel === 0) { // 设置初次的级别
       currentLevel = level;
     }
-
     while (level > currentLevel) { // 如果标题级别增加，则创建新的子列表
       let newList = document.createElement('ul');
       if(!currentList.lastElementChild) { // 如果当前列表为空，则直接在其中添加元素
@@ -143,7 +190,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
       currentList = newList;
       currentLevel++;
     }
-
     while (level < currentLevel) { // 如果标题级别降低，则向上回溯列表层级
       currentList = currentList.parentElement;
       if(currentList.tagName.toLowerCase() === 'li') { // 确保回到上一层列表
@@ -151,15 +197,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
       }
       currentLevel--;
     }
-
     const item = document.createElement('li');
     const anchor = `toc${index}`;
     head.id = anchor;
-
     const link = document.createElement('a');
     link.href = `#${anchor}`;
     link.textContent = head.textContent;
-
     item.appendChild(link);
     currentList.appendChild(item);
   });
@@ -176,12 +219,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
   border-radius: 5px;
   /* 其他样式... */
 }
-
 @media screen and (max-width: 1400px) {
   #toc {
     display: none;
   }
 }
 </style>
+<?php endif; ?>
 </main>
 <?php $this->need('footer.php'); ?>
