@@ -51,10 +51,10 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         }
         
         if ($year > 0) {
-            $output .= '</ul></div>'; // 确保结束最后一个月份列表和div
+            $output .= '</ul>'; // 确保结束最后一个月份列表和div
         }
         
-        $output .= '</ul></div>'; // 结束归档div
+        $output .= '</div>'; // 结束归档div
         echo $output;
     ?>
 </div>
