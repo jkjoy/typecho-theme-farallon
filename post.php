@@ -158,49 +158,68 @@
 document.addEventListener('DOMContentLoaded', (event) => {
   const postContent = document.querySelector('.post--single__content');
   if (!postContent) return;
-  // 依次查找从h1到h6，直到找到存在的标题级别
+
   let found = false;
   for (let i = 1; i <= 6 && !found; i++) {
     if (postContent.querySelector(`h${i}`)) {
       found = true;
     }
   }
-  if (!found) return; // 如果没有标题，则不继续执行
+  if (!found) return;
+
   const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
   const toc = document.createElement('div');
   toc.id = 'toc';
   toc.innerHTML = '<strong>目录</strong><ul></ul>';
   document.body.appendChild(toc);
   let currentLevel = 0;
-  let currentList = toc.querySelector('ul ');
+  let currentList = toc.querySelector('ul');
+  let levelCounts = [0]; // 初始化层级计数器
+
   heads.forEach((head, index) => {
-    const level = parseInt(head.tagName.substring(1)); // 提取标题级别
-    if (currentLevel === 0) { // 设置初次的级别
+    const level = parseInt(head.tagName.substring(1));
+    if (levelCounts[level] === undefined) {
+      levelCounts[level] = 1; // 初始化该层级计数
+    } else {
+      levelCounts[level]++;
+    }
+    
+    // 重置下级标题的计数器
+    levelCounts = levelCounts.slice(0, level + 1);
+
+    if (currentLevel === 0) {
       currentLevel = level;
     }
-    while (level > currentLevel) { // 如果标题级别增加，则创建新的子列表
+    while (level > currentLevel) {
       let newList = document.createElement('ul');
-      if(!currentList.lastElementChild) { // 如果当前列表为空，则直接在其中添加元素
+      if(!currentList.lastElementChild) {
         currentList.appendChild(newList);
       } else {
-        currentList.lastElementChild.appendChild(newList); // 否则，添加到最后一个列表项中
+        currentList.lastElementChild.appendChild(newList);
       }
       currentList = newList;
       currentLevel++;
+      levelCounts[currentLevel] = 1; // 初始化下一层级的计数器
     }
-    while (level < currentLevel) { // 如果标题级别降低，则向上回溯列表层级
+    while (level < currentLevel) {
       currentList = currentList.parentElement;
-      if(currentList.tagName.toLowerCase() === 'li') { // 确保回到上一层列表
+      if(currentList.tagName.toLowerCase() === 'li') {
         currentList = currentList.parentElement;
       }
       currentLevel--;
     }
+
+    // 生成序号并在末尾添加点
+    const numbers = levelCounts.slice(1, level + 1).join(' ') + '.'; 
     const item = document.createElement('li');
+    item.classList.add('toc-item'); // 添加基本类
+    item.classList.add(`level-${level}`); // 根据级别添加类
+
     const anchor = `toc${index}`;
     head.id = anchor;
     const link = document.createElement('a');
     link.href = `#${anchor}`;
-    link.textContent = head.textContent;
+    link.textContent = `${numbers} ${head.textContent}`; // 序号+标题文本
     item.appendChild(link);
     currentList.appendChild(item);
   });
