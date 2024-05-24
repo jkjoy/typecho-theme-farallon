@@ -14,20 +14,6 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />    
     <div id="talk"></div>
-<style>
-div pre code {
-  /* 迫使文字断行 */
-  white-space: pre-wrap; /* CSS3 */
-  
-  /* 当文字超出容器宽度时会断行 */
-  word-wrap: break-word; /* 老版本的浏览器 */
-  overflow-wrap: break-word; /* CSS3, 推荐使用 */
-  
-  /* 指定如何断行 */
-  word-break: break-all;     /* 对于非中文字母（如拉丁字母或半角符号等）也同样断行 */
-  word-break: break-word;    /* 保留对于英文单词的完整，为个别单词断行 */
-}
-</style>
 <script>
 if (99) {
     let url = '<?php $this->options->memos() ?>';
@@ -109,6 +95,19 @@ Fancybox.bind("[data-fancybox]", {
 });
 </script>
 <style>
+div pre code {
+  /* 迫使文字断行 */
+  white-space: pre-wrap; /* CSS3 */
+  word-wrap: break-word; /* 老版本的浏览器 */
+  overflow-wrap: break-word;  
+  /* 指定如何断行 */
+  word-break: break-all;  
+  word-break: break-word;  
+}
+div p a {
+    word-break: break-all;  
+  word-break: break-word;  
+}
 .thumbnail-image {
     width:100%;
     height: 200px;  
