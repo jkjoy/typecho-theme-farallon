@@ -9,6 +9,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <div class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
+        <h2 class="archive--title__year"><?php $this->content(); ?> </h2>
     </header>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
@@ -33,7 +34,7 @@ if (99) {
                 <img src="<?php $this->options->logoUrl() ?>" class="avatar" width="48" height="48" />
                 <a class="humane--time" href="${memoURL}" target="_blank">${data.date}</a>
                 </header>
-                <div class="description mdContent" itemprop="about">
+                <div class="description" itemprop="about">
                 <span class="talk_tag"># ${data.tag}</span><br>
                 ${mdContent}
                 </div>
