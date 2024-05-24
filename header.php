@@ -20,7 +20,7 @@ error_reporting(E_ALL);if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <link rel='icon' href='<?php $this->options->icoUrl() ?>' type='image/x-icon' />
     <?php endif; ?>
     <?php $this->header("generator=&template=&pingback=&wlw=&xmlrpc=&rss1=&atom=&rss2=/feed"); ?>
-     <?php $this->options->addhead(); ?>
+    <?php $this->options->addhead(); ?>
 </head>
 <body>
 <script>

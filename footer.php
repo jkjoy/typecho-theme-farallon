@@ -4,12 +4,12 @@
         <div class=site--footer__sns>
            <?php $this->need('sns.php'); ?>
         </div>
-            <a href="https://www.typecho.org">Typecho驱动</a>  &nbsp;             
-            <?php if($this->options->sitemapurl): ?>
-            <a href="<?php $this->options->sitemapurl() ?>" target="_blank">💗</a>&nbsp;
+        <?php if($this->options->sitemapurl): ?>
+            <a href="<?php $this->options->sitemapurl() ?>" target="_blank">💗</a>
             <?php endif; ?> 
-            <a href="https://www.imsun.org">Made with Sun</a> 
-            &nbsp;加载耗时
+            <a href="https://www.typecho.org">Typecho驱动</a>          
+            <a href="https://www.imsun.org">&nbsp;Made with Sun</a> 
+            &nbsp;页面加载耗时
                 <?php echo timer_stop();?> 
          <div class="copyright">
          <a href="<?php $this->options->siteUrl(); ?>">
