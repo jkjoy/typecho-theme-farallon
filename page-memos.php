@@ -10,10 +10,24 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
     </header>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />    
     <div id="talk"></div>
-
+<style>
+div pre code {
+  /* 迫使文字断行 */
+  white-space: pre-wrap; /* CSS3 */
+  
+  /* 当文字超出容器宽度时会断行 */
+  word-wrap: break-word; /* 老版本的浏览器 */
+  overflow-wrap: break-word; /* CSS3, 推荐使用 */
+  
+  /* 指定如何断行 */
+  word-break: break-all;     /* 对于非中文字母（如拉丁字母或半角符号等）也同样断行 */
+  word-break: break-word;    /* 保留对于英文单词的完整，为个别单词断行 */
+}
+</style>
 <script>
 if (99) {
     let url = '<?php $this->options->memos() ?>';
@@ -21,12 +35,11 @@ if (99) {
     .then(res => res.json())
     .then(data => { 
         let html = '';
-        let baseURL = '<?php $this->options->memos() ?>';
-
         data.forEach(item => {
             // 假设这里的 Format 函数能正确地格式化每个 item，并确保它返回有 `date` 和 `tag` 的对象
             let data = Format(item); 
-            let memoURL = baseURL + '/m/' + item.id;
+            let memoURL = url + '/m/' + item.id;
+            let mdContent = marked.parse(data.content);
             html += `
             <article class='post--item post--item__status'>
                 <div class='content'>
@@ -34,15 +47,15 @@ if (99) {
                 <img src="<?php $this->options->logoUrl() ?>" class="avatar" width="48" height="48" />
                 <a class="humane--time" href="${memoURL}" target="_blank">${data.date}</a>
                 </header>
-                <div class="description" itemprop="about">
+                <div class="description mdContent" itemprop="about">
                 <span class="talk_tag"># ${data.tag}</span><br>
-                ${data.content}
+                ${mdContent}
                 </div>
                 </div>
                 </article>
             `;
         });
-        if (data.length >= 20) document.querySelector('.limit').style.display = 'block';
+        
         document.getElementById('talk').innerHTML = html;
     })
     .catch(error => {
@@ -75,7 +88,7 @@ if (99) {
         }
         return {
             content: content,
-            tag: tag ? tag[0].replace(/#([^\s#]+?) /,'$1') : '无标签',
+            tag: tag ? tag[0].replace(/#([^\s#]+?) /,'$1') : '日常',
             date: date,
             text: text.replace(/\[(.*?)\]\((.*?)\)/g, '[链接]' + `${imgs?'[图片]':''}`)
         }
