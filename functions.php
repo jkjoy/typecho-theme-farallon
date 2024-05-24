@@ -23,7 +23,10 @@ function themeConfig($form) {
     $form->addInput($cnavatar);
     $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'));
     $form->addInput($donate);
-
+    $memos = new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, 'https://m.loliko.cn', _t('memos地址结尾不带"/"'));
+    $form->addInput($memos);
+    $memosID = new Typecho_Widget_Helper_Form_Element_Text('memosID', NULL, '1', _t('memosID'));
+    $form->addInput($memosID);
 
     $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'));
     $form->addInput($twikoo);
