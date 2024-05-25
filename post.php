@@ -208,18 +208,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
       }
       currentLevel--;
     }
-
-    // 生成序号并在末尾添加点
-    const numbers = levelCounts.slice(1, level + 1).join(' ') + '.'; 
+    const numbers = levelCounts.slice(1, level + 1).join(' ') ; 
     const item = document.createElement('li');
     item.classList.add('toc-item'); // 添加基本类
     item.classList.add(`level-${level}`); // 根据级别添加类
-
     const anchor = `toc${index}`;
     head.id = anchor;
     const link = document.createElement('a');
     link.href = `#${anchor}`;
-    link.textContent = `${numbers} ${head.textContent}`; // 序号+标题文本
+    link.textContent = `${numbers}. ${head.textContent}`; // 序号+标题文本
     item.appendChild(link);
     currentList.appendChild(item);
   });
