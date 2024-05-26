@@ -3,9 +3,7 @@
  * 网站数据
  * @package custom
  */
-
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
-$GLOBALS['page'] = 'page-data';
 $this->need('header.php');
 ?>
 <section class="site--main">
@@ -15,43 +13,43 @@ $this->need('header.php');
     </header>
     <article class="post--single">
     <div class="graph u-marginBottom30">
-                    <div data-target="<?php $this->options->postLinkOpen(); ?>" class="post-content">
-                        <h2>分类占比</h2>
-                        <p>下面是个分类的文章占比：</p>
-                        <div id="category-chart" style="height: 390px;"></div>      
-                        <h2>文章更新</h2>
-                        <p>下面是 <?php echo date('Y年m月d日', time() - 20736000); ?> 到 <?php echo date('Y年m月d日', time()); ?> 的文章更新情况</p>
-                        <div id="post-chart" style="height: 250px;"></div> 
-                        <h2>评论动态</h2>
-                        <p>下面是 <?php echo date('Y年m月d日', time() - 20736000); ?> 到 <?php echo date('Y年m月d日', time()); ?> 的评论动态</p>
-                        <div id="comment-chart" style="height: 250px;"></div>     
-                        <h2>最多阅读的文章</h2>
-                        <?php $top5Post = top5post(); ?>
-                        <p>下面是阅读量排名前 <?php echo count($top5Post); ?> 的文章</p>
-                        <table class="pure-table pure-table-bordered">
-                            <thead>
-                            <tr>
-                                <th>排名</th>
-                                <th>文章</th>
-                                <th>阅读量</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php $top = 1; ?>
-                            <?php foreach ($top5Post as $post): ?>
-                                <tr>
-                                    <td><?php echo $top; ?></td>
-                                    <td><a href="<?php echo $post['link']; ?>"><?php echo $post['title']; ?></a></td>
-                                    <td><?php echo $post['views']; ?></td>
-                                </tr>
-                                <?php $top ++; ?>
-                            <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                        <h2>最多评论的文章</h2>  
+        <div data-target="<?php $this->options->postLinkOpen(); ?>" class="post-content">
+            <h2>分类占比</h2>
+                <p>下面是个分类的文章占比：</p>
+            <div id="category-chart" style="height: 390px;"></div>      
+            <h2>文章更新</h2>
+            <p>下面是 <?php echo date('Y年m月d日', time() - 20736000); ?> 到 <?php echo date('Y年m月d日', time()); ?> 的文章更新情况</p>
+            <div id="post-chart" style="height: 250px;"></div> 
+            <h2>评论动态</h2>
+            <p>下面是 <?php echo date('Y年m月d日', time() - 20736000); ?> 到 <?php echo date('Y年m月d日', time()); ?> 的评论动态</p>
+            <div id="comment-chart" style="height: 250px;"></div>     
+            <h2>最多阅读的文章</h2>
+            <?php $top5Post = top5post(); ?>
+            <p>下面是阅读量排名前 <?php echo count($top5Post); ?> 的文章</p>
+            <table class="pure-table pure-table-bordered">
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>文章</th>
+                        <th>阅读量</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $top = 1; ?>
+                    <?php foreach ($top5Post as $post): ?>
+                    <tr>
+                        <td><?php echo $top; ?></td>
+                        <td><a href="<?php echo $post['link']; ?>"><?php echo $post['title']; ?></a></td>
+                        <td><?php echo $post['views']; ?></td>
+                    </tr>
+                    <?php $top ++; ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <h2>最多评论的文章</h2>  
                         <?php $top5CommentPost = top5CommentPost(); ?>
                         <p>下面是评论数排名前 <?php echo count($top5CommentPost); ?> 的文章：</p>
-                        <table class="pure-table pure-table-bordered"> 
+            <table class="pure-table pure-table-bordered"> 
                             <thead>
                             <tr>
                                 <th>排名</th>
@@ -70,9 +68,9 @@ $this->need('header.php');
                                 <?php $top ++; ?>
                             <?php endforeach; ?>
                              </tbody>
-                        </table>
-                        </div>  
-        </article>
+            </table>
+        </div>  
+    </article>
 </section>
     <script type="text/javascript">
       var data = {

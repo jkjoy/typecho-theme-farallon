@@ -1,12 +1,18 @@
 ## 说明
 
-移植自`hugo-theme-farallon` 原汁原味,可以直接使用 原主题的CSS 
+移植自 `bigfa `大大的 `hugo-theme-farallon` 原汁原味,可以直接使用 原主题的CSS 
 精简部分 JS.
+感谢
 
-2024.5.24
+- 2024.5.24
+
 新增了说说页面,基于memos 0.19 以下的版本
 在后台设置memos的地址和memoID即可
 默认获取最近20条公开的memo
+
+- 2024.5.26
+
+抄了个网站统计页面
 
 ## 原项目地址
 https://github.com/bigfa/hugo-theme-farallon
@@ -42,6 +48,7 @@ https://github.com/AlanDecode/Typecho-Plugin-DoubanBoard
 ### 首页摘要
 
 若使用AI摘要插件则显示AI摘要,不使用则显示默认字数摘要
+
 
 ## 预览地址
 
