@@ -38,7 +38,7 @@
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
             <div class="post--single__content graph" ><?php $this->content(); ?></div>
-<!--打赏  -->
+               <!--打赏  -->
         <?php if($this->options->donate): ?> 
         <div class="post--single__action">   
         <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/donate.css'); ?>">
