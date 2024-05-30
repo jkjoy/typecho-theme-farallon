@@ -17,7 +17,7 @@
       is_single = false;
       post_id = 0;
       is_archive = false;
-      VERSION = "0.4.1";
+      VERSION = "0.5.0";
       constructor() {
         super();
         this.initCopyright();

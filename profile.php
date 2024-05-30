@@ -11,4 +11,3 @@
                 <?php $this->need('sns.php'); ?>      
             </div>
 </div>
- 
