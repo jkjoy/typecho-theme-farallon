@@ -53,3 +53,7 @@ https://github.com/AlanDecode/Typecho-Plugin-DoubanBoard
 ## 预览地址
 
 https://www.imsun.org
+
+## 感谢
+
+[bigfa](https://github.com/bigfa/hugo-theme-farallon)
