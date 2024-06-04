@@ -98,15 +98,64 @@ class APIHandler {
       .then(response => response.json())
       .then(data => {
         if (data.data.length) {
-          this.subjects = [...this.subjects, ...data.data];
-          this._renderListTemplate();
-          document.querySelector(".lds-ripple").classList.add("u-hide");
-        } else {
+          if (document.querySelector(".db--list").classList.contains("db--list__card")) 
+                    {
+                        this.subjects = [...this.subjects, ...data.data];
+                        this._randerDateTemplate();
+                    } else {
+                        this.subjects = [...this.subjects, ...data.data];
+                        this._randerListTemplate();
+                    }
+                    document
+                        .querySelector(".lds-ripple").classList.add("u-hide");
+                } else {
           this.finished = true;
           document.querySelector(".lds-ripple").classList.add("u-hide");
         }
       });
   }
+  _randerDateTemplate() {
+        const result = this.subjects.reduce((result, item) => {
+            const date = new Date(item.create_time);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const key = `${year}-${month.toString().padStart(2, "0")}`;
+            if (Object.prototype.hasOwnProperty.call(result, key)) {
+                result[key].push(item);
+            } else {
+                result[key] = [item];
+            }
+            return result;
+        }, {});
+
+        let html = ``;
+        for (let key in result) {
+            const date = key.split("-");
+            html += `<div class="db--listBydate"><div class="db--titleDate "><div class="db--titleDate__day">${date[1]}</div><div class="db--titleDate__month">${date[0]}</div></div><div class="db--dateList__card">`;
+            html += result[key]
+                .map(subject => {
+                    return `<div class="db--item">${
+                      subject.is_top250
+                            ? '<span class="top250">Top 250</span>'
+                            : ""
+                    }<img src="${
+                      subject.poster
+                    }" referrerpolicy="no-referrer" class="db--image"><div class="db--score ">${
+                      subject.douban_score > 0
+                            ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" ><path d="M12 20.1l5.82 3.682c1.066.675 2.37-.322 2.09-1.584l-1.543-6.926 5.146-4.667c.94-.85.435-2.465-.799-2.567l-6.773-.602L13.29.89a1.38 1.38 0 0 0-2.581 0l-2.65 6.53-6.774.602C.052 8.126-.453 9.74.486 10.59l5.147 4.666-1.542 6.926c-.28 1.262 1.023 2.26 2.09 1.585L12 20.099z"></path></svg>' +
+                            subject.douban_score
+                            : ""
+                    }${
+                      subject.year > 0 ? " · " + subject.year : ""
+                    }</div><div class="db--title"><a href="${
+                      subject.link
+                    }" target="_blank">${subject.name}</a></div></div>`;
+                })
+                .join("");
+            html += `</div></div>`;
+        }
+        document.querySelector(".db--list").innerHTML = html;
+    }
 
   _renderListTemplate() {
     document.querySelector(".db--list").innerHTML = this.subjects.map(subject => 
