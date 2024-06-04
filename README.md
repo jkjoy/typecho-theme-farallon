@@ -4,15 +4,20 @@
 精简部分 JS.
 感谢
 
+- 2024.6.3
+
+还是抄了原版的豆瓣获取方式
+
+- 2024.5.26
+
+抄了个网站统计页面
+
 - 2024.5.24
 
 新增了说说页面,基于memos 0.19 以下的版本
 在后台设置memos的地址和memoID即可
 默认获取最近20条公开的memo
 
-- 2024.5.26
-
-抄了个网站统计页面
 
 ## 原项目地址
 https://github.com/bigfa/hugo-theme-farallon
@@ -31,13 +36,17 @@ https://github.com/bigfa/hugo-theme-farallon
 
 
 ### 豆瓣观影
-* 能力有限原项目功能无法实现
+~~* 能力有限原项目功能无法实现~~
 
-目前只能配合`DoubanBoard`插件使用
+~~目前只能配合`DoubanBoard`插件使用~~
 
-项目地址
-https://github.com/AlanDecode/Typecho-Plugin-DoubanBoard
-!!记得重命名文件夹为`DoubanBoard`
+~~项目地址~~
+~~https://github.com/AlanDecode/Typecho-Plugin-DoubanBoard~~
+~~!!记得重命名文件夹为`DoubanBoard`~~
+
+使用原版的获取方式
+https://node.wpista.com/
+获取`token`之后填入主题设置项中
 
 ### 友情链接
 
