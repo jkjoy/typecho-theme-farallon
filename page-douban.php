@@ -9,16 +9,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <section class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
-        <h2 class="post--single__subtitle">观影数据来源于豆瓣</h2>
+        <h2 class="post--single__subtitle">数据来源于豆瓣</h2>
     </header>
     <div class="site--main">
     <div class="db--container" data-token="<?php $this->options->doubanID() ?>">
         <nav class="db--nav">
             <div class="db--navItem JiEun current" data-type="movie">Movie</div>
             <div class="db--navItem JiEun" data-type="book">Book</div>
-            <div class="db--navItem JiEun" data-type="game">Game</div>
             <div class="db--navItem JiEun" data-type="music">Music</div>
-            <div class="db--navItem JiEun" data-type="drama">Drama</div>
         </nav>
         <div class="db--genres">
         </div>
