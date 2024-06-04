@@ -3,7 +3,7 @@
  * 移植自HUGO主题`farallon`原作者`bigfa` 
  * @package farallon
  * @author  老孙 
- * @version 0.4.1
+ * @version 0.5.0
  * @link https://imsun.org
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;

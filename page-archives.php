@@ -10,7 +10,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
         <?php Typecho_Widget::widget('Widget_Stat')->to($quantity); ?>
-        <h2 class="archive--title__year">共包含 <?php $quantity->publishedPostsNum(); ?> 篇文章</h2>
+        <h2 class="post--single__subtitle">共包含 <?php $quantity->publishedPostsNum(); ?> 篇文章</h2>
         <?php if ($this->options->showallwords): ?>
                 <h3><?php echo allwords(); ?></h3>
 <?php endif; ?>

@@ -7,7 +7,7 @@ function themeConfig($form) {
     $form->addInput($icoUrl);
     $jzyear = new Typecho_Widget_Helper_Form_Element_Text('jzyear', NULL, NULL, _t('建站年份 eg. 2006'));
     $form->addInput($jzyear);
-    $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, NULL, _t('ins'));
+    $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, NULL, _t('Instagram'));
     $form->addInput($instagramurl);
     $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, NULL, _t('电报'));
     $form->addInput($telegramurl);
@@ -27,10 +27,10 @@ function themeConfig($form) {
     $form->addInput($memos);
     $memosID = new Typecho_Widget_Helper_Form_Element_Text('memosID', NULL, '1', _t('memosID'));
     $form->addInput($memosID);
-
+    $doubanID = new Typecho_Widget_Helper_Form_Element_Text('doubanID', NULL, '322dba2a3a27524b97c06d941d9631d153fc', _t('从https://node.wpista.com/获得token'));
+    $form->addInput($doubanID);
     $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'));
     $form->addInput($twikoo);
-
     $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('添加head'));
     $form->addInput($addhead);
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'));
