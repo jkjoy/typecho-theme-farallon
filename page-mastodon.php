@@ -28,7 +28,7 @@ window.onload = function() {
     function formatHTML(toots) {
         let htmlString = '';      
         toots.forEach(toot => {
-            const { content, account, created_at, media_attachments} = toot;
+            const { content, account, url, created_at, media_attachments} = toot;
             let mediaHTML = ''; // 初始化资源相关HTML为空字符串
             // 处理媒体附件
             if (media_attachments.length > 0) {
@@ -46,7 +46,7 @@ window.onload = function() {
                 <div class='content'>
                 <header>
                 <img src="${account.avatar}" class="avatar" width="48" height="48" />
-                <a class="humane--time" href="${account.url}" target="_blank">${new Date(created_at).toLocaleString()}</a>
+                <a class="humane--time" href="${url}" target="_blank">${new Date(created_at).toLocaleString()}</a>
                 </header>
                 <div class="description" itemprop="about">
                 ${htmlContent}
