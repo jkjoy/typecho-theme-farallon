@@ -56,13 +56,19 @@
 				 <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('评论', '1 评论', '%d 评论'); ?></a>
 	    </div>
     </div>    
-    <?php $firstImage = show_first_image($this->content); ?>
-    <?php if($firstImage): ?>
-    <img src="<?php echo $firstImage; ?>" alt="文章图片" class="cover"/>
-    <?php endif; ?>    
+    <?php
+// 从文章内容中提取第一张图片
+$firstImage = show_first_image($this->content);
+// 检查自定义字段cover是否已设置
+$cover = $this->fields->cover;
+// 如果自定义字段cover已设置，则优先使用
+// 如果没有设置，则显示文章的第一张图片
+$imageToDisplay = !empty($cover) ? $cover : $firstImage;
+if($imageToDisplay): ?>
+    <img src="<?php echo $imageToDisplay; ?>" alt="文章图片" class="cover"/>
+<?php endif; ?>  
 </article>
 	<?php endwhile; ?>
- 
     <?php
             $this->pagenav(
                 '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z" fill="var(--main)"></path></svg>',
