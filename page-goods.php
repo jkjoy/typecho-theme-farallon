@@ -7,20 +7,32 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('header.php'); ?>
 <div class="site--main site--main__gears">
+<header class="archive--header">
     <h1 class="post--single__title"><?php $this->title() ?></h1>
     <h2 class="post--single__subtitle"><?php $this->content(); ?></h2>
-<div class="good--list">
-<div id=goods></div>
+</header>
+<div id=goods class="good--list"></div>
 </div>
-</div>
+<style>
+.img40 {
+  height: 137px;
+  width: auto;
+}    
+</style>
+<?php
+        // 检查是否存在自定义字段 'memos' 和 'memosID'
+        $memos = $this->fields->memos ? $this->fields->memos : 'https://memos.imsun.org';
+        $memosID = $this->fields->memosID ? $this->fields->memosID : '1';
+        $memostag = $this->fields->memostag ? $this->fields->memostag : '好物';
+        ?>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     memoGoods();
 });
 function memoGoods(e) {
     let t = e || 12;
-    var n = "https://memos.imsun.org",
-        s = n + "/api/v1/memo?creatorId=1&limit=" + t + "&tag=好物";
+    var n = "<?php echo $memos; ?>",
+        s = n + "/api/v1/memo?creatorId=<?php echo $memosID; ?>&limit=" + t + "&tag=<?php echo $memostag; ?>";
     let i = 1;
     const o = /\n/;
     fetch(s).then(e => e.json()).then(e => {
@@ -39,10 +51,9 @@ function memoGoods(e) {
             + h + 
             '" target="_blank"><img src="' 
             + i + 
-            '"></a></div><div class="good--name"><div class="brand">' 
-            + d + '<br>' + u + 
-            '</div>' 
-            + m + 
+            '" class="img40"></a></div><div class="good--name"><div class="brand">' 
+            + d + '·' + m +'</div>' 
+            + u + 
             '</div></div>';
         }
         let f = document.querySelector("#goods");
@@ -51,4 +62,3 @@ function memoGoods(e) {
 }
 </script>
 <?php $this->need('footer.php'); ?>
- 
