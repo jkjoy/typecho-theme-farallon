@@ -8,7 +8,6 @@
         <div class="graph u-marginBottom30">
             <?php $this->content(); ?>
         </div>
-    
     <!-- 判断如果禁止评论则不显示评论的div -->
     <?php if ($this->allow('comment')): ?>
        <?php $this->need('comments.php'); ?>

@@ -133,12 +133,12 @@
 <?php if ($this->options->showrelated): ?>
     <?php $this->need('related.php'); ?>
 <?php endif; ?>
-    <!-- 判断如果禁止评论则不显示评论的div -->
-    <?php if ($this->allow('comment')): ?>
-       <?php $this->need('comments.php'); ?>
-   <?php endif; ?>
-<!-- 可以使用第三方评论-->
-<?php $this->options->twikoo(); ?> 
+    <!-- 如果设置了第三方评论系统则使用第三方评论 -->
+    <?php if($this->options->twikoo): ?> 
+        <?php $this->options->twikoo(); ?> 
+    <?php else: ?>
+        <?php $this->need('comments.php'); ?>
+    <?php endif; ?>
 <!--翻页-->
     <nav class="navigation post-navigation is-active">
         <div class="nav-links">
@@ -166,7 +166,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
   }
   if (!found) return;
-
   const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
   const toc = document.createElement('div');
   toc.id = 'toc';
@@ -183,10 +182,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     } else {
       levelCounts[level]++;
     }
-    
     // 重置下级标题的计数器
     levelCounts = levelCounts.slice(0, level + 1);
-
     if (currentLevel === 0) {
       currentLevel = level;
     }

@@ -12,8 +12,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <?php Typecho_Widget::widget('Widget_Stat')->to($quantity); ?>
         <h2 class="post--single__subtitle">共包含 <?php $quantity->publishedPostsNum(); ?> 篇文章</h2>
         <?php if ($this->options->showallwords): ?>
-                <h3><?php echo allwords(); ?></h3>
-<?php endif; ?>
+        <h3><?php echo allwords(); ?></h3>
+        <?php endif; ?>
 </header>
 <div class="page--archive">
     <?php

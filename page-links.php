@@ -9,9 +9,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <section class="site--main">
 <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
-        <h2 class="archive--title__year"> </h2>
+        <h2 class="post--single__subtitle"><?php $this->content(); ?> </h2>
 </header>
-
 <div class="graph u-marginBottom30">
 <?php $this->content(); ?>
         </div>
@@ -30,5 +29,4 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <?php endif; ?>
     </article>
 </section>
-
 <?php $this->need('footer.php'); ?>

@@ -9,6 +9,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <div class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>  
+        <h2 class="post--single__subtitle"><?php $this->content(); ?> </h2>
     </header>
     <section class="category--list">
       <?php $this->widget('Widget_Metas_Category_List')->parse('

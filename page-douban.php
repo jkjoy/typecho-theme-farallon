@@ -42,14 +42,12 @@ class APIHandler {
     this.token = token;
     this._create();
   }
-
   on(event, selector, handler) {
     const elements = document.querySelectorAll(selector);
     elements.forEach(element => {
       element.addEventListener(event, handler);
     });
   }
-
   _fetchGenres() {
     document.querySelector(".db--genres").innerHTML = "";
     fetch(`${this.baseAPI}genres?token=${this.token}&type=${this.type}`)
@@ -61,7 +59,6 @@ class APIHandler {
         }
       });
   }
-
   _handleGenreClick() {
     this.on("click", ".db--genreItem", event => {
       const target = event.currentTarget;
@@ -85,14 +82,12 @@ class APIHandler {
       this._fetchData();
     });
   }
-
   _renderGenre() {
     document.querySelector(".db--genres").innerHTML = this.genre_list.map(genre => 
       `<span class="db--genreItem${this.genre.includes(genre.name) ? " is-active" : ""}">${genre.name}</span>`
     ).join("");
     this._handleGenreClick();
   }
-
   _fetchData() {
     fetch(`${this.baseAPI}faves?token=${this.token}&type=${this.type}&paged=${this.paged}&genre=${JSON.stringify(this.genre)}`)
       .then(response => response.json())
@@ -127,7 +122,6 @@ class APIHandler {
             }
             return result;
         }, {});
-
         let html = ``;
         for (let key in result) {
             const date = key.split("-");
@@ -156,7 +150,6 @@ class APIHandler {
         }
         document.querySelector(".db--list").innerHTML = html;
     }
-
   _renderListTemplate() {
     document.querySelector(".db--list").innerHTML = this.subjects.map(subject => 
       `<div class="db--item">
@@ -173,7 +166,6 @@ class APIHandler {
       </div>`
     ).join("");
   }
-
   _handleScroll() {
     window.addEventListener("scroll", () => {
       const scrollY = window.scrollY || window.pageYOffset;
@@ -185,7 +177,6 @@ class APIHandler {
       }
     });
   }
-
   _handleNavClick() {
     this.on("click", ".db--navItem", event => {
       if (event.currentTarget.classList.contains("current")) return;
@@ -207,7 +198,6 @@ class APIHandler {
       this._fetchData();
     });
   }
-
   _create() {
     if (document.querySelector(".db--container")) {
       const container = document.querySelector(".db--container");
@@ -273,7 +263,6 @@ class APIHandler {
       });
     }
   }
-
   _fetchCollection(collection) {
     const style = collection.dataset.style ? collection.dataset.style : "card";
     fetch(`${this.baseAPI}v1/movies?type=${collection.dataset.type}&paged=1&genre=&start_time=${collection.dataset.start}&end_time=${collection.dataset.end}`)
@@ -339,7 +328,6 @@ class APIHandler {
       });
   }
 }
-
 // 在页面加载完成后实例化APIHandler类
 document.addEventListener("DOMContentLoaded", () => {
   const token = "<?php $this->options->doubanID() ?>"; // 替换为你的API令牌

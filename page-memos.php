@@ -9,7 +9,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <div class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
-        <h2 class="archive--title__year"><?php $this->content(); ?> </h2>
+        <h2 class="post--single__subtitle"><?php $this->content(); ?> </h2>
     </header>
     <?php
         // 检查是否存在自定义字段 'memos' 和 'memosID'
@@ -50,14 +50,12 @@ if (99) {
                 </article>
             `;
         });
-        
         document.getElementById('talk').innerHTML = html;
     })
     .catch(error => {
         console.error('Error:', error);
         // 这里可以添加一些用户提示错误发生的 HTML 更新
     });
- 
     // 页面内容格式化
     function Format(item) {
         let date = getTime(new Date(item.createdTs * 1000).toString()),
@@ -144,7 +142,6 @@ div p a {
         grid-template-columns: repeat(2, 1fr); /* 修改为两列 */
     }
 }
-
 /* 当屏幕宽度小于400px时 */
 @media (max-width: 400px) {
     .resimg {

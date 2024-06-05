@@ -2,7 +2,8 @@
 
 移植自 `bigfa `大大的 `hugo-theme-farallon` 原汁原味,可以直接使用 原主题的CSS 
 精简部分 JS.
-感谢
+ 
+
 - 2024.6.4 v0.5.1
 
 更改了设置memos的方式
@@ -40,14 +41,7 @@ https://github.com/bigfa/hugo-theme-farallon
 
 
 ### 豆瓣观影
-~~* 能力有限原项目功能无法实现~~
-
-~~目前只能配合`DoubanBoard`插件使用~~
-
-~~项目地址~~
-~~https://github.com/AlanDecode/Typecho-Plugin-DoubanBoard~~
-~~!!记得重命名文件夹为`DoubanBoard`~~
-
+ 
 使用原版的获取方式
  
 >豆瓣收藏使用方法
@@ -76,7 +70,9 @@ https://github.com/bigfa/hugo-theme-farallon
 
 ### 说说 by Mastodon
 
-根据 https://www.imsun.org/archives/1643.html#toc3 获得API地址
+根据 https://www.imsun.org/archives/1643.html#toc3 
+获得API地址
+
 在自定义字段中填入`tooot`值为Mastodon API 地址
 
 ## 预览地址

@@ -3,7 +3,6 @@
     <h3 class="related--posts__title">相关文章</h3>
     <div class="post--single__related">
     <?php $this->related(6)->to($relatedPosts); ?>   
-  
     <?php while ($relatedPosts->next()): ?>     
         <div class="post--single__related__item">
             <a href="<?php $relatedPosts->permalink(); ?>">

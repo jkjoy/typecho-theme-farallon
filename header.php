@@ -53,12 +53,10 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <nav>
 		    <ul>
                 <li class="whome"><a <?php if($this->is('index')): ?> class="current"<?php endif; ?> href="<?php $this->options->siteUrl(); ?>"><?php _e('首页'); ?></a></li>
-
                     <?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
                     <?php while($pages->next()): ?>
                     <li><a <?php if($this->is('page', $pages->slug)): ?> class="current"<?php endif; ?> href="<?php $pages->permalink(); ?>" title="<?php $pages->title(); ?>"><?php $pages->title(); ?></a></li>
-                    <?php endwhile; ?>
-					 
+                    <?php endwhile; ?>		 
             </ul>
 		</nav>
  <!-- 这年头谁会用站内的搜索啊      --> 
@@ -68,10 +66,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 				<input type="text" name="s" class="search-field text" placeholder="Search" required/>
             </label>
                 <button type="submit" class="search-submit submit">搜索</button>
-			</form>  
-                 
+			</form>                 
         </div>
-
         </div> 
     </div>
      <svg class="svgIcon" width="25" height="25" data-action="show-search">

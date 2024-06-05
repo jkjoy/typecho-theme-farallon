@@ -9,7 +9,7 @@ $this->need('header.php');
 <section class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
-        <h2 class="archive--title__year"> </h2>
+        <h2 class="post--single__subtitle"><?php $this->content(); ?> </h2>
     </header>
     <article class="post--single">
     <div class="graph u-marginBottom30">
