@@ -58,7 +58,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
                     <?php endwhile; ?>		 
             </ul>
 		</nav>
- <!-- 这年头谁会用站内的搜索啊      --> 
+                    <!-- 这年头谁会用站内的搜索啊      --> 
         <div class="search--area">
             <form id="search" method="post" action="./" role="search" class="search-form">
             <label>
