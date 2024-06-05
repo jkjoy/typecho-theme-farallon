@@ -118,7 +118,7 @@
             }
         }
     });
-    </script>
+</script>
 </div>
 <?php endif; ?>
 <!-- TAG -->
