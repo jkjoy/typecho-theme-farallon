@@ -12,7 +12,6 @@
         <h3 class="post--single__subtitle"><?php $this->categorydescription(); ?></h3>
         <?php while($this->next()): ?>
     </header>
- 
     <article class="post--item">   
     <div class="content">
         <h2 class="post--title">
@@ -55,7 +54,7 @@
                 '...',
                 array(
                     'wrapTag' => 'div',
-                    'wrapClass' => 'cat_pagination_page',
+                    'wrapClass' => 'pagination_page',
                     'itemTag' => '',
                     'textTag' => 'a',
                     'currentClass' => 'active',
@@ -63,8 +62,7 @@
                     'nextClass' => 'next'
                 )
             );
-        ?> 
-          
+        ?>   
         <!-- 搜索结果 --> 
         <?php else: ?>
         <main class="site--main">              
@@ -76,5 +74,44 @@
         </header> 
         </main>        
         <?php endif; ?>   
-
+<style>
+/* 分页 */
+.pagination_page{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: var(--margin);
+    gap: 0.5rem;
+}
+.pagination_page li.active a {
+    background: var(--theme);
+    color: #fff;
+    font-weight: 500;
+}
+.pagination_page a{
+    display: flex;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    background: var(--background);
+    border-radius: 50%;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 0;
+}
+.pagination_page span.next{
+    cursor: pointer;
+}
+.pagination_page li.active a:hover{
+    cursor: not-allowed;
+}
+/* 分页 */
+</style>
 <?php $this->need('footer.php'); ?>
