@@ -16,7 +16,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />    
-    <div id="memos-container"></div>
+    <div id="tooot"></div>
     <div class="nav-links" id="loadmore">
         <span class="loadmore">加载更多</span>
     </div>
@@ -67,7 +67,7 @@ window.onload = function() {
     }
     function fetchAndDisplayToots() {
         fetchToots().then(data => {
-            const memosContainer = document.getElementById('memos-container');
+            const memosContainer = document.getElementById('tooot');
             const tootsToShow = data.slice(offset, offset + limit); // 选择要显示的toots
             memosContainer.innerHTML += formatHTML(tootsToShow);
             offset += limit; // 更新偏移量
