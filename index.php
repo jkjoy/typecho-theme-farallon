@@ -1,6 +1,6 @@
 <?php
 /**
- * 移植自HUGO主题`farallon`原作者`bigfa` 
+ * 移植自HUGO主题 farallon 原作者 bigfa  
  * @package farallon
  * @author  老孙 
  * @version 0.5.1

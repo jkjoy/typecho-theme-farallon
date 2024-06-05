@@ -1,3 +1,4 @@
+<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <div class="related--content">
     <h3 class="related--posts__title">相关文章</h3>
     <div class="post--single__related">
