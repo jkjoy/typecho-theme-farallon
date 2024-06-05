@@ -1,6 +1,6 @@
 <?php 
 /**
- * 说说页面
+ * 说说页面 - memos
  *
  * @package custom
  */
@@ -11,14 +11,22 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <h1 class="post--single__title"><?php $this->title() ?></h1>
         <h2 class="archive--title__year"><?php $this->content(); ?> </h2>
     </header>
+    <?php
+        // 检查是否存在自定义字段 'memos' 和 'memosID'
+        $memos = $this->fields->memos ? $this->fields->memos : 'https://memos.loliko.cn';
+        $memosID = $this->fields->memosID ? $this->fields->memosID : '1';
+        $memosnum = $this->fields->memosnum ? $this->fields->memosnum : '20';
+        ?>
+    <article class="post--single">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />    
     <div id="talk"></div>
+    </article> 
 <script>
 if (99) {
-    let url = '<?php $this->options->memos() ?>';
-    fetch(url + '/api/v1/memo?creatorId=<?php $this->options->memosID() ?>&rowStatus=NORMAL&limit=20')
+    let url = '<?php echo $memos; ?>';
+    fetch(url + '/api/v1/memo?creatorId=<?php echo $memosID; ?>&rowStatus=NORMAL&limit=<?php echo $memosnum; ?>')
     .then(res => res.json())
     .then(data => { 
         let html = '';

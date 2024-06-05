@@ -27,10 +27,6 @@ function themeConfig($form) {
     $form->addInput($cnavatar);
     $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'), _t('不填写则不显示'));
     $form->addInput($donate);
-    $memos = new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, 'https://m.loliko.cn', _t('memos地址'), _t('结尾不带"/"'));
-    $form->addInput($memos);
-    $memosID = new Typecho_Widget_Helper_Form_Element_Text('memosID', NULL, '1', _t('memosID'), _t('数字ID'));
-    $form->addInput($memosID);
     $doubanID = new Typecho_Widget_Helper_Form_Element_Text('doubanID', NULL, '322dba2a3a27524b97c06d941d9631d153fc', _t('豆瓣页面必需Token'), _t('从<a href="https://node.wpista.com/" target="_blank">https://node.wpista.com/</a>获得token'));
     $form->addInput($doubanID);
     $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'), _t('不填写则不显示'));
