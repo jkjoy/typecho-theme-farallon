@@ -174,10 +174,11 @@ function allwords() {
 function show_first_image($content) {
     preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches);
     // 检查是否找到了图片
-    if(isset($matches[1][0])){
+    if(count($matches) > 0 && count($matches[0]) > 0 ){
         return $matches[1][0];
-    }
+    } else {
     return false; // 没有找到图片，返回 false
+}
 }
 //开始增加某些奇怪的东西
 // 获取月份
