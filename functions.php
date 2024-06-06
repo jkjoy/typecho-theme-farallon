@@ -171,14 +171,24 @@ function allwords() {
     elseif ($chars>1000000){
     echo '全站共 '.$chars.' 字，已写一本列夫·托尔斯泰的《战争与和平》了！';}
 } 
-function show_first_image($content) {
-    preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches);
-    // 检查是否找到了图片
-    if(count($matches) > 0 && count($matches[0]) > 0 ){
-        return $matches[1][0];
+function img_postthumb($cid) {
+    $db = Typecho_Db::get();
+    $rs = $db->fetchRow($db->select('table.contents.text')
+        ->from('table.contents')
+        ->where('table.contents.cid=?', $cid)
+        ->order('table.contents.cid', Typecho_Db::SORT_ASC)
+        ->limit(1));
+    // 检查是否获取到结果
+    if (!$rs) {
+        return "";
+    }
+    preg_match_all("/https?:\/\/[^\s]*.(png|jpeg|jpg|gif|bmp|webp)/", $rs['text'], $thumbUrl);  //通过正则式获取图片地址
+    // 检查是否匹配到图片URL
+    if (count($thumbUrl[0]) > 0) {
+        return $thumbUrl[0][0];  // 返回第一张图片的URL
     } else {
-    return false; // 没有找到图片，返回 false
-}
+        return "";  // 没有匹配到图片URL，返回空字符串
+    }
 }
 //开始增加某些奇怪的东西
 // 获取月份

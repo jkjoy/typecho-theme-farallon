@@ -57,16 +57,12 @@
 	    </div>
     </div>    
     <?php
-// 从文章内容中提取第一张图片
-$firstImage = show_first_image($this->content);
-// 检查自定义字段cover是否已设置
-$cover = $this->fields->cover;
-// 如果自定义字段cover已设置，则优先使用
-// 如果没有设置，则显示文章的第一张图片
-$imageToDisplay = !empty($cover) ? $cover : $firstImage;
-if($imageToDisplay): ?>
+       $firstImage = img_postthumb($this->cid);
+       $cover = $this->fields->cover;
+       $imageToDisplay = !empty($cover) ? $cover : $firstImage;
+       if($imageToDisplay): ?>
     <img src="<?php echo $imageToDisplay; ?>" alt="文章图片" class="cover"/>
-<?php endif; ?>  
+    <?php endif; ?>  
 </article>
 	<?php endwhile; ?>
     <?php
