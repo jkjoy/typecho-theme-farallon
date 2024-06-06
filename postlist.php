@@ -53,7 +53,7 @@
                     </path>
                 </g>
             </svg>
-				 <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('评论', '1 评论', '%d 评论'); ?></a>
+				 <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('0 ', '1 ', '%d '); ?></a>
 	    </div>
     </div>    
     <?php
