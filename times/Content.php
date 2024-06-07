@@ -51,6 +51,4 @@ class Content
         }
         return $content;
     }
-
-
 }
