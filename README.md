@@ -3,7 +3,14 @@
 移植自 `bigfa `大大的 `hugo-theme-farallon` 原汁原味,可以直接使用 原主题的CSS 
 精简部分 JS.
  
-- 2024.6.5 
+- 2024.6.7
+
+用自带评论做的说说页面,来自
+https://github.com/gogobody/typecho-whisper
+删减部分内容只能发表文字
+
+- 2024.6.5 v0.5.3
+
 新增了好物的页面 还是通过memos来获取
 
 - 2024.6.4 v0.5.1
@@ -66,8 +73,11 @@ https://github.com/bigfa/hugo-theme-farallon
 ### 说说 by Memos
 
 使用自定义字段设置memos
+
 在自定义字段中填入`memos`值为memos地址,不带`/`
+
 在自定义字段中填入`memosID`默认值为`1`,不为`1`时才需要设置
+
 在自定义字段中填入`memosnum`默认值为`20`,默认获取20条最近的memo
 
 ### 说说 by Mastodon
@@ -76,6 +86,10 @@ https://github.com/bigfa/hugo-theme-farallon
 获得API地址
 
 在自定义字段中填入`tooot`值为Mastodon API 地址
+
+### 好物 by memos
+
+
 
 ## 预览地址
 
