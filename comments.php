@@ -54,31 +54,6 @@
                 </g>
             </svg><?php $this->commentsNum(_t('0'), _t('1'), _t('%d')); ?>
         </h3>
-        <ol class="commentlist sulliComment--list"></ol>
-        <?php if ($comments->have()): ?>
-        <?php $comments->listComments(); ?>
-    <?php
-            $comments->pageNav(
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z" fill="var(--main)"></path></svg>',
-                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.1714 12.0007L8.22168 7.05093L9.63589 5.63672L15.9999 12.0007L9.63589 18.3646L8.22168 16.9504L13.1714 12.0007Z" fill="var(--main)"></path></svg>',
-                1,
-                '...',
-                array(
-                    'wrapTag' => 'div',
-                    'wrapClass' => 'pagination_page',
-                    'itemTag' => '',
-                    'textTag' => 'a',
-                    'currentClass' => 'active',
-                    'prevClass' => 'prev',
-                    'nextClass' => 'next'
-                )
-            );
-        ?>
-        <?php else: ?>
-       
-            <center><h3><?php _e('暂无评论'); ?></h3></center>
-
-        <?php endif; ?>
     <div id="<?php $this->respondId(); ?>" class="comment-respond">
         <div class="cancel-comment-reply cancel-comment-reply-link"><?php $comments->cancelReply(); ?></div>
     	<form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form" class="comment-form">
@@ -112,6 +87,29 @@
     <?php else: ?>
     <?php _e(''); ?>
     <?php endif; ?>   
+    <ol class="commentlist sulliComment--list"></ol>
+        <?php if ($comments->have()): ?>
+        <?php $comments->listComments(); ?>
+    <?php
+            $comments->pageNav(
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.8284 12.0007L15.7782 16.9504L14.364 18.3646L8 12.0007L14.364 5.63672L15.7782 7.05093L10.8284 12.0007Z" fill="var(--main)"></path></svg>',
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.1714 12.0007L8.22168 7.05093L9.63589 5.63672L15.9999 12.0007L9.63589 18.3646L8.22168 16.9504L13.1714 12.0007Z" fill="var(--main)"></path></svg>',
+                1,
+                '...',
+                array(
+                    'wrapTag' => 'div',
+                    'wrapClass' => 'pagination_page',
+                    'itemTag' => '',
+                    'textTag' => 'a',
+                    'currentClass' => 'active',
+                    'prevClass' => 'prev',
+                    'nextClass' => 'next'
+                )
+            );
+        ?>
+        <?php else: ?>   
+            <center><h3><?php _e('暂无评论'); ?></h3></center>
+        <?php endif; ?>
     <?php $this->options->twikoo(); ?>
 </div>
 <?php
@@ -142,7 +140,6 @@ function threadedComments($comments, $options) {
                         <?php else: ?>
                             <?php echo $comments->gravatar('40', ''); ?> 
                         <?php endif; ?>
-                    
                 </div>
                 <div class="comment--meta">
                     <div class="comment--author"><?php echo $comments->author; ?><span class="dot"></span>
