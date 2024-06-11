@@ -38,7 +38,7 @@ class APIHandler {
     this.genre_list = [];
     this.genre = [];
     this.subjects = [];
-    this.baseAPI = "https://node.wpista.com/v1/outer/";
+    this.baseAPI = "https://cors.ow3.cn/https://node.wpista.com/v1/outer/";
     this.token = token;
     this._create();
   }
