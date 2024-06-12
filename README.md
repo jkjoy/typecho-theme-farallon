@@ -2,7 +2,13 @@
 
 移植自 `bigfa `大大的 `hugo-theme-farallon` 原汁原味,可以直接使用 原主题的CSS 
 精简部分 JS.
- 
+
+- 2024.6.12
+
+更新豆瓣API获取方式
+[Docker 自动同步豆瓣书影音记录](https://fatesinger.com/103483)
+主题设置处填入API
+
 - 2024.6.7
 
 用自带评论做的说说页面,来自
@@ -50,15 +56,17 @@ https://github.com/bigfa/hugo-theme-farallon
 
 
 ### 豆瓣观影
- 
-使用原版的获取方式
- 
->豆瓣收藏使用方法
-微信扫码登录https://node.wpista.com/
-输入你的豆瓣数字 id，点击保存即可自动同步豆瓣记录。
-点击 Get integration token 会生成一个 token。
 
-获取`token`之后填入主题设置项中
+  更新 获取方式
+
+~~使用原版的获取方式~~
+
+~~豆瓣收藏使用方法~~
+~~微信扫码登录https://node.wpista.com/~~
+~~输入你的豆瓣数字 id，点击保存即可自动同步豆瓣记录。~~
+~~点击 Get integration token 会生成一个 token。~~
+
+~~获取`token`之后填入主题设置项中~~
 
 ### 友情链接
 
