@@ -190,6 +190,13 @@ function img_postthumb($cid) {
         return "";  // 没有匹配到图片URL，返回空字符串
     }
 }
+//回复加上@
+function getPermalinkFromCoid($coid) {
+	$db = Typecho_Db::get();
+	$row = $db->fetchRow($db->select('author')->from('table.comments')->where('coid = ? AND status = ?', $coid, 'approved'));
+	if (empty($row)) return '';
+	return '<a href="#comment-'.$coid.'" style="text-decoration: none;">@'.$row['author'].'</a>';
+}
 //开始增加某些奇怪的东西
 // 获取月份
 function getMonth() {

@@ -64,7 +64,6 @@
             <?php $this->user->screenName(); ?></a>. 
             <a href="<?php $this->options->logoutUrl(); ?>" title="Logout"><?php _e('退出'); ?> &raquo;</a></p>
             <?php else: ?>
-
     		<p class="comment-form-author">
     			<input placeholder="称呼 *" type="text" name="author" id="author" class="text" value="" required />
     		</p>
@@ -88,7 +87,6 @@
     <?php else: ?>
     <?php _e(''); ?>
     <?php endif; ?>   
-    
         <?php if ($comments->have()): ?>
         <?php $comments->listComments(); ?>
     <?php
@@ -152,6 +150,7 @@ function threadedComments($comments, $options) {
                 </div>
             </div>
             <div class="comment-content">
+            <?php if ($comments->parent) {echo getPermalinkFromCoid($comments->parent);}?>
                 <?php $comments->content(); ?>
             </div>
         </div>
