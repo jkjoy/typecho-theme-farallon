@@ -4,13 +4,16 @@
         <div class=site--footer__sns>
            <?php $this->need('sns.php'); ?>
         </div>
-        <?php if($this->options->sitemapurl): ?>
+            <?php //sitemap填入
+            if($this->options->sitemapurl): ?>
             <a href="<?php $this->options->sitemapurl() ?>" target="_blank">💗</a>
             <?php endif; ?> 
-            <a href="https://www.typecho.org">Typecho驱动</a>          
-            <a href="https://www.imsun.org">&nbsp;Made with Sun</a> 
-            &nbsp;页面加载耗时
-                <?php echo timer_stop();?> 
+            <a href="https://www.typecho.org" target="_blank">Typecho驱动</a>          
+            <a href="https://www.imsun.org" target="_blank">&nbsp;Made with Sun</a> 
+            <?php //添加加载时间控制
+            if ($this->options->showtime): ?>
+            &nbsp;页面加载耗时<?php echo timer_stop();?> 
+            <?php endif; ?>    
          <div class="copyright">
          <a href="<?php $this->options->siteUrl(); ?>">
                <?php $this->options->title(); ?>

@@ -51,6 +51,10 @@ function themeConfig($form) {
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否显示文章目录'), _t('选择“是”将在文章页面显示文章目录(仅在宽度大于1400px的设备中显示)。'));
     $form->addInput($showtoc);
+    $showtime = new Typecho_Widget_Helper_Form_Element_Radio('showtime',
+    array('0'=> _t('否'), '1'=> _t('是')),
+    '0', _t('是否显示页面加载时间'), _t('选择“是”将在页脚显示加载时间。'));
+    $form->addInput($showtime);
 } 
 function get_post_view($archive) {
     $cid = $archive->cid;
