@@ -54,7 +54,6 @@
                 </g>
             </svg><?php $this->commentsNum(_t('0'), _t('1'), _t('%d')); ?>
         </h3>
-        <ol class="commentlist sulliComment--list"></ol>
     <div id="<?php $this->respondId(); ?>" class="comment-respond">
         <div class="cancel-comment-reply cancel-comment-reply-link"><?php $comments->cancelReply(); ?></div>
     	<form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form" class="comment-form">
@@ -86,7 +85,8 @@
     <?php endif; ?>
     <?php else: ?>
     <?php _e(''); ?>
-    <?php endif; ?>   
+    <?php endif; ?>
+    <ol class="commentlist sulliComment--list"></ol>   
         <?php if ($comments->have()): ?>
         <?php $comments->listComments(); ?>
     <?php
