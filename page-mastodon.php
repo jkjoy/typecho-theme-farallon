@@ -115,8 +115,9 @@ div p a {
 }
 .thumbnail-image img {
     width:100%;
-    height:170px;
+    height: 100%;
     object-fit:cover;
+    object-position: center; /* 保证中央部分 */
     border-radius:4px;
     transition:transform .3s ease;
     cursor:zoom-in
