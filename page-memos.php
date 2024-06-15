@@ -43,7 +43,7 @@ if (99) {
                 <a class="humane--time" href="${memoURL}" target="_blank">${data.date}</a>
                 </header>
                 <div class="description" itemprop="about">
-                <span class="talk_tag"># ${data.tag}</span><br>
+                <span class="tag--list">${data.tag}</span><br>
                 ${mdContent}
                 </div>
                 </div>
