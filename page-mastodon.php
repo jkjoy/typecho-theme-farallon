@@ -100,28 +100,32 @@ div p a {
     word-break: break-all;  
   word-break: break-word;  
 }
-.thumbnail-image {
-    width:100%;
-    height: 200px;  
-    align-items: center; 
-    justify-content: center;
-    overflow: hidden;
-}
 .resimg {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     column-gap: 10px; 
     row-gap: 10px; 
 }
+/* 单个缩略图的样式 */
+.thumbnail-image {
+    width: 100%; /* 确保其宽度填满父容器 */
+    height: 200px; /* 固定高度 */
+    display: flex; /* 使用 flexbox 居中 */
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    overflow: hidden; /* 确保容器内的多余内容不会显示出来 */
+    border-radius: 4px; /* 圆角 */
+    transition: transform .3s ease; /* 鼠标悬停时的过渡效果 */
+    cursor: zoom-in; /* 鼠标指针变为放大镜 */
+}
+/* 缩略图内的图片样式 */
 .thumbnail-image img {
-    width:100%;
+    width: 100%;
     height: 100%;
-    object-fit:cover;
+    object-fit: cover; /* 保持图片的纵横比，但会将图片裁剪以填充容器 */
     object-position: center; /* 保证中央部分 */
-    border-radius:4px;
-    transition:transform .3s ease;
-    cursor:zoom-in
-}  
+    display: block; /* 去掉 img 元素的底部间隙 */
+} 
 /* 当屏幕宽度小于732px时 */
 @media (max-width: 732px) {
     .resimg {
