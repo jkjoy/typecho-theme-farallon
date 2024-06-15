@@ -124,7 +124,6 @@ div p a {
     height: 100%;
     object-fit: cover; /* 保持图片的纵横比，但会将图片裁剪以填充容器 */
     object-position: center; /* 保证中央部分 */
-    display: block; /* 去掉 img 元素的底部间隙 */
 } 
 /* 当屏幕宽度小于732px时 */
 @media (max-width: 732px) {
