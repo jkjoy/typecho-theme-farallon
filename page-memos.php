@@ -24,14 +24,13 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <div id="talk"></div>
     </article> 
 <script>
-if (99) {
+if (memos) {
     let url = '<?php echo $memos; ?>';
     fetch(url + '/api/v1/memo?creatorId=<?php echo $memosID; ?>&rowStatus=NORMAL&limit=<?php echo $memosnum; ?>')
     .then(res => res.json())
     .then(data => { 
         let html = '';
         data.forEach(item => {
-            // 假设这里的 Format 函数能正确地格式化每个 item，并确保它返回有 `date` 和 `tag` 的对象
             let data = Format(item); 
             let memoURL = url + '/m/' + item.id;
             let mdContent = marked.parse(data.content);
@@ -43,7 +42,7 @@ if (99) {
                 <a class="humane--time" href="${memoURL}" target="_blank">${data.date}</a>
                 </header>
                 <div class="description" itemprop="about">
-                <span class="tag--list">${data.tag}</span><br>
+                <span class="tag--list"><a href="#">${data.tag}</a></span>
                 ${mdContent}
                 </div>
                 </div>
@@ -56,7 +55,6 @@ if (99) {
         console.error('Error:', error);
         // 这里可以添加一些用户提示错误发生的 HTML 更新
     });
-    // 页面内容格式化
     function Format(item) {
         let date = getTime(new Date(item.createdTs * 1000).toString()),
             content = item.content,
