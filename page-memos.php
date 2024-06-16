@@ -42,8 +42,8 @@ if (99) {
                 <a class="humane--time" href="${memoURL}" target="_blank">${data.date}</a>
                 </header>
                 <div class="description" itemprop="about">
-                <span class="tag--list"><a href="#">${data.tag}</a></span>
                 ${mdContent}
+                <span class="tag--list"><a>${data.tag}</a></span>
                 </div>
                 </div>
                 </article>
