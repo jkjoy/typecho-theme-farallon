@@ -24,7 +24,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <div id="talk"></div>
     </article> 
 <script>
-if (memos) {
+if (0) {
     let url = '<?php echo $memos; ?>';
     fetch(url + '/api/v1/memo?creatorId=<?php echo $memosID; ?>&rowStatus=NORMAL&limit=<?php echo $memosnum; ?>')
     .then(res => res.json())
