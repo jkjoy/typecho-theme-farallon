@@ -110,7 +110,7 @@ div pre code {
   word-break: break-word;  
 }
 div p a {
-    word-break: break-all;  
+  word-break: break-all;  
   word-break: break-word;  
 }
 .thumbnail-image {
@@ -119,6 +119,9 @@ div p a {
     align-items: center; 
     justify-content: center;
     overflow: hidden;
+    border-radius:4px;
+    transition:transform .3s ease;
+    cursor:zoom-in;
 }
 .resimg {
     display: grid;
@@ -128,12 +131,13 @@ div p a {
 }
 .thumbnail-image img {
     width:100%;
-    height:170px;
+    min-height: 200px;
     object-fit:cover;
-    border-radius:4px;
-    transition:transform .3s ease;
-    cursor:zoom-in
-}  
+} 
+img {
+    object-fit: cover; /* 保持图片的纵横比，但会将图片裁剪以填充容器 */
+    object-position: center; /* 保证中央部分 */
+} 
 /* 当屏幕宽度小于732px时 */
 @media (max-width: 732px) {
     .resimg {
