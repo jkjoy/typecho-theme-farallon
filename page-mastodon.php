@@ -118,12 +118,14 @@ div p a {
     transition: transform .3s ease; /* 鼠标悬停时的过渡效果 */
     cursor: zoom-in; /* 鼠标指针变为放大镜 */
 }
+img {
+    object-fit: cover; /* 保持图片的纵横比，但会将图片裁剪以填充容器 */
+    object-position: center; /* 保证中央部分 */
+}
 /* 缩略图内的图片样式 */
 .thumbnail-image img {
     width: 100%;
-    height: 100%;
-    object-fit: cover; /* 保持图片的纵横比，但会将图片裁剪以填充容器 */
-    object-position: center; /* 保证中央部分 */
+    min-height: 200px;
 } 
 /* 当屏幕宽度小于732px时 */
 @media (max-width: 732px) {
@@ -136,6 +138,10 @@ div p a {
     .resimg {
         grid-template-columns: 1fr; /* 修改为一列 */
     }
+    .thumbnail-image img {
+       width: 100%;
+       height: 480px;
+} 
 } 
 .load-more-btn {
       display: block;
