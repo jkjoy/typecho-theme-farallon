@@ -3,6 +3,9 @@
 移植自 `bigfa `大大的 `hugo-theme-farallon` 原汁原味,可以直接使用 原主题的CSS 
 精简部分 JS.
 
+- 2024.7.4
+把分类图片以`mid.jpg`的形式在主题`img`目录下,自动匹配
+
 - 2024.6.12
 
 更新豆瓣API获取方式
@@ -50,9 +53,9 @@ https://github.com/bigfa/hugo-theme-farallon
 
 ### 已知问题
 
-由于typecho分类并无图片,所以默认使用
-`bigfa` 的 `https://static.fatesinger.com/2021/12/vhp6eou5x2wqh2zy.jpg` 
-可以自行替换或者删除
+~~由于typecho分类并无图片,所以默认使用~~
+~~`bigfa` 的 `https://static.fatesinger.com/2021/12/vhp6eou5x2wqh2zy.jpg` ~~
+~~可以自行替换或者删除~~
 
 
 ### 豆瓣观影

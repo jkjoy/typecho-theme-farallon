@@ -43,7 +43,6 @@
     <?php $this->comments()->to($comments); ?>
     <?php if($this->allow('comment')): ?>
         <?php if ($this->is('attachment')) : ?>
-        <?php _e(''); ?>
         <?php else: ?>
     	<h3 class="comments--title" id="comments">
             <svg viewBox="0 0 24 24" class="icon" aria-hidden="true" width="16" height="16">
@@ -52,8 +51,10 @@
                         d="M1.751 10c0-4.42 3.584-8 8.005-8h4.366c4.49 0 8.129 3.64 8.129 8.13 0 2.96-1.607 5.68-4.196 7.11l-8.054 4.46v-3.69h-.067c-4.49.1-8.183-3.51-8.183-8.01zm8.005-6c-3.317 0-6.005 2.69-6.005 6 0 3.37 2.77 6.08 6.138 6.01l.351-.01h1.761v2.3l5.087-2.81c1.951-1.08 3.163-3.13 3.163-5.36 0-3.39-2.744-6.13-6.129-6.13H9.756z">
                     </path>
                 </g>
-            </svg><?php $this->commentsNum(_t('0'), _t('1'), _t('%d')); ?>
-        </h3>
+            </svg>
+            <?php $this->commentsNum(_t('0'), _t('1'), _t('%d')); ?>
+        </h3> 
+        <ol class="commentlist sulliComment--list"></ol>   
     <div id="<?php $this->respondId(); ?>" class="comment-respond">
         <div class="cancel-comment-reply cancel-comment-reply-link"><?php $comments->cancelReply(); ?></div>
     	<form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form" class="comment-form">
@@ -76,7 +77,6 @@
             <p class="comment-form-comment">
             <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('misubmit').click();return false};" placeholder="<?php _e('评论审核后显示，请勿重复提交...'); ?>" required ><?php $this->remember('text'); ?></textarea>
     		</p>
-            
     		<p class="form-submit">
             <button type="submit" class="submit" id="misubmit"><?php _e('提交评论（Ctrl+Enter）'); ?></button>
             </p>
@@ -84,9 +84,8 @@
     </div>
     <?php endif; ?>
     <?php else: ?>
-    <?php _e(''); ?>
+
     <?php endif; ?>
-    <ol class="commentlist sulliComment--list"></ol>   
         <?php if ($comments->have()): ?>
         <?php $comments->listComments(); ?>
     <?php
@@ -161,8 +160,3 @@ function threadedComments($comments, $options) {
         <?php } ?>
     </li>
     <?php } ?>
-<ol class="commentlist">
-    <?php $this->comments()->to($comments); ?>
-    <?php while($comments->next()): ?>       
-    <?php endwhile; ?>
-</ol>
