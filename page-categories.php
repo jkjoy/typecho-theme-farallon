@@ -20,7 +20,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     // 获取主题URL
     $themeUrl = $this->options->themeUrl;
     // 为每个分类生成图片地址
-    $categoryImage = $themeUrl . 'img/' . $categoryId . '.jpg';
+    $categoryImage = $themeUrl . '/dist/img/' . $categoryId . '.jpg';
     ?>
     <div class="category--item">
     <img class="category--cover" src="<?php echo $categoryImage; ?>" loading="lazy" alt="<?php $categories->name(); ?>">
