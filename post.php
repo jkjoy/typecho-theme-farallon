@@ -36,8 +36,74 @@
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
             <div class="post--single__content graph" ><?php $this->content(); ?></div>
-               <!--打赏  -->
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const postContent = document.querySelector('.post--single__content');
+    if (!postContent) return;
+
+    let found = false;
+    for (let i = 1; i <= 6 && !found; i++) {
+        if (postContent.querySelector(`h${i}`)) {
+            found = true;
+        }
+    }
+    if (!found) return;
+
+    const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const toc = document.createElement('div');
+    toc.id = 'toc';
+    toc.innerHTML = '<details class="toc" open><summary class="toc-title">目录</summary><nav id="TableOfContents"><ul></ul></nav></details>';
+
+    // 插入到文章内容的开头
+    postContent.insertBefore(toc, postContent.firstChild);
+
+    let currentLevel = 0;
+    let currentList = toc.querySelector('ul');
+    let levelCounts = [0]; // 初始化层级计数器
+
+    heads.forEach((head, index) => {
+        const level = parseInt(head.tagName.substring(1));
+        if (levelCounts[level] === undefined) {
+            levelCounts[level] = 1; // 初始化该层级计数
+        } else {
+            levelCounts[level]++;
+        }
+        // 重置下级标题的计数器
+        levelCounts = levelCounts.slice(0, level + 1);
+        if (currentLevel === 0) {
+            currentLevel = level;
+        }
+        while (level > currentLevel) {
+            let newList = document.createElement('ul');
+            if (!currentList.lastElementChild) {
+                currentList.appendChild(newList);
+            } else {
+                currentList.lastElementChild.appendChild(newList);
+            }
+            currentList = newList;
+            currentLevel++;
+            levelCounts[currentLevel] = 1; // 初始化下一层级的计数器
+        }
+        while (level < currentLevel) {
+            currentList = currentList.parentElement;
+            if (currentList.tagName.toLowerCase() === 'li') {
+                currentList = currentList.parentElement;
+            }
+            currentLevel--;
+        }
+        const anchor = head.textContent.trim().replace(/\s+/g, '-'); // 使用标题内容生成锚链接
+        head.id = anchor;
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        link.href = `#${anchor}`;
+        link.textContent = `${head.textContent}`; // 标题文本
+        item.appendChild(link);
+        currentList.appendChild(item);
+    });
+});
+</script>
         <?php if($this->options->donate): ?> 
+            <!--打赏  -->
         <div class="post--single__action">   
         <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/donate.css'); ?>">
         <script type="text/javascript" src="<?php $this->options->themeUrl('/dist/js/donate.js'); ?>"></script>
@@ -150,90 +216,5 @@
     </nav> 
 </ul>    
 </article>
-<?php if($this->options->showtoc): ?>
-<!--TOC 在宽度大于1400px时才会显示-->
-<script>
-document.addEventListener('DOMContentLoaded', (event) => {
-  const postContent = document.querySelector('.post--single__content');
-  if (!postContent) return;
-
-  let found = false;
-  for (let i = 1; i <= 6 && !found; i++) {
-    if (postContent.querySelector(`h${i}`)) {
-      found = true;
-    }
-  }
-  if (!found) return;
-  const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  const toc = document.createElement('div');
-  toc.id = 'toc';
-  toc.innerHTML = '<strong>目录</strong><ul></ul>';
-  document.body.appendChild(toc);
-  let currentLevel = 0;
-  let currentList = toc.querySelector('ul');
-  let levelCounts = [0]; // 初始化层级计数器
-
-  heads.forEach((head, index) => {
-    const level = parseInt(head.tagName.substring(1));
-    if (levelCounts[level] === undefined) {
-      levelCounts[level] = 1; // 初始化该层级计数
-    } else {
-      levelCounts[level]++;
-    }
-    // 重置下级标题的计数器
-    levelCounts = levelCounts.slice(0, level + 1);
-    if (currentLevel === 0) {
-      currentLevel = level;
-    }
-    while (level > currentLevel) {
-      let newList = document.createElement('ul');
-      if(!currentList.lastElementChild) {
-        currentList.appendChild(newList);
-      } else {
-        currentList.lastElementChild.appendChild(newList);
-      }
-      currentList = newList;
-      currentLevel++;
-      levelCounts[currentLevel] = 1; // 初始化下一层级的计数器
-    }
-    while (level < currentLevel) {
-      currentList = currentList.parentElement;
-      if(currentList.tagName.toLowerCase() === 'li') {
-        currentList = currentList.parentElement;
-      }
-      currentLevel--;
-    }
-    const numbers = levelCounts.slice(1, level + 1).join(' ') ; 
-    const item = document.createElement('li');
-    item.classList.add('toc-item'); // 添加基本类
-    item.classList.add(`level-${level}`); // 根据级别添加类
-    const anchor = `toc${index}`;
-    head.id = anchor;
-    const link = document.createElement('a');
-    link.href = `#${anchor}`;
-    link.textContent = `${numbers}. ${head.textContent}`; // 序号+标题文本
-    item.appendChild(link);
-    currentList.appendChild(item);
-  });
-});
-</script>
-<style>
-#toc {
-  position: fixed;
-  top: 100px;
-  right: 50px;
-  max-width: 200px;
-  background-color: var(--farallon-background-gray);
-  padding: 10px;
-  border-radius: 5px;
-  /* 其他样式... */
-}
-@media screen and (max-width: 1400px) {
-  #toc {
-    display: none;
-  }
-}
-</style>
-<?php endif; ?>
 </main>
 <?php $this->need('footer.php'); ?>
