@@ -1,5 +1,20 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('header.php'); ?>
+<style>
+#toc ul li {
+  list-style-type: none;
+  margin-bottom: -5px;
+  margin-top: -10px;
+}
+#toc ul {
+  list-style-type: none;
+  margin-bottom: -5px;
+  margin-top: -10px;
+}
+#toc ul li a {
+  text-decoration: none;
+}
+</style>
 <main class="site--main">
 <article class="post--single">
     <ul class="meta">
@@ -211,10 +226,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const item = document.createElement('li');
         const link = document.createElement('a');
         link.href = `#${anchor}`;
-        link.textContent = `${head.textContent}`; // 标题文本
+        link.textContent = `${head.textContent}`; 
+        link.style.textDecoration = 'none';
         item.appendChild(link);
         currentList.appendChild(item);
     });
 });
 </script>
+
 <?php $this->need('footer.php'); ?>
