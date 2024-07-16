@@ -4,7 +4,7 @@
 精简部分 JS.
 
 - 2024.7.4
-把分类图片以`mid.png`的形式在主题`/dist/img`目录下,自动匹配
+把分类图片以`mid`.jpg 的形式在主题`/dist/img`目录下,自动匹配
 
 - 2024.6.12
 
@@ -45,31 +45,12 @@ https://github.com/gogobody/typecho-whisper
 ## 原项目地址
 https://github.com/bigfa/hugo-theme-farallon
 
-## 移植进度
-
-96%
 
 ## 功能
-
-### 已知问题
-
-~~由于typecho分类并无图片,所以默认使用~~
-~~`bigfa` 的 `https://static.fatesinger.com/2021/12/vhp6eou5x2wqh2zy.jpg` ~~
-~~可以自行替换或者删除~~
-
 
 ### 豆瓣观影
 
   更新 获取方式
-
-~~使用原版的获取方式~~
-
-~~豆瓣收藏使用方法~~
-~~微信扫码登录https://node.wpista.com/~~
-~~输入你的豆瓣数字 id，点击保存即可自动同步豆瓣记录。~~
-~~点击 Get integration token 会生成一个 token。~~
-
-~~获取`token`之后填入主题设置项中~~
 
 ### 友情链接
 
@@ -93,15 +74,16 @@ https://github.com/bigfa/hugo-theme-farallon
 
 ### 说说 by Mastodon
 
-根据 https://www.imsun.org/archives/1643.html#toc3 
+根据 https://www.imsun.org/archives/1643.html
 获得API地址
 
 在自定义字段中填入`tooot`值为Mastodon API 地址
 
 ### 好物 by memos
 
-
-
+在自定义字段中填入`memos`值为memos地址
+在自定义字段中填入`memosID`默认值为`1`,不为`1`时才需要设置
+在自定义字段中填入`memostag`默认值为`好物`,不为`好物`时才需要设置
 ## 预览地址
 
 https://www.imsun.org
