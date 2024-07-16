@@ -1,19 +1,12 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('header.php'); ?>
 <style>
-#toc ul li {
-  list-style-type: none;
-  margin-bottom: -5px;
-  margin-top: -10px;
-}
-#toc ul {
-  list-style-type: none;
-  margin-bottom: -5px;
-  margin-top: -10px;
-}
-#toc ul li a {
-  text-decoration: none;
-}
+#toc {font-size:14px;padding:10px 15px;background-color:var(--farallon-background-gray);border-radius:10px;margin-bottom:20px}
+#toc  summary{cursor:pointer}
+#toc toc-title{font-weight:600}
+#toc  ul{padding-left:10px;margin-bottom:10px}
+#toc  ul li::before{content:"·";margin-right:5px}
+#toc  ul li>ul{margin-left:10px;font-size:12px}
 </style>
 <main class="site--main">
 <article class="post--single">
@@ -168,11 +161,12 @@
 </main>
 <script>
 document.addEventListener('DOMContentLoaded', (event) => {
+    const targetClassElement = document.querySelector('.post--single__title');
     const postContent = document.querySelector('.post--single__content');
     if (!postContent) return;
 
     let found = false;
-    for (let i = 1; i <= 6 && !found; i++) {
+    for (let i = 1; i <= 6 &&!found; i++) {
         if (postContent.querySelector(`h${i}`)) {
             found = true;
         }
@@ -184,17 +178,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
     toc.id = 'toc';
     toc.innerHTML = '<details class="toc" open><summary class="toc-title">目录</summary><nav id="TableOfContents"><ul></ul></nav></details>';
 
-    // 插入到文章内容的开头
-    postContent.insertBefore(toc, postContent.firstChild);
+    // 插入到指定 class 元素之后
+    if (targetClassElement) {
+        targetClassElement.parentNode.insertBefore(toc, targetClassElement.nextSibling);
+    }
 
     let currentLevel = 0;
     let currentList = toc.querySelector('ul');
-    let levelCounts = [0]; // 初始化层级计数器
+    let levelCounts = [0];
 
     heads.forEach((head, index) => {
         const level = parseInt(head.tagName.substring(1));
         if (levelCounts[level] === undefined) {
-            levelCounts[level] = 1; // 初始化该层级计数
+            levelCounts[level] = 1;
         } else {
             levelCounts[level]++;
         }
@@ -212,7 +208,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
             currentList = newList;
             currentLevel++;
-            levelCounts[currentLevel] = 1; // 初始化下一层级的计数器
+            levelCounts[currentLevel] = 1;
         }
         while (level < currentLevel) {
             currentList = currentList.parentElement;
@@ -221,12 +217,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
             currentLevel--;
         }
-        const anchor = head.textContent.trim().replace(/\s+/g, '-'); // 使用标题内容生成锚链接
+        const anchor = head.textContent.trim().replace(/\s+/g, '-');
         head.id = anchor;
         const item = document.createElement('li');
         const link = document.createElement('a');
         link.href = `#${anchor}`;
-        link.textContent = `${head.textContent}`; 
+        link.textContent = `${head.textContent}`;
         link.style.textDecoration = 'none';
         item.appendChild(link);
         currentList.appendChild(item);
