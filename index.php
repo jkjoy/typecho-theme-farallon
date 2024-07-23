@@ -1,10 +1,10 @@
 <?php
 /**
  * 移植自HUGO主题 farallon 原作者 bigfa  
- * @package farallon
+ * @package Farallon
  * @author  老孙 
- * @version 0.5.6
- * @link https://imsun.org
+ * @version 0.5.7
+ * @link https://www.imsun.org
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
