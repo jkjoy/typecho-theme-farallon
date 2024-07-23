@@ -17,7 +17,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
             'date'      =>  _t('在<span> %s </span>发布的文章'),
             'author'    =>  _t('%s 发布的文章')
         ), '', ' - '); ?><?php if ($this->is('post')) $this->category(',', false);?><?php if ($this->is('post')) echo ' - ';?><?php $this->options->title(); ?><?php if ($this->is('index')) echo ' - '; ?><?php if ($this->is('index')) $this->options->description() ?></title>
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/style.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/style.min.css'); ?>">
     <?php if ($this->options->icoUrl): ?>
     <link rel='icon' href='<?php $this->options->icoUrl() ?>' type='image/x-icon' />
     <?php endif; ?>
