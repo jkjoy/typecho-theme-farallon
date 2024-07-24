@@ -106,7 +106,7 @@
             );
         ?>
         <?php else: ?>   
-            <center><h3><?php _e('暂无评论'); ?></h3></center>
+            <center><h3></h3></center>
         <?php endif; ?>
     <?php $this->options->twikoo(); ?>
 </div>
