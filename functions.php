@@ -604,3 +604,41 @@ class ContentProcessor {
 }
 
 register_shortcodes();
+ 
+//在编辑器中添加插入文章引用的按钮
+class EditorButton {
+    public static function render()
+    {
+        echo <<<EOF
+<script>
+$(document).ready(function() {
+    $('#wmd-button-row').append('<li class="wmd-button" id="wmd-article-button" title="插入文章引用"><span style="background: none;"><svg t="1687164718203" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4158" width="20" height="20"><path d="M810.666667 213.333333H213.333333c-46.933333 0-85.333333 38.4-85.333333 85.333334v426.666666c0 46.933333 38.4 85.333333 85.333333 85.333334h597.333334c46.933333 0 85.333333-38.4 85.333333-85.333334V298.666667c0-46.933333-38.4-85.333333-85.333333-85.333334z m0 512H213.333333V298.666667h597.333334v426.666666z" p-id="4159"></path><path d="M298.666667 384h426.666666v85.333333H298.666667zM298.666667 554.666667h426.666666v85.333333H298.666667z" p-id="4160"></path></svg></span></li>');
+
+    $('#wmd-article-button').click(function() {
+        var articleId = prompt("请输入要引用的文章ID：");
+        if (articleId) {
+            var text = "[article id=\"" + articleId + "\"]";
+            var textarea = $('#text')[0];
+            var start = textarea.selectionStart;
+            var end = textarea.selectionEnd;
+            var value = textarea.value;
+
+            textarea.value = value.substring(0, start) + text + value.substring(end);
+
+            // 将光标移动到插入的文本之后
+            textarea.setSelectionRange(start + text.length, start + text.length);
+            textarea.focus();
+
+            // 触发change事件，确保编辑器更新
+            $('#text').trigger('change');
+        }
+    });
+});
+</script>
+EOF;
+    }
+}
+
+// 注册钩子
+Typecho_Plugin::factory('admin/write-post.php')->bottom = array('EditorButton', 'render');
+Typecho_Plugin::factory('admin/write-page.php')->bottom = array('EditorButton', 'render');
