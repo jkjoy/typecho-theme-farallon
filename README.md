@@ -3,6 +3,11 @@
 移植自 `bigfa `大大的 `hugo-theme-farallon` 原汁原味,可以直接使用 原主题的CSS 
 精简部分 JS.
 
+- 2024.7.24
+增加短代码`[article url="https://your-site.com/your-article-url"]`或者`[article id="123"]`的方式获取文章
+增加置顶文章的功能,样式来自于wordpress版本
+
+
 - 2024.7.4
 把分类图片以`mid`.jpg 的形式在主题`/dist/img`目录下,自动匹配
 
