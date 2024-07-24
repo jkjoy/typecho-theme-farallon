@@ -1,4 +1,70 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php 
+//确保退出安全
+if (!defined('__TYPECHO_ROOT_DIR__')) exit; 
+
+/** 文章置顶 */
+$sticky = $this->options->sticky ; //置顶的文章id，多个用|隔开
+
+if ($sticky) {
+    $sticky_cids = array_filter(explode('|', $sticky)); //分割文本并过滤空值
+    $sticky_html = " <span class=sticky--post> 置顶 </span> "; //置顶标题的 html
+
+    $db = Typecho_Db::get();
+    $pageSize = $this->options->pageSize;
+    
+    // 构建置顶文章的查询
+    $selectSticky = $this->select()->where('type = ?', 'post');
+    foreach ($sticky_cids as $i => $cid) {
+        if($i == 0) 
+            $selectSticky->where('cid = ?', $cid);
+        else 
+            $selectSticky->orWhere('cid = ?', $cid);
+    }
+
+    // 清空原有文章的列队
+    $this->row = [];
+    $this->stack = [];
+    $this->length = 0;
+    
+    // 只在首页第一页展示置顶文章
+    if (($this->_currentPage || $this->currentPage) == 1) {
+        $stickyPosts = $db->fetchAll($selectSticky);
+        foreach ($stickyPosts as $stickyPost) {
+            $stickyPost['title'] =  $stickyPost['title'] .  $sticky_html;
+            $this->push($stickyPost); //压入列队
+        }
+    }
+  
+    // 构建普通文章的查询，排除置顶文章的 CID
+    $selectNormal = $this->select()
+        ->where('type = ?', 'post')
+        ->where('status = ?', 'publish')
+        ->where('created < ?', time())
+        ->order('created', Typecho_Db::SORT_DESC)
+        ->page($this->_currentPage, $pageSize);
+
+    foreach ($sticky_cids as $cid) {
+        $selectNormal->where('table.contents.cid != ?', $cid);
+    }
+
+    // 登录用户显示私密文章
+    if ($this->user->hasLogin()) {
+        $uid = $this->user->uid;
+        if ($uid) {
+            $selectNormal->orWhere('authorId = ? AND status = ?', $uid, 'private');
+        }
+    }
+
+    $normalPosts = $db->fetchAll($selectNormal);
+    foreach ($normalPosts as $normalPost) {
+        $this->push($normalPost); //压入列队
+    }
+
+    // 设置总数（减去置顶文章数量，以进行正确的分页）
+    $total = $this->getTotal() - count($sticky_cids);
+    $this->setTotal(max($total, 0)); // 确保总数不为负数
+}
+?>
 <?php while($this->next()): ?>
 	<article class="post--item">
     <div class="content">
