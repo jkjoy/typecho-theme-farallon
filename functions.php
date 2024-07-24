@@ -523,3 +523,84 @@ function getParentCategory($categoryId) {
 function getDays($time1, $time2) {
     return floor(($time2 - $time1) / 86400);
 }
+
+//获取文章卡片
+function get_article_info($atts) {
+    $default_atts = array(
+        'id' => '',
+        'url' => ''
+    );
+    $atts = array_merge($default_atts, $atts);
+    $db = Typecho_Db::get();
+    if (!empty($atts['id'])) {
+        $post = $db->fetchRow($db->select()->from('table.contents')
+            ->where('cid = ?', $atts['id'])
+            ->limit(1));
+    } elseif (!empty($atts['url'])) {
+        $post = $db->fetchRow($db->select()->from('table.contents')
+            ->where('permalink = ?', $atts['url'])
+            ->limit(1));
+    } else {
+        return '请提供文章ID或URL';
+    }
+    if (!$post) {
+        return '未找到文章';
+    }
+    $post = Typecho_Widget::widget('Widget_Abstract_Contents')->push($post);
+
+    // 获取缩略图
+    $imageToDisplay = img_postthumb($post['cid']);
+    if (empty($imageToDisplay)) {
+        $imageToDisplay = '//pic.0tz.top/api'; // 设置一个默认图片路径
+    }
+
+    $output = '<div class="graph--mixtapeEmbed">';
+    $output .= '<a class="mixtapeContent" href="' . $post['permalink'] . '" target="_blank">';
+    $output .= '<span class="markup--strong markup--mixtapeEmbed-strong">' . $post['title'] . '</span>';
+    $output .= '<em class="markup--em markup--mixtapeEmbed-em">' . Typecho_Common::subStr(strip_tags($post['text']), 0, 100, '...') . '</em>';
+    $output .= '</a>';
+    $output .= '<a class="mixtapeImage" href="' . $post['permalink'] . '" target="_blank" style="background-image:url(' . $imageToDisplay . ')"></a>';
+    $output .= '</div>';
+    return $output;
+}
+
+
+// 注册短代码
+function register_shortcodes() {
+    Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('ContentProcessor', 'process');
+}
+
+class ContentProcessor {
+    public static function process($content, $widget, $lastResult) {
+        $content = preg_replace_callback('/\[article\s+([^\]]+)\]/', function($matches) {
+            $atts = self::parse_atts($matches[1]);
+            return get_article_info($atts);
+        }, $content);
+
+        return $content;
+    }
+
+    // 解析短代码属性
+    private static function parse_atts($text) {
+        $atts = array();
+        $pattern = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
+        $text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
+        if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
+            foreach ($match as $m) {
+                if (!empty($m[1]))
+                    $atts[strtolower($m[1])] = stripcslashes($m[2]);
+                elseif (!empty($m[3]))
+                    $atts[strtolower($m[3])] = stripcslashes($m[4]);
+                elseif (!empty($m[5]))
+                    $atts[strtolower($m[5])] = stripcslashes($m[6]);
+                elseif (isset($m[7]) && strlen($m[7]))
+                    $atts[] = stripcslashes($m[7]);
+                elseif (isset($m[8]))
+                    $atts[] = stripcslashes($m[8]);
+            }
+        }
+        return $atts;
+    }
+}
+
+register_shortcodes();
