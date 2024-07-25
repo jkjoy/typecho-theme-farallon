@@ -25,11 +25,11 @@ function themeConfig($form) {
     $form->addInput($sitemapurl);
     $cnavatar = new Typecho_Widget_Helper_Form_Element_Text('cnavatar', NULL, 'https://cravatar.cn/avatar/', _t('Gravatar镜像'), _t('默认https://cravatar.cn/avatar/,建议保持默认'));
     $form->addInput($cnavatar);
-    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, './img/', _t('填写图片路径,以"/"结尾'), _t('可以使用本地目录或者使用CDN地址'));
+    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, './img/', _t('填写分类图片路径,以"/"结尾'), _t('可以使用本地目录或者CDN地址,自动匹配路径下以mid.jpg格式的图片,使用分类页面时需要设置'));
     $form->addInput($midimg);
     $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'), _t('不填写则不显示'));
     $form->addInput($donate);
-    $doubanID = new Typecho_Widget_Helper_Form_Element_Text('doubanID', NULL, 'https://db.imsun.org/', _t('豆瓣页面必需API,包含"/"'), _t(' '));
+    $doubanID = new Typecho_Widget_Helper_Form_Element_Text('doubanID', NULL, 'https://db.imsun.org/', _t('豆瓣页面必需API,包含"/"'), _t('使用豆瓣页面时需要设置'));
     $form->addInput($doubanID);
     $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'), _t('不填写则不显示'));
     $form->addInput($twikoo);
