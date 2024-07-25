@@ -17,10 +17,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <?php
     // 获取分类 ID
     $categoryId = $categories->mid;
-    // 获取主题URL
-    $themeUrl = $this->options->themeUrl;
+    $themeUrl = $this->options->midimg;
     // 为每个分类生成图片地址
-    $categoryImage = $themeUrl . '/dist/img/' . $categoryId . '.jpg';
+    $categoryImage = $themeUrl . $categoryId . '.jpg';
     ?>
     <div class="category--item">
     <img class="category--cover" src="<?php echo $categoryImage; ?>" loading="lazy" alt="<?php $categories->name(); ?>">
