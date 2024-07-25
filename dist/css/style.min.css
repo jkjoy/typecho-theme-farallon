@@ -3761,3 +3761,8 @@ textarea {
         width: 80%
     }
 }
+/* 留言url 强制换行 */
+.comment-body a { 
+    word-wrap: break-word;
+  word-break: break-all;
+}
