@@ -46,7 +46,7 @@
       }
       initCopyright() {
         const copyright = `<div class="site--footer__info">
-          Theme <a href="https://fatesinger.com/101971" target="_blank">farallon</a> by bigfa / version ${this.VERSION}
+          Theme <a href="https://fatesinger.com/101971" target="_blank">farallon</a> by bigfa <a href="https://www.imsun.org" target="_blank">&nbsp;Made with Sun</a> / version ${this.VERSION}
       </div>`;
         document.querySelector(".site--footer__content").insertAdjacentHTML("afterend", copyright);
         document.querySelector(".icon--copryrights").addEventListener("click", () => {
