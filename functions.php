@@ -564,14 +564,15 @@ function get_article_info($atts) {
     return $output;
 }
 
+// 创建一个新的类来处理内容过滤
+class ContentFilter
+{
+    public static function filterContent($content, $widget, $lastResult)
+    {
+        // 首先运行之前的过滤器结果
+        $content = empty($lastResult) ? $content : $lastResult;
 
-// 注册短代码
-function register_shortcodes() {
-    Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('ContentProcessor', 'process');
-}
-
-class ContentProcessor {
-    public static function process($content, $widget, $lastResult) {
+        // 然后处理我们的文章短代码
         $content = preg_replace_callback('/\[article\s+([^\]]+)\]/', function($matches) {
             $atts = self::parse_atts($matches[1]);
             return get_article_info($atts);
@@ -603,9 +604,10 @@ class ContentProcessor {
     }
 }
 
-register_shortcodes();
- 
-//在编辑器中添加插入文章引用的按钮
+// 注册钩子
+Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('ContentFilter', 'filterContent');
+
+// 编辑器按钮类
 class EditorButton {
     public static function render()
     {
@@ -639,6 +641,6 @@ EOF;
     }
 }
 
-// 注册钩子
+// 注册编辑器按钮钩子
 Typecho_Plugin::factory('admin/write-post.php')->bottom = array('EditorButton', 'render');
 Typecho_Plugin::factory('admin/write-page.php')->bottom = array('EditorButton', 'render');
