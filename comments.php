@@ -1,7 +1,7 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
  <div class="post--ingle__comments">
     <?php $this->comments()->to($comments); ?>
-    <?php if($this->allow('comment')): ?>
+    <?php if($this->allow('comment') && stripos($_SERVER['HTTP_ACCEPT_LANGUAGE'], 'zh') > -1): ?>
         <?php if ($this->is('attachment')) : ?>
         <?php else: ?>
     	<h3 class="comments--title" id="comments">
