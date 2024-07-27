@@ -229,5 +229,91 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 </script>
+<script>
+function fetchWithRetry(url, retries = 3) {
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();  // 首先获取文本响应
+        })
+        .then(text => {
+            try {
+                return JSON.parse(text);  // 尝试解析 JSON
+            } catch (e) {
+                console.error('Invalid JSON:', text);
+                throw new Error('Invalid JSON response');
+            }
+        })
+        .catch(error => {
+            if (retries > 0) {
+                console.log(`Retrying... (${retries} attempts left)`);
+                return new Promise(resolve => setTimeout(resolve, 1000))  // 等待1秒
+                    .then(() => fetchWithRetry(url, retries - 1));
+            }
+            throw error;
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const doubanLinks = document.querySelectorAll('a[href^="https://movie.douban.com/subject/"]');
+
+    doubanLinks.forEach(link => {
+        const url = link.href;
+        const movieId = url.match(/subject\/(\d+)/)[1];
+
+        link.innerHTML += ' <span class="loading">(加载中...)</span>';
+
+        fetchWithRetry(`<?php $this->options->themeUrl('db.php'); ?>?id=${movieId}`)
+            .then(data => {
+                const movieInfo = createMovieInfoHTML(data, url);
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = movieInfo;
+                link.parentNode.replaceChild(wrapper, link);
+            })
+            .catch(error => {
+                console.error('Error fetching movie data:', error);
+                // 显示错误消息给用户
+                link.innerHTML = `<span style="color: red;">加载失败</span> <a href="${url}" target="_blank">查看豆瓣电影详情</a>`;
+            })
+            .finally(() => {
+                const loadingSpan = link.querySelector('.loading');
+                if (loadingSpan) {
+                    loadingSpan.remove();
+                }
+            });
+    });
+});
+
+function createMovieInfoHTML(data, originalUrl) {
+    if (!data || data.error || Object.keys(data).length === 0) {
+        return `<a href="${originalUrl}" target="_blank">查看豆瓣电影详情</a>`;
+    }
+
+    return `
+    <div class=doulist-item>
+    <div class=doulist-subject>
+        <div class=doulist-post>
+           <img decoding=async referrerpolicy=no-referrer src=${data.img}>
+        </div>
+        <div class=doulist-content>
+            <div class=doulist-title>
+               <a href="${originalUrl}" class=cute target="_blank" rel="external nofollow"> ${data.name} </a>
+            </div>
+            <div class=rating>
+                <span class=rating_nums>豆瓣评分 : ${data.rating}</span>
+            </div>
+            <div class=abstract>
+               ${data.year}年 · ${data.country} · ${data.genre}  · 导演: ${data.director} · 演员 : ${data.actor} 
+            </div>
+        </div> 
+    </div>     
+    </div>
+
+    `;
+}
+
+</script>
 
 <?php $this->need('footer.php'); ?>
