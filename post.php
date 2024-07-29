@@ -36,10 +36,11 @@
                 </g>
             </svg> <a href="<?php $this->permalink() ?>#comments"><?php $this->commentsNum('0 ', '1 ', '%d '); ?></a> 
             <?php if($this->user->hasLogin() && $this->user->pass('editor', true)): ?>    
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
-                <path 
-                d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/>
-                </svg><a href="<?php $this->options->adminUrl('write-post.php?cid=' . $this->cid); ?>" target="_blank" title="编辑文章">Edit</a>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M16.7574 2.99677L14.7574 4.99677H5V18.9968H19V9.23941L21 7.23941V19.9968C21 20.5491 20.5523 20.9968 20 20.9968H4C3.44772 20.9968 3 20.5491 3 19.9968V3.99677C3 3.44448 3.44772 2.99677 4 2.99677H16.7574ZM20.4853 2.09727L21.8995 3.51149L12.7071 12.7039L11.2954 12.7063L11.2929 11.2897L20.4853 2.09727Z">
+                    </path>
+                </svg>
+                <a href="<?php $this->options->adminUrl('write-post.php?cid=' . $this->cid); ?>" target="_blank" title="编辑文章">Edit</a>
                 <?php endif; ?>
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
@@ -134,6 +135,43 @@
 <!-- 个人信息-->
 <?php if ($this->options->showProfile): ?>
     <?php $this->need('profile.php'); ?>
+<?php endif; ?>
+<!-- 分类-->
+<?php if ($this->options->showcate): ?>
+    <?php
+    // 初始化分类图片地址为空
+    $categoryImage = '';
+
+    // 检查文章是否有分类
+    if ($this->categories) {
+        // 获取第一个分类的信息
+        $category = $this->categories[0];
+        $categoryId = $category['mid'];
+        $categoryName = $category['name'];
+        $categoryDescription = $category['description'];  // 如果分类有说明（描述）
+
+        // 获取主题选项中的分类图片基本 URL
+        $themeUrl = $this->options->midimg;
+
+        // 生成分类图片地址
+        $categoryImage = $themeUrl . $categoryId . '.jpg';
+    }
+    ?>
+
+    <!-- 显示分类信息 -->
+    <?php if ($category): ?>
+        <div class="category--card__list">
+            <a href="<?php echo $category['permalink']; ?>" class="category--card">
+                <div class="category--card__image">
+                    <img src="<?php echo htmlspecialchars($categoryImage); ?>" alt="<?php echo htmlspecialchars($categoryName); ?>">
+                </div>
+                <div class="category--card__content">
+                    <div class="category--card__title"><?php echo htmlspecialchars($categoryName); ?></div>
+                    <div class="category--card__description"><?php echo htmlspecialchars($categoryDescription); ?></div>
+                </div>
+            </a>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>
 <!-- 相关文章-->
 <?php if ($this->options->showrelated): ?>

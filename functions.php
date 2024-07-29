@@ -9,7 +9,7 @@ function themeConfig($form) {
     $form->addInput($sticky);
     $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否在文章页面显示显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
+    '0', _t('是否在文章页面显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
     $form->addInput($showProfile);
     $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, 'https://Instagram.com/', _t('Instagram'), _t('会在个人信息显示'));
     $form->addInput($instagramurl);
@@ -37,6 +37,10 @@ function themeConfig($form) {
     $form->addInput($addhead);
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
     $form->addInput($tongji);
+    $showcate = new Typecho_Widget_Helper_Form_Element_Radio('showcate',
+    array('0'=> _t('否'), '1'=> _t('是')),
+    '0', _t('是否在文章页面显示文章分类'), _t('选择“是”将在文章页面显示文章的分类信息。'));
+    $form->addInput($showcate);
     $showallwords = new Typecho_Widget_Helper_Form_Element_Radio('showallwords',
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否显示归档字数统计'), _t('选择“是”将在归档页面显示全站总字数。'));
