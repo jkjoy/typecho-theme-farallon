@@ -42,7 +42,10 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
             <?php if ($this->options->logoUrl): ?>
                 <a href="<?php $this->options->siteUrl(); ?>" class="site--url">
                     <img src="<?php $this->options->logoUrl() ?>"  class="avatar" alt="<?php $this->options->title() ?>" />
-            </a>
+                </a>
+            <span class="u-xs-show"> 
+                    <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title() ?></a> 
+            </span>
             <?php else: ?>
                 <span class="u-xs-show"> 
                     <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title() ?></a> 
