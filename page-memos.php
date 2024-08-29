@@ -18,9 +18,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         $memosnum = $this->fields->memosnum ? $this->fields->memosnum : '20';
         ?>
     <article class="post--single">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />    
+    <script src="<?php $this->options->themeUrl('/dist/js/marked.min.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('/dist/js/fancybox.umd.js'); ?>"></script>
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/fancybox.css'); ?>" />      
     <div id="talk"></div>
     </article> 
 <script>

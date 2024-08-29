@@ -79,8 +79,8 @@ $this->need('header.php');
         category: <?php echo json_encode(categoryPostCount()); ?>
       };
     </script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/jkjoy/typecho-theme-farallon@0.5.0/dist/js/chart.js"></script>
-    <script id="MathJax-script" async src="https://jsd.onmicrosoft.cn/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript" src="<?php $this->options->themeUrl('/dist/js/chart.js'); ?>"></script>
+    <script id="MathJax-script" async src="<?php $this->options->themeUrl('/dist/js/tex-mml-chtml.js'); ?>"></script>
             <script>
                 // 配置 MathJax
                 MathJax = {

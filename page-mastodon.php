@@ -13,9 +13,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </header>
     <article class="post--single">
     <?php $tooot = $this->fields->tooot ? $this->fields->tooot : 'https://bbapi.ima.cm'; ?>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />    
+    <script src="<?php $this->options->themeUrl('/dist/js/marked.min.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('/dist/js/fancybox.umd.js'); ?>"></script>
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/fancybox.css'); ?>" />    
     <div id="tooot"></div>
     <div class="nav-links" id="loadmore">
         <span class="loadmore">加载更多</span>
