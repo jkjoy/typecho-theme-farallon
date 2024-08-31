@@ -5,7 +5,7 @@ function themeConfig($form) {
     $form->addInput($logoUrl);
     $icoUrl = new Typecho_Widget_Helper_Form_Element_Text('icoUrl', NULL, NULL, _t('站点 Favicon 地址'));
     $form->addInput($icoUrl);
-    $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, '0', _t('置顶文章cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页展示置顶文章。'));
+    $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('置顶文章cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页展示置顶文章。'));
     $form->addInput($sticky);
     $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
     array('0'=> _t('否'), '1'=> _t('是')),
