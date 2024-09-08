@@ -11,9 +11,6 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <h1 class="post--single__title"><?php $this->title() ?></h1>
         <h2 class="post--single__subtitle"><?php $this->content(); ?> </h2>
 </header>
-<div class="graph u-marginBottom30">
-<?php $this->content(); ?>
-        </div>
     <div class="template--linksWrap">
         <ul class="link-items">
             <?php
