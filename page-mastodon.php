@@ -33,7 +33,7 @@ window.onload = function() {
             if (media_attachments.length > 0) {
                 media_attachments.forEach(attachment => {
                     if (attachment.type === 'image') {
-                        mediaHTML += `<a href="${attachment.url}" target="_blank"><img src="${attachment.preview_url}" class="thumbnail-image img" </a>`;
+                        mediaHTML += `<a href="${attachment.url}" target="_blank"><img src="${attachment.preview_url}" class="thumbnail-image img" ></a>`;
                     }
                 });
             }
@@ -44,7 +44,7 @@ window.onload = function() {
             <article class='post--item post--item__status'>
                 <div class='content'>
                 <header>
-                <img src="${account.avatar}" class="avatar" width="48" height="48" no-view> />
+                <img src="${account.avatar}" class="avatar" width="48" height="48" no-view />
                 <a class="humane--time" href="${url}" target="_blank">${new Date(created_at).toLocaleString()}</a>
                 </header>
                 <div class="description" itemprop="about">
