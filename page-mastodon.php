@@ -14,8 +14,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <article class="post--single">
     <?php $tooot = $this->fields->tooot ? $this->fields->tooot : 'https://bbapi.ima.cm'; ?>
     <script src="<?php $this->options->themeUrl('/dist/js/marked.min.js'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('/dist/js/fancybox.umd.js'); ?>"></script>
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/fancybox.css'); ?>" />    
+    <script src="<?php $this->options->themeUrl('/dist/js/view-image.min.js'); ?>"></script>
     <div id="tooot"></div>
     <div class="nav-links" id="loadmore">
         <span class="loadmore">加载更多</span>
@@ -34,7 +33,7 @@ window.onload = function() {
             if (media_attachments.length > 0) {
                 media_attachments.forEach(attachment => {
                     if (attachment.type === 'image') {
-                        mediaHTML += `<a href="${attachment.url}" target="_blank"><img src="${attachment.preview_url}" data-fancybox="img" class="thumbnail-image img"></a>`;
+                        mediaHTML += `<a href="${attachment.url}" target="_blank"><img src="${attachment.preview_url}" class="thumbnail-image img" no-view></a>`;
                     }
                 });
             }
@@ -82,9 +81,7 @@ window.onload = function() {
     // 绑定“加载更多”按钮的点击事件
     document.getElementById('loadmore').addEventListener('click', fetchAndDisplayToots);
 };
-Fancybox.bind("[data-fancybox]", {
-  // Your custom options
-});
+window.ViewImage && ViewImage.init('.content img');
 </script>         
 <style>
 div pre code {
@@ -92,7 +89,6 @@ div pre code {
   white-space: pre-wrap; /* CSS3 */
   word-wrap: break-word; /* 老版本的浏览器 */
   overflow-wrap: break-word;  
-  /* 指定如何断行 */
   word-break: break-all;  
   word-break: break-word;  
 }

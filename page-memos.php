@@ -19,14 +19,21 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         ?>
     <article class="post--single">
     <script src="<?php $this->options->themeUrl('/dist/js/marked.min.js'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('/dist/js/fancybox.umd.js'); ?>"></script>
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/fancybox.css'); ?>" />      
+    <script src="<?php $this->options->themeUrl('/dist/js/view-image.min.js'); ?>"></script>
     <div id="talk"></div>
+    <div class="nav-links" id="loadmore">
+        <span class="loadmore">加载更多</span>
+    </div>
     </article> 
 <script>
-if (99) {
-    let url = '<?php echo $memos; ?>';
-    fetch(url + '/api/v1/memo?creatorId=<?php echo $memosID; ?>&rowStatus=NORMAL&limit=<?php echo $memosnum; ?>')
+let currentPage = 1; // 当前页码
+const limit = 10; // 每页条数
+let url = '<?php echo $memos; ?>';
+let memosID = '<?php echo $memosID; ?>';
+let memosnum = '<?php echo $memosnum; ?>';
+
+function loadMemos(page) {
+    fetch(`${url}/api/v1/memo?creatorId=${memosID}&rowStatus=NORMAL&limit=${limit}&offset=${(page - 1) * limit}`)
     .then(res => res.json())
     .then(data => { 
         let html = '';
@@ -38,7 +45,7 @@ if (99) {
             <article class='post--item post--item__status'>
                 <div class='content'>
                 <header>
-                <img src="<?php $this->options->logoUrl() ?>" class="avatar" width="48" height="48" />
+                <img src="<?php $this->options->logoUrl() ?>" class="avatar" width="48" height="48" no-view />
                 <a class="humane--time" href="${memoURL}" target="_blank">${data.date}</a>
                 </header>
                 <div class="description" itemprop="about">
@@ -49,57 +56,67 @@ if (99) {
                 </article>
             `;
         });
-        document.getElementById('talk').innerHTML = html;
+        document.getElementById('talk').innerHTML += html;
     })
     .catch(error => {
         console.error('Error:', error);
         // 这里可以添加一些用户提示错误发生的 HTML 更新
     });
-    function Format(item) {
-        let date = getTime(new Date(item.createdTs * 1000).toString()),
-            content = item.content,
-            tag = item.content.match(/#([^\s#]+?) /g),
-            imgs = content.match(/!\[.*\]\(.*?\)/g), 
-            text = ''
-        if (imgs) imgs = imgs.map(item => { return item.replace(/!\[.*\]\((.*?)\)/, '$1') })
-        if (item.resourceList.length) {
-            if (!imgs) imgs = []
-            item.resourceList.forEach(t => {
-                if (t.externalLink) imgs.push(t.externalLink)
-                else imgs.push(`${url}/o/r/${t.id}/${t.publicId}/${t.filename}`)
-            })
-        }
-        text = content.replace(/#(.*?)\s/g, '').replace(/\!?\[(.*?)\]\((.*?)\)/g, '').replace(/\{(.*?)\}/g, '')
-        content = text.replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2" target="_blank">$1</a>`);
-        if (imgs) {
-            content += `<div class="resimg">`
-            imgs.forEach(e => content += `<a href="${e}" data-fancybox="gallery" class="fancybox img" data-thumb="${e}"><img class="no-lazyload thumbnail-image" src="${e}"></a>`
-            )
-            content += '</div>'
-        }
-        return {
-            content: content,
-            tag: tag ? tag[0].replace(/#([^\s#]+?) /,'$1') : '日常',
-            date: date,
-            text: text.replace(/\[(.*?)\]\((.*?)\)/g, '[链接]' + `${imgs?'[图片]':''}`)
-        }
+}
+
+function Format(item) {
+    let date = getTime(new Date(item.createdTs * 1000).toString()),
+        content = item.content,
+        tag = item.content.match(/#([^\s#]+?) /g),
+        imgs = content.match(/!\[.*\]\(.*?\)/g), 
+        text = ''
+    if (imgs) imgs = imgs.map(item => { return item.replace(/!\[.*\]\((.*?)\)/, '$1') })
+    if (item.resourceList.length) {
+        if (!imgs) imgs = []
+        item.resourceList.forEach(t => {
+            if (t.externalLink) imgs.push(t.externalLink)
+            else imgs.push(`${url}/o/r/${t.id}/${t.publicId}/${t.filename}`)
+        })
     }
-    // 页面时间格式化
-    function getTime(time) {
-        let d = new Date(time),
-            ls = [d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()];
-        for (let i = 0; i < ls.length; i++) {
-            ls[i] = ls[i] <= 9 ? '0' + ls[i] : ls[i] + ''
-        }
-        if (new Date().getFullYear() == ls[0]) return ls[1] + '月' + ls[2] + '日 ' + ls[3] +':'+ ls[4]
-        else return ls[0] + '年' + ls[1] + '月' + ls[2] + '日 ' + ls[3] +':'+ ls[4]
+    text = content.replace(/#(.*?)\s/g, '').replace(/\!?\[(.*?)\]\((.*?)\)/g, '').replace(/\{(.*?)\}/g, '')
+    content = text.replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2" target="_blank">$1</a>`);
+    if (imgs) {
+        content += `<div class="resimg">`
+        imgs.forEach(e => content += `<a href="${e}"  class="img" data-thumb="${e}"><img class="no-lazyload thumbnail-image" src="${e}"></a>`
+        )
+        content += '</div>'
+    }
+    return {
+        content: content,
+        tag: tag ? tag[0].replace(/#([^\s#]+?) /,'$1') : '日常',
+        date: date,
+        text: text.replace(/\[(.*?)\]\((.*?)\)/g, '[链接]' + `${imgs?'[图片]':''}`)
     }
 }
-Fancybox.bind("[data-fancybox]", {
-  // Your custom options
+
+// 页面时间格式化
+function getTime(time) {
+    let d = new Date(time),
+        ls = [d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()];
+    for (let i = 0; i < ls.length; i++) {
+        ls[i] = ls[i] <= 9 ? '0' + ls[i] : ls[i] + ''
+    }
+    if (new Date().getFullYear() == ls[0]) return ls[1] + '月' + ls[2] + '日 ' + ls[3] +':'+ ls[4]
+    else return ls[0] + '年' + ls[1] + '月' + ls[2] + '日 ' + ls[3] +':'+ ls[4]
+}
+
+// 初始加载第一页
+loadMemos(currentPage);
+
+// 点击“加载更多”按钮时加载下一页
+document.getElementById('load-more').addEventListener('click', function() {
+    currentPage++;
+    loadMemos(currentPage);
 });
+
+window.ViewImage && ViewImage.init('.content img');
 </script>
-<style>
+<style> 
 div pre code {
   /* 迫使文字断行 */
   white-space: pre-wrap; /* CSS3 */
@@ -149,7 +166,34 @@ img {
     .resimg {
         grid-template-columns: 1fr; /* 修改为一列 */
     }
-}  
+} 
+.load-more-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+  }
+.load-more-btn:hover {
+      background-color: #0056b3;
+  } 
+.nav-links .loadmore {
+    border: 1px solid var(--farallon-border-color);
+    cursor: pointer;
+    position: relative;
+    padding: 5px 30px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--farallon-text-gray)
+}
+
+.nav-links .loadmore:hover {
+    border-color: var(--farallon-hover-color);
+    color: var(--farallon-hover-color)
+}   
 </style>  
 </div>
 <?php $this->need('footer.php'); ?>
