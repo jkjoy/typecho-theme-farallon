@@ -109,7 +109,7 @@ function getTime(time) {
 loadMemos(currentPage);
 
 // 点击“加载更多”按钮时加载下一页
-document.getElementById('load-more').addEventListener('click', function() {
+document.getElementById('loadmore').addEventListener('click', function() {
     currentPage++;
     loadMemos(currentPage);
 });
