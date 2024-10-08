@@ -1,6 +1,6 @@
 <?php
 /**
- * 移植自HUGO主题 farallon 原作者 bigfa  
+ * 一款单栏主题. 移植自HUGO主题 Farallon 原作者 bigfa  
  * @package Farallon
  * @author  老孙 
  * @version 0.6.1
