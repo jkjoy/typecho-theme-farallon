@@ -46,8 +46,7 @@
     </article>  
     <?php endwhile; ?>     
 </main>
-<?php
-            $this->pageNav(
+        <?php $this->pageNav(
                 ' ',
                 ' ',
                 1,
