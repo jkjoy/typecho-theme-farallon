@@ -5,7 +5,7 @@
            <?php $this->need('sns.php'); ?>
             <?php //sitemap填入
             if($this->options->sitemapurl): ?>
-            <a href="<?php $this->options->sitemapurl() ?>" target="_blank">💗</a>
+            <a href="<?php $this->options->sitemapurl() ?>" target="_blank" aria-label="网站地图">💗</a>
             <?php endif; ?>    
         </div>      
             <?php //添加加载时间控制
