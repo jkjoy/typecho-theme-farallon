@@ -13,7 +13,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </header>
     <?php
         // 检查是否存在自定义字段 'memos' 和 'memosID'
-        $memos = $this->fields->memos ? $this->fields->memos : 'https://memos.loliko.cn';
+        $memos = $this->fields->memos ? $this->fields->memos : 'https://memos.imsun.org';
         $memosID = $this->fields->memosID ? $this->fields->memosID : '1';
         $memosnum = $this->fields->memosnum ? $this->fields->memosnum : '20';
         ?>
