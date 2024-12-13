@@ -1,5 +1,6 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+require 'ipdata.class.php';
 function themeConfig($form) {
     $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'));
     $form->addInput($logoUrl);
@@ -385,3 +386,96 @@ EOF;
 // 注册编辑器按钮钩子
 Typecho_Plugin::factory('admin/write-post.php')->bottom = array('EditorButton', 'render');
 Typecho_Plugin::factory('admin/write-page.php')->bottom = array('EditorButton', 'render');
+
+/**    
+ * 评论者认证等级 + 身份    
+ *    
+ * @author Chrison    
+ * @access public    
+ * @param str $email 评论者邮址    
+ * @return result     
+ */     
+function commentApprove($widget, $email = NULL)      
+{   
+    $result = array(
+        "state" => -1,//状态
+        "isAuthor" => 0,//是否是博主
+        "userLevel" => '',//用户身份或等级名称
+        "userDesc" => '',//用户title描述
+        "bgColor" => '',//用户身份或等级背景色
+        "commentNum" => 0//评论数量
+    );
+    if (empty($email)) return $result;      
+    
+    $result['state'] = 1;
+    $master = array(      
+        '基友邮箱1@qq.com',
+        '基友邮箱1@qq.com'
+    );      
+    if ($widget->authorId == $widget->ownerId) {      
+        $result['isAuthor'] = 1;
+        $result['userLevel'] = '博主';
+        $result['userDesc'] = '很帅的博主';
+        $result['bgColor'] = '#FFD700';
+        $result['commentNum'] = 999;
+    } else if (in_array($email, $master)) {      
+        $result['userLevel'] = '基友';
+        $result['userDesc'] = '很帅的基友';
+        $result['bgColor'] = '#65C186';
+        $result['commentNum'] = 888;
+    } else {
+        //数据库获取
+        $db = Typecho_Db::get();
+        //获取评论条数
+        $commentNumSql = $db->fetchAll($db->select(array('COUNT(cid)'=>'commentNum'))
+            ->from('table.comments')
+            ->where('mail = ?', $email));
+        $commentNum = $commentNumSql[0]['commentNum'];
+        
+        //获取友情链接
+        $linkSql = $db->fetchAll($db->select()->from('table.links')
+            ->where('user = ?',$email));
+        
+        //等级判定
+        if($commentNum==1){
+            $result['userLevel'] = '初识';
+            $result['bgColor'] = '#999999';
+            $userDesc = '你已经向目的地迈出了第一步！';
+        } else {
+            if ($commentNum<3 && $commentNum>1) {
+                $result['userLevel'] = '初识';
+                $result['bgColor'] = '#999999';
+            }elseif ($commentNum<9 && $commentNum>=3) {
+                $result['userLevel'] = '朋友';
+                $result['bgColor'] = '#A0DAD0';
+            }elseif ($commentNum<27 && $commentNum>=9) {
+                $result['userLevel'] = '好友';
+                $result['bgColor'] = '#FF8C00';
+            }elseif ($commentNum<81 && $commentNum>=27) {
+                $result['userLevel'] = '挚友';
+                $result['bgColor'] = '#FF0000';
+            }elseif ($commentNum<100 && $commentNum>=81) {
+                $result['userLevel'] = '兄弟';
+                $result['bgColor'] = '#006400';
+            }elseif ($commentNum>=100) {
+                $result['userLevel'] = '老铁';
+                $result['bgColor'] = '#A0DAD0';
+            }
+             $userDesc = '你已经向目的地前进了'.$commentNum.'步！'; 
+        }
+        if($linkSql){
+            $result['userLevel'] = '博友';
+            $result['bgColor'] = '#21b9bb';
+            $userDesc = '🔗'.$linkSql[0]['description'].'&#10;✌️'.$userDesc;
+        }
+        
+        $result['userDesc'] = $userDesc;
+        $result['commentNum'] = $commentNum;
+    } 
+    return $result;
+}
+
+/** 获取评论者归属地信息 */
+function convertip($ip){  
+    echo convertips($ip);
+    }
