@@ -15,7 +15,7 @@ https://www.imsun.org/archives/1640.html
 
 [Docker 自动同步豆瓣书影音记录](https://fatesinger.com/103483)
 
-主题设置处填入API
+在新建页面选择`豆瓣`, 在自定义字段设置`douban`值为API地址. (默认为`https://db.imsun.org`)
 
 ### 友情链接
 
@@ -50,6 +50,11 @@ https://www.imsun.org/archives/1640.html
 在自定义字段中填入`memosID`默认值为`1`,不为`1`时才需要设置
 在自定义字段中填入`memostag`默认值为`好物`,不为`好物`时才需要设置
 
+memos的写法可以参照
+
+## 版权
+
+使用本主题请保留原作者的版权信息 谢谢合作
 
 ## 感谢
 
