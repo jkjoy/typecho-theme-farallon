@@ -1,6 +1,6 @@
 <?php 
 /**
- * 说说页面1 - Mastodon
+ * 说说测试页面 - Mastodon
  *
  * @package custom
  */
