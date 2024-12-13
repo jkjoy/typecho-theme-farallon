@@ -60,7 +60,7 @@ function themeConfig($form) {
     $form->addInput($showtime);
     $qqboturl = new Typecho_Widget_Helper_Form_Element_Text('qqboturl', NULL, 'https://bot.asbid.cn', _t('QQ机器人API,保持默认则需添加 2280858259 为好友'), _t('基于cqhttp,有评论时QQ通知'));
     $form->addInput($qqboturl);
-    $qqnum = new Typecho_Widget_Helper_Form_Element_Text('qqnum', NULL, '80116747', _t('QQ号码'), _t('用于接收QQ通知的号码'));
+    $qqnum = new Typecho_Widget_Helper_Form_Element_Text('qqnum', NULL, '122790336', _t('QQ号码'), _t('用于接收QQ通知的号码'));
     $form->addInput($qqnum);
 } 
 function get_post_view($archive) {
