@@ -11,11 +11,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <h1 class="post--single__title"><?php $this->title() ?></h1>
         <?php Typecho_Widget::widget('Widget_Stat')->to($quantity); ?>
         <h2 class="post--single__subtitle">共包含 <?php $quantity->publishedPostsNum(); ?> 篇文章</h2>
-        <?php if ($this->options->showallwords): ?>
-        <h3><?php echo allwords(); ?></h3>
-        <?php endif; ?>
-</header>
-<div class="page--archive">
+    </header>
+    <div class="page--archive">
     <?php
         $stat = Typecho_Widget::widget('Widget_Stat');
         Typecho_Widget::widget('Widget_Contents_Post_Recent', 'pageSize=' . $stat->publishedPostsNum)->to($archives);
@@ -57,7 +54,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         $output .= '</div>'; // End archives container
         echo $output;
     ?>
-</div>
+    </div>
 </section>
 <?php $this->need('footer.php'); ?>
  

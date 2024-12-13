@@ -14,12 +14,18 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </header>
     <div class="site--main">
     <div class="db--container"></div>
-    <script>
-     new Douban({
-     baseAPI: '<?php $this->options->doubanID() ?>', // api
-     container: ".db--container", // 容器名
-    });
-    </script>
+    <?php
+       // 获取自定义字段 douban 的值，如果不存在则使用默认值
+        $douban = $this->fields->douban ? $this->fields->douban : 'https://db.imsun.org/';
+       // 确保URL末尾只有一个斜杠
+        $douban = rtrim($douban, '/') . '/';
+    ?>
+<script>
+new Douban({
+    baseAPI: <?php echo json_encode($douban); ?>,
+    container: ".db--container",
+});
+</script>
 </div>
 </section>
 <?php $this->need('footer.php'); ?>

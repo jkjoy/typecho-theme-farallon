@@ -8,10 +8,6 @@ function themeConfig($form) {
     $form->addInput($icoUrl);
     $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('置顶文章cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页展示置顶文章。'));
     $form->addInput($sticky);
-    $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
-    array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否在文章页面显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
-    $form->addInput($showProfile);
     $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, 'https://Instagram.com/', _t('Instagram'), _t('会在个人信息显示'));
     $form->addInput($instagramurl);
     $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, 'https://t.me/', _t('电报'), _t('会在个人信息显示'));
@@ -30,22 +26,20 @@ function themeConfig($form) {
     $form->addInput($midimg);
     $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'), _t('不填写则不显示'));
     $form->addInput($donate);
-    $doubanID = new Typecho_Widget_Helper_Form_Element_Text('doubanID', NULL, 'https://db.imsun.org/', _t('豆瓣页面必需API,包含"/"'), _t('使用豆瓣页面时需要设置'));
-    $form->addInput($doubanID);
     $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'), _t('不填写则不显示'));
     $form->addInput($twikoo);
     $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('添加head'), _t('支持HTML'));
     $form->addInput($addhead);
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
     $form->addInput($tongji);
+    $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
+    array('0'=> _t('否'), '1'=> _t('是')),
+    '0', _t('是否在文章页面显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
+    $form->addInput($showProfile);
     $showcate = new Typecho_Widget_Helper_Form_Element_Radio('showcate',
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否在文章页面显示文章分类'), _t('选择“是”将在文章页面显示文章的分类信息。'));
     $form->addInput($showcate);
-    $showallwords = new Typecho_Widget_Helper_Form_Element_Radio('showallwords',
-    array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否显示归档字数统计'), _t('选择“是”将在归档页面显示全站总字数。'));
-    $form->addInput($showallwords);
     $showrelated = new Typecho_Widget_Helper_Form_Element_Radio('showrelated',
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否显示相关文章'), _t('选择“是”将在文章页面显示相关文章。'));
@@ -118,70 +112,6 @@ function timer_start() {
     return $r;
     }
 
-/*
- * 全站字数
- */
-function allwords() {
-    $chars = 0;
-    $db = Typecho_Db::get();
-    $select = $db ->select('text')->from('table.contents');//如果只要统计文章总字数不要统计单页的话可在后面加入->where('type = ?','post')
-    $rows = $db->fetchAll($select);
-    foreach ($rows as $row) { $chars += mb_strlen(trim($row['text']), 'UTF-8'); }
-    if($chars<50000){
-    echo '全站共 '.$chars.' 字,还在努力更新中,加油！加油啦！';}
-    elseif ($chars<70000 && $chars>50000){
-    echo '全站共 '.$chars.' 字，写完一本埃克苏佩里的《小王子》了！';}
-    elseif ($chars<90000 && $chars>70000){
-    echo '全站共 '.$chars.' 字，写完一本鲁迅的《呐喊》了！';}
-    elseif ($chars<100000 && $chars>90000){
-    echo '全站共 '.$chars.' 字，写完一本林海音的《城南旧事》了！';}
-    elseif ($chars<110000 && $chars>100000){
-    echo '全站共 '.$chars.' 字，写完一本马克·吐温的《王子与乞丐》了！';}
-    elseif ($chars<120000 && $chars>110000){
-    echo '全站共 '.$chars.' 字，写完一本鲁迅的《彷徨》了！';}
-    elseif ($chars<130000 && $chars>120000){
-    echo '全站共 '.$chars.' 字，写完一本余华的《活着》了！';}
-    elseif ($chars<140000 && $chars>130000){
-    echo '全站共 '.$chars.' 字，写完一本曹禺的《雷雨》了！';}
-    elseif ($chars<150000 && $chars>140000){
-    echo '全站共 '.$chars.' 字，写完一本史铁生的《宿命的写作》了！';}
-    elseif ($chars<160000 && $chars>150000){
-    echo '全站共 '.$chars.' 字，写完一本伯内特的《秘密花园》了！';}
-    elseif ($chars<170000 && $chars>160000){
-    echo '全站共 '.$chars.' 字，写完一本曹禺的《日出》了！';}
-    elseif ($chars<180000 && $chars>170000){
-    echo '全站共 '.$chars.' 字，写完一本马克·吐温的《汤姆·索亚历险记》了！';}
-    elseif ($chars<190000 && $chars>180000){
-    echo '全站共 '.$chars.' 字，写完一本沈从文的《边城》了！';}
-    elseif ($chars<200000 && $chars>190000){
-    echo '全站共 '.$chars.' 字，写完一本亚米契斯的《爱的教育》了！';}
-    elseif ($chars<210000 && $chars>200000){
-    echo '全站共 '.$chars.' 字，写完一本巴金的《寒夜》了！';}
-    elseif ($chars<220000 && $chars>210000){
-    echo '全站共 '.$chars.' 字，写完一本东野圭吾的《解忧杂货店》了！';}
-    elseif ($chars<230000 && $chars>220000){
-    echo '全站共 '.$chars.' 字，写完一本莫泊桑的《一生》了！';}
-    elseif ($chars<250000 && $chars>230000){
-    echo '全站共 '.$chars.' 字，写完一本简·奥斯汀的《傲慢与偏见》了！';}
-    elseif ($chars<280000 && $chars>250000){
-    echo '全站共 '.$chars.' 字，写完一本钱钟书的《围城》了！';}
-    elseif ($chars<300000 && $chars>280000){
-    echo '全站共 '.$chars.' 字，写完一本张炜的《古船》了！';}
-    elseif ($chars<310000 && $chars>300000){
-    echo '全站共 '.$chars.' 字，写完一本茅盾的《子夜》了！';}
-    elseif ($chars<320000 && $chars>310000){
-    echo '全站共 '.$chars.' 字，写完一本阿来的《尘埃落定》了！';}
-    elseif ($chars<340000 && $chars>320000){
-    echo '全站共 '.$chars.' 字，写完一本艾米莉·勃朗特的《呼啸山庄》了！';}
-    elseif ($chars<350000 && $chars>340000){
-    echo '全站共 '.$chars.' 字，写完一本雨果的《巴黎圣母院》了！';}
-    elseif ($chars<400000 && $chars>350000){
-    echo '全站共 '.$chars.' 字，写完一本东野圭吾的《白夜行》了！';}
-    elseif ($chars<1000000 && $chars>400000){
-    echo '全站共 '.$chars.' 字，写完一本我国著名的四大名著了！';}
-    elseif ($chars>1000000){
-    echo '全站共 '.$chars.' 字，已写一本列夫·托尔斯泰的《战争与和平》了！';}
-} 
 function img_postthumb($cid) {
     $db = Typecho_Db::get();
     $rs = $db->fetchRow($db->select('table.contents.text')
