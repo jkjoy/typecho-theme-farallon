@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * 文章归档
  *
@@ -20,7 +20,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         $output = '<div class="archives">'; // Start archives container      
         while ($archives->next()) {
             $year_tmp = date('Y', $archives->created);
-            $mon_tmp = date('m', $archives->created);         
+            $mon_tmp = date('m', $archives->created);  
+            
             // 检查是否需要新的年份标题
             if ($year != $year_tmp) {
                 if ($year > 0) {
@@ -28,7 +29,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
                 }
                 $year = $year_tmp; 
                 $mon = 0; // 重置月份
-                $output .= '<div class="archive-year"><h2 class="archive--title__year">' . $year . '</h2>'; // 开始新的年份div
+                $output .= '<div class="archive-year"><h2 class="archive--title__year">' . $year . '年</h2>'; // 开始新的年份div
             }       
             // 检查是否需要新的月份标题
             if ($mon != $mon_tmp) {
@@ -36,7 +37,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
                     $output .= '</ul>'; // 结束上一个月份的列表
                 }
                 $mon = $mon_tmp; 
-                $output .= '<h3 class="archive--title__month"></h3>';// '. $mon . '
+                $output .= '<h3 class="archive--title__month">' . $mon . '月</h3>'; 
                 $output .= '<ul class="archive--list">'; // 开始新的月份列表
             }
             // 输出文章项
@@ -57,4 +58,3 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </div>
 </section>
 <?php $this->need('footer.php'); ?>
- 
