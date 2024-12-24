@@ -1,6 +1,5 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
-require_once 'qqwry.php';
 function themeConfig($form) {
     $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'));
     $form->addInput($logoUrl);
@@ -336,41 +335,25 @@ function commentApprove($widget, $email = NULL)
         "commentNum" => 0//评论数量
     );
     if (empty($email)) return $result;      
-    
-    $result['state'] = 1;
-    $master = array(      
-        '基友邮箱1@qq.com',
-        '基友邮箱1@qq.com'
-    );      
+    $result['state'] = 1;     
     if ($widget->authorId == $widget->ownerId) {      
         $result['isAuthor'] = 1;
-        $result['userLevel'] = '博主';
-        $result['userDesc'] = '很帅的博主';
+        $result['userLevel'] = '作者';
+        $result['userDesc'] = '博主';
         $result['bgColor'] = '#FFD700';
         $result['commentNum'] = 999;
-    } else if (in_array($email, $master)) {      
-        $result['userLevel'] = '基友';
-        $result['userDesc'] = '很帅的基友';
-        $result['bgColor'] = '#65C186';
-        $result['commentNum'] = 888;
     } else {
-        //数据库获取
         $db = Typecho_Db::get();
-        //获取评论条数
         $commentNumSql = $db->fetchAll($db->select(array('COUNT(cid)'=>'commentNum'))
             ->from('table.comments')
             ->where('mail = ?', $email));
         $commentNum = $commentNumSql[0]['commentNum'];
-        
-        //获取友情链接
         $linkSql = $db->fetchAll($db->select()->from('table.links')
             ->where('user = ?',$email));
-        
-        //等级判定
         if($commentNum==1){
             $result['userLevel'] = '初识';
             $result['bgColor'] = '#999999';
-            $userDesc = '你已经向目的地迈出了第一步！';
+            $userDesc = '初来乍到的新朋友';
         } else {
             if ($commentNum<3 && $commentNum>1) {
                 $result['userLevel'] = '初识';
@@ -391,7 +374,7 @@ function commentApprove($widget, $email = NULL)
                 $result['userLevel'] = '老铁';
                 $result['bgColor'] = '#A0DAD0';
             }
-             $userDesc = '你已经向目的地前进了'.$commentNum.'步！'; 
+             $userDesc = '已有'.$commentNum.'条评论'; 
         }
         if($linkSql){
             $result['userLevel'] = '博友';
@@ -405,19 +388,22 @@ function commentApprove($widget, $email = NULL)
     return $result;
 }
 
-
 /** 获取评论者地址 */
 function get_ip_location($ip) {
-    $qqwry = new QQWry(__DIR__ . '/dist/qqwry.dat');
-    $detail = $qqwry->getDetail($ip);
-    if ($detail) {
-        // Assuming dataA is country and dataB is province
+    $apiUrl = "https://www.nazo.run/ip/{$ip}";
+    $response = file_get_contents($apiUrl);
+    $data = json_decode($response, true);
+
+    if ($data && $data['code'] == 0) {
         return array(
-            'country' => $detail['dataA']
+            'country' => $data['data']['country'],
+            'region' => $data['data']['region'],
+            'city' => $data['data']['city']
         );
-    } else {
-        return array(
-            'country' => 'Unknown'
-        );
-    }
+    } 
+}
+function display_location($location) {
+    echo htmlspecialchars($location['country'] ?? 'Unknown') . ' ' .
+    htmlspecialchars($location['region'] ?? ' ') . ' ' .
+    htmlspecialchars($location['city'] ?? ' ');
 }
