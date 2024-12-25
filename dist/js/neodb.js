@@ -3,7 +3,6 @@ class NeoDB {
         this.container = config.container;
         this.types = config.types ?? ["book", "movie", "tv", "music", "game", "podcast"];
         this.baseAPI = config.baseAPI;
-        this.ver = "1.0.6";
         this.type = "movie";
         this.status = "complete";
         this.finished = false;
