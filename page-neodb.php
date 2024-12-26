@@ -15,11 +15,11 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </header>
     <div class="site--main">
     <div class="neodb-container"></div>
-    <?php $neodb = $this->fields->neodb ? $this->fields->neodb : 'https://neodb.imsun.org/'; ?>
+    <?php $neodb = $this->fields->neodb ? $this->fields->neodb : 'https://neodb.imsun.org'; ?>
 <script>
 const neodb = new NeoDB({
     container: ".neodb-container",
-    baseAPI: "<?php echo $neodb; ?>api",
+    baseAPI: "<?php echo $neodb; ?>/api",
     types: ["book", "movie", "tv", "music", "game"],
 });    
 </script>
