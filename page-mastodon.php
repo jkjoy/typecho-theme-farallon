@@ -24,10 +24,18 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 window.onload = function() {
     let offset = 0; // 初始偏移量
     const limit = 20; // 每次加载的数量
+
     function formatHTML(toots) {
         let htmlString = '';      
         toots.forEach(toot => {
-            const { content, account, url, created_at, media_attachments} = toot;
+            // 判断是否存在 reblog
+            const isReblog = toot.reblog && toot.reblog.content;
+            const content = isReblog ? toot.reblog.content : toot.content;
+            const url = isReblog ? toot.reblog.url : toot.url;
+            const account = isReblog ? toot.reblog.account : toot.account;
+            const created_at = isReblog ? toot.reblog.created_at : toot.created_at;
+            const media_attachments = isReblog ? toot.reblog.media_attachments : toot.media_attachments;
+
             let mediaHTML = ''; // 初始化资源相关HTML为空字符串
             // 处理媒体附件
             if (media_attachments.length > 0) {
@@ -56,6 +64,7 @@ window.onload = function() {
         });
         return htmlString;
     }
+
     function fetchToots() {
         return fetch('<?php echo $tooot; ?>')
             .then(response => response.json())
@@ -64,6 +73,7 @@ window.onload = function() {
                 return [];
             });
     }
+
     function fetchAndDisplayToots() {
         fetchToots().then(data => {
             const memosContainer = document.getElementById('tooot');
@@ -76,18 +86,20 @@ window.onload = function() {
             }
         });
     }
+
     // 在页面加载完成后获取并展示 toots
     fetchAndDisplayToots();
+
     // 绑定“加载更多”按钮的点击事件
     document.getElementById('loadmore').addEventListener('click', fetchAndDisplayToots);
 };
+
 window.ViewImage && ViewImage.init('.content img');
 </script>         
 <style>
 div pre code {
-  /* 迫使文字断行 */
-  white-space: pre-wrap; /* CSS3 */
-  word-wrap: break-word; /* 老版本的浏览器 */
+  white-space: pre-wrap;  
+  word-wrap: break-word; 
   overflow-wrap: break-word;  
   word-break: break-all;  
   word-break: break-word;  
