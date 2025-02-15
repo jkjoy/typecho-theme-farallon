@@ -389,21 +389,21 @@ function commentApprove($widget, $email = NULL)
 }
 
 /** 获取评论者地址 */
-function get_ip_location($ip) {
-    $apiUrl = "https://www.nazo.run/ip/{$ip}";
-    $response = file_get_contents($apiUrl);
-    $data = json_decode($response, true);
-
-    if ($data && $data['code'] == 0) {
-        return array(
-            'country' => $data['data']['country'],
-            'region' => $data['data']['region'],
-            'city' => $data['data']['city']
-        );
-    } 
-}
-function display_location($location) {
-    echo htmlspecialchars($location['country'] ?? 'Unknown') . ' ' .
-    htmlspecialchars($location['region'] ?? ' ') . ' ' .
-    htmlspecialchars($location['city'] ?? ' ');
-}
+//function get_ip_location($ip) {
+//    $apiUrl = "https://www.nazo.run/ip/{$ip}";
+//    $response = file_get_contents($apiUrl);
+//    $data = json_decode($response, true);
+//
+//    if ($data && $data['code'] == 0) {
+//        return array(
+ //           'country' => $data['data']['country'],
+//            'region' => $data['data']['region'],
+//            'city' => $data['data']['city']
+//        );
+//    } 
+//}
+//function display_location($location) {
+//    echo htmlspecialchars($location['country'] ?? 'Unknown') . ' ' .
+//    htmlspecialchars($location['region'] ?? ' ') . ' ' .
+//    htmlspecialchars($location['city'] ?? ' ');
+//}
