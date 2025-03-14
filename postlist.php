@@ -116,9 +116,7 @@ foreach ($normalPosts as $normalPost) {
             </a>
 		</h2>
         <div class="description">
-            <!-- 本功能实现 借助插件 AIsummary 实现 -->
-       <?php
-        // 判断是否存在自定义字段summary并输出，否则输出自动生成的摘要
+        <?php
         if($this->fields->summary){
         echo $this->fields->summary;
          } else {
@@ -158,10 +156,13 @@ foreach ($normalPosts as $normalPost) {
        $firstImage = img_postthumb($this->cid);
        $cover = $this->fields->cover;
        $imageToDisplay = !empty($cover) ? $cover : $firstImage;
-       if($imageToDisplay): ?>
-    <img src="<?php echo $imageToDisplay; ?>" alt="文章图片" class="cover"/>
+       if($imageToDisplay): 
+    ?>
+       <a href="<?php $this->permalink() ?>" class="cover--link">
+        <img src="<?php echo $imageToDisplay; ?>" alt="<?php $this->title() ?>" class="cover" itemprop="image"/>
+       </a>
     <?php endif; ?>  
-</article>
+    </article>
 	<?php endwhile; ?>
     <?php
             $this->pageNav(

@@ -388,6 +388,50 @@ function commentApprove($widget, $email = NULL)
     return $result;
 }
 
+/**
+ * 图片灯箱 
+ */
+class ImageStructureProcessor {
+    public static function processContent($content, $widget) {
+        if ($widget instanceof Widget_Archive) {
+            $dom = new DOMDocument();
+            @$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), 
+                          LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+            $xpath = new DOMXPath($dom);
+            
+            // 查找所有没有父 figure 的图片
+            $images = $xpath->query("//img[not(ancestor::figure)]");
+            
+            foreach ($images as $img) {
+                // 创建容器元素
+                $figure = $dom->createElement('figure');
+                $figure->setAttribute('class', 'grap--figure');
+                
+                // 为图片添加 viewimage 属性
+                $img->setAttribute('data-viewimage', '');
+                // 可选：添加额外属性用于分组
+                $img->setAttribute('data-viewimage-group', 'post');
+                
+                // 创建 figcaption
+                $caption = $dom->createElement('figcaption', $img->getAttribute('alt'));
+                $caption->setAttribute('class', 'imageCaption');
+                
+                // 重组 DOM 结构
+                $img->parentNode->replaceChild($figure, $img);
+                $figure->appendChild($img);
+                $figure->appendChild($caption);
+            }
+            
+            $content = $dom->saveHTML();
+        }
+        return $content;
+    }
+}
+
+// 挂载到内容输出
+Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('ImageStructureProcessor', 'processContent');
+
 /** 获取评论者地址 */
 //function get_ip_location($ip) {
 //    $apiUrl = "https://www.nazo.run/ip/{$ip}";
