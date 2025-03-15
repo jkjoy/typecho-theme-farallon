@@ -3,7 +3,6 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-    <html lang="zh-CN">
     <meta charset="<?php $this->options->charset(); ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="renderer" content="webkit">
@@ -23,7 +22,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <?php $this->options->addhead(); ?>
 </head>
 <body>
-<script>
+    <script>
         window.DEFAULT_THEME = "light";
         if (localStorage.getItem("theme") == null) {
             localStorage.setItem("theme", window.DEFAULT_THEME);
@@ -60,14 +59,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
             </ul>
 		</nav>
                     <!-- 这年头谁会用站内的搜索啊      --> 
-        <div class="search--area">
-            <form id="search" method="post" action="./" role="search" class="search-form">
-            <label>
-				<input type="text" name="s" class="search-field text" placeholder="Search" required/>
-            </label>
-                <button type="submit" class="search-submit submit">搜索</button>
-			</form>                 
-        </div>
+            <div class="search--area">
+                <form id="search" method="post" action="./" role="search" class="search-form">
+                    <label>
+				        <input type="text" name="s" class="search-field text" placeholder="Search" required/>
+                    </label>
+                    <button type="submit" class="search-submit submit">搜索</button>
+			    </form>                 
+            </div>
         </div> 
     </div>
      <svg class="svgIcon" width="25" height="25" data-action="show-search">

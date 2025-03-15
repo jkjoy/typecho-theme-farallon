@@ -97,7 +97,6 @@
              //复制方法
             copy: function () {
             var that = this;
-            //注意vue umd版本ClipboardJS，而ES包请使用Clipboard
             var clipboard = new ClipboardJS(".link",{
                 text: function (trigger) {
                 //返回字符串
@@ -118,7 +117,6 @@
                 toast.textContent = "复制成功！";
                 toast.className = "notice--wrapper";
                 document.body.appendChild(toast);
-
                 setTimeout(() => {
                     document.body.removeChild(toast);
                 }, 3000);
@@ -141,7 +139,6 @@
     <?php
     // 初始化分类图片地址为空
     $categoryImage = '';
-
     // 检查文章是否有分类
     if ($this->categories) {
         // 获取第一个分类的信息
@@ -149,15 +146,12 @@
         $categoryId = $category['mid'];
         $categoryName = $category['name'];
         $categoryDescription = $category['description'];  // 如果分类有说明（描述）
-
         // 获取主题选项中的分类图片基本 URL
         $themeUrl = $this->options->midimg;
-
         // 生成分类图片地址
         $categoryImage = $themeUrl . $categoryId . '.jpg';
     }
     ?>
-
     <!-- 显示分类信息 -->
     <?php if ($category): ?>
         <div class="category--card__list">
@@ -202,7 +196,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const targetClassElement = document.querySelector('.post--single__title');
     const postContent = document.querySelector('.post--single__content');
     if (!postContent) return;
-
     let found = false;
     for (let i = 1; i <= 6 &&!found; i++) {
         if (postContent.querySelector(`h${i}`)) {
@@ -210,21 +203,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
     if (!found) return;
-
     const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
     const toc = document.createElement('div');
     toc.id = 'toc';
     toc.innerHTML = '<details class="toc" open><summary class="toc-title">目录</summary><nav id="TableOfContents"><ul></ul></nav></details>';
-
     // 插入到指定 class 元素之后
     if (targetClassElement) {
         targetClassElement.parentNode.insertBefore(toc, targetClassElement.nextSibling);
     }
-
     let currentLevel = 0;
     let currentList = toc.querySelector('ul');
     let levelCounts = [0];
-
     heads.forEach((head, index) => {
         const level = parseInt(head.tagName.substring(1));
         if (levelCounts[level] === undefined) {
@@ -293,16 +282,12 @@ function fetchWithRetry(url, retries = 3) {
             throw error;
         });
 }
-
 document.addEventListener('DOMContentLoaded', function() {
     const doubanLinks = document.querySelectorAll('a[href^="https://movie.douban.com/subject/"]');
-
     doubanLinks.forEach(link => {
         const url = link.href;
         const movieId = url.match(/subject\/(\d+)/)[1];
-
         link.innerHTML += ' <span class="loading">(加载中...)</span>';
-
         fetchWithRetry(`<?php $this->options->themeUrl('db.php'); ?>?id=${movieId}`)
             .then(data => {
                 const movieInfo = createMovieInfoHTML(data, url);
@@ -323,12 +308,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 });
-
 function createMovieInfoHTML(data, originalUrl) {
     if (!data || data.error || Object.keys(data).length === 0) {
         return `<a href="${originalUrl}" target="_blank">查看豆瓣电影详情</a>`;
     }
-
     return `
     <div class=doulist-item>
     <div class=doulist-subject>
@@ -348,10 +331,9 @@ function createMovieInfoHTML(data, originalUrl) {
         </div> 
     </div>     
     </div>
-
     `;
 }
-
 </script>
-
+<link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/lightbox.min.css'); ?>">
+<script src="<?php $this->options->themeUrl('/dist/js/lightbox-plus-jquery.min.js'); ?>"></script>
 <?php $this->need('footer.php'); ?>
