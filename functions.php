@@ -135,51 +135,102 @@ function getPermalinkFromCoid($coid) {
 }
 
 /**
- * 图片灯箱 
+ * 图片灯箱
  */
 class ImageStructureProcessor {
     public static function processContent($content, $widget) {
-        if ($widget instanceof Widget_Archive) {
-            // 使用 DOM 操作确保结构完整性
-            $dom = new DOMDocument();
-            @$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), 
-                          LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-            $xpath = new DOMXPath($dom);
-            
-            // 查找所有没有父 figure 的图片
-            $images = $xpath->query("//img[not(ancestor::figure)]");
-            
-            foreach ($images as $img) {
-                // 创建容器元素
-                $figure = $dom->createElement('figure');
-                $figure->setAttribute('class', 'grap--figure');
-                
-                // 创建链接元素用于lightbox
-                $link = $dom->createElement('a');
-                $link->setAttribute('href', $img->getAttribute('src'));
-                $link->setAttribute('data-lightbox', 'image-set');
-                $link->setAttribute('data-title', $img->getAttribute('alt'));
-                
-                // 创建 figcaption
-                $caption = $dom->createElement('figcaption', $img->getAttribute('alt'));
-                $caption->setAttribute('class', 'imageCaption');
-                
-                // 重组 DOM 结构
-                $img->parentNode->replaceChild($figure, $img);
-                $link->appendChild($img);
-                $figure->appendChild($link);
-                $figure->appendChild($caption);
-            }
-            
-            $content = $dom->saveHTML();
+        // 首先检查内容是否为空
+        if (empty($content) || !is_string($content)) {
+            return $content;
         }
+
+        if ($widget instanceof Widget_Archive) {
+            try {
+                // 使用 DOM 操作确保结构完整性
+                $dom = new DOMDocument('1.0', 'UTF-8');
+                
+                // 添加错误处理
+                libxml_use_internal_errors(true);
+                
+                // 添加基础 HTML 结构以确保正确解析
+                $content = '<div>' . $content . '</div>';
+                
+                // 转换编码并加载内容
+                $content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
+                $dom->loadHTML($content, 
+                    LIBXML_HTML_NOIMPLIED | 
+                    LIBXML_HTML_NODEFDTD | 
+                    LIBXML_NOERROR | 
+                    LIBXML_NOWARNING
+                );
+
+                $xpath = new DOMXPath($dom);
+                
+                // 查找所有没有父 figure 的图片
+                $images = $xpath->query("//img[not(ancestor::figure)]");
+                
+                if ($images->length > 0) {
+                    foreach ($images as $img) {
+                        // 获取必要的属性
+                        $src = $img->getAttribute('src');
+                        $alt = $img->getAttribute('alt');
+                        
+                        if (empty($src)) {
+                            continue; // 跳过没有 src 的图片
+                        }
+
+                        // 创建容器元素
+                        $figure = $dom->createElement('figure');
+                        $figure->setAttribute('class', 'grap--figure');
+                        
+                        // 创建链接元素用于lightbox
+                        $link = $dom->createElement('a');
+                        $link->setAttribute('href', $src);
+                        $link->setAttribute('data-lightbox', 'image-set');
+                        $link->setAttribute('data-title', $alt);
+                        $link->setAttribute('class', 'no-style-link');
+                        
+                        // 只有在有 alt 属性时才创建 figcaption
+                        if (!empty($alt)) {
+                            $caption = $dom->createElement('figcaption', $alt);
+                            $caption->setAttribute('class', 'imageCaption');
+                        }
+                        
+                        // 重组 DOM 结构
+                        if ($img->parentNode) {
+                            $img->parentNode->replaceChild($figure, $img);
+                            $link->appendChild($img);
+                            $figure->appendChild($link);
+                            if (isset($caption)) {
+                                $figure->appendChild($caption);
+                            }
+                        }
+                    }
+                }
+                
+                // 获取处理后的内容
+                $content = $dom->saveHTML();
+                
+                // 清理临时添加的 div 标签
+                $content = preg_replace('/^<div>|<\/div>$/i', '', $content);
+                
+                // 清理 libxml 错误
+                libxml_clear_errors();
+                
+            } catch (Exception $e) {
+                // 记录错误但返回原始内容
+                error_log('Image processing error: ' . $e->getMessage());
+                return $content;
+            }
+        }
+        
         return $content;
     }
 }
 
-// 挂载到内容输出
-Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('ImageStructureProcessor', 'processContent');
+Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($content, $widget) {
+    return ImageStructureProcessor::processContent($content, $widget);
+};
 
 //获取文章卡片
 function get_article_info($atts) {

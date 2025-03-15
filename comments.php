@@ -50,7 +50,7 @@
         <?php if ($comments->have()): ?>
         <?php $comments->listComments(); ?>
       
-    <?php $comments->pageNav(
+        <?php $comments->pageNav(
                 ' ',
                 ' ',
                 1,
@@ -96,7 +96,7 @@ function threadedComments($comments, $options) {
         <div class="comment-body" id="<?php $comments->theId(); ?>">
             <div class="comment-meta">
                 <div class="comment--avatar">
-                <?php if ($comments->url): ?>
+                        <?php if ($comments->url): ?>
                             <a href="<?php echo $comments->url ?>" target="_blank" rel="external nofollow" title=" <?php echo $commentApprove['userDesc']; ?> ">
                                 <?php echo $comments->gravatar('40', ''); ?> 
                             </a>
