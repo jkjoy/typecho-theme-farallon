@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const url = link.href;
         const movieId = url.match(/subject\/(\d+)/)[1];
         link.innerHTML += ' <span class="loading">(加载中...)</span>';
-        fetchWithRetry(`<?php $this->options->themeUrl('db.php'); ?>?id=${movieId}`)
+        fetchWithRetry(`https://api.loliko.cn/movies/${movieId}`)
             .then(data => {
                 const movieInfo = createMovieInfoHTML(data, url);
                 const wrapper = document.createElement('div');

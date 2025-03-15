@@ -14,7 +14,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     <article class="post--single">
     <?php $tooot = $this->fields->tooot ? $this->fields->tooot : 'https://bbapi.ima.cm'; ?>
     <script src="<?php $this->options->themeUrl('/dist/js/marked.min.js'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('/dist/js/view-image.min.js'); ?>"></script>
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/lightbox.min.css'); ?>">
+    <script src="<?php $this->options->themeUrl('/dist/js/lightbox-plus-jquery.min.js'); ?>"></script>
     <div id="tooot"></div>
     <div class="nav-links" id="loadmore">
         <span class="loadmore">加载更多</span>
@@ -41,7 +42,7 @@ window.onload = function() {
             if (media_attachments.length > 0) {
                 media_attachments.forEach(attachment => {
                     if (attachment.type === 'image') {
-                        mediaHTML += `<a href="${attachment.url}" target="_blank"><img src="${attachment.preview_url}" class="thumbnail-image img" ></a>`;
+                        mediaHTML += `<a href="${attachment.url}" target="_blank" data-lightbox="image-set"><img src="${attachment.preview_url}" class="thumbnail-image img" ></a>`;
                     }
                 });
             }
@@ -64,7 +65,6 @@ window.onload = function() {
         });
         return htmlString;
     }
-
     function fetchToots() {
         return fetch('<?php echo $tooot; ?>')
             .then(response => response.json())
@@ -73,7 +73,6 @@ window.onload = function() {
                 return [];
             });
     }
-
     function fetchAndDisplayToots() {
         fetchToots().then(data => {
             const memosContainer = document.getElementById('tooot');
@@ -86,15 +85,11 @@ window.onload = function() {
             }
         });
     }
-
     // 在页面加载完成后获取并展示 toots
     fetchAndDisplayToots();
-
     // 绑定“加载更多”按钮的点击事件
     document.getElementById('loadmore').addEventListener('click', fetchAndDisplayToots);
 };
-
-window.ViewImage && ViewImage.init('.content img');
 </script>         
 <style>
 div pre code {

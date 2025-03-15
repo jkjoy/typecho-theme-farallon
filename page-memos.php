@@ -19,7 +19,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         ?>
     <article class="post--single">
     <script src="<?php $this->options->themeUrl('/dist/js/marked.min.js'); ?>"></script>
-    <script src="<?php $this->options->themeUrl('/dist/js/view-image.min.js'); ?>"></script>
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/lightbox.min.css'); ?>">
+    <script src="<?php $this->options->themeUrl('/dist/js/lightbox-plus-jquery.min.js'); ?>"></script>
     <div id="talk"></div>
     <div class="nav-links" id="loadmore">
         <span class="loadmore">加载更多</span>
@@ -82,7 +83,7 @@ function Format(item) {
     content = text.replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2" target="_blank">$1</a>`);
     if (imgs) {
         content += `<div class="resimg">`
-        imgs.forEach(e => content += `<a href="${e}"  class="img" data-thumb="${e}"><img class="no-lazyload thumbnail-image" src="${e}"></a>`
+        imgs.forEach(e => content += `<a href="${e}"  class="img" data-thumb="${e}" data-lightbox="images"><img class="no-lazyload thumbnail-image" src="${e}"></a>`
         )
         content += '</div>'
     }
@@ -114,7 +115,6 @@ document.getElementById('loadmore').addEventListener('click', function() {
     loadMemos(currentPage);
 });
 
-window.ViewImage && ViewImage.init('.content img');
 </script>
 <style> 
 div pre code {

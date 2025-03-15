@@ -13,7 +13,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </header>
     <section class="category--list">
     <?php $this->widget('Widget_Metas_Category_List')->to($categories); ?>
-<?php while($categories->next()): ?>
+    <?php while($categories->next()): ?>
     <?php
     // 获取分类 ID
     $categoryId = $categories->mid;
@@ -30,7 +30,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         </div>
         </div>
         </div>  
-<?php endwhile; ?>
+    <?php endwhile; ?>
     </section>
 </div>
 <?php $this->need('footer.php'); ?>
