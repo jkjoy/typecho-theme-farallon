@@ -133,7 +133,6 @@ function getPermalinkFromCoid($coid) {
 	if (empty($row)) return '';
 	return '<a href="#comment-'.$coid.'" style="text-decoration: none;">@'.$row['author'].'</a>';
 }
-
 /**
  * 图片灯箱
  */
@@ -166,8 +165,8 @@ class ImageStructureProcessor {
 
                 $xpath = new DOMXPath($dom);
                 
-                // 查找所有没有父 figure 的图片
-                $images = $xpath->query("//img[not(ancestor::figure)]");
+                // 查找所有没有父 figure 的图片，排除SVG
+                $images = $xpath->query("//img[not(ancestor::figure) and not(contains(@src, '.svg'))]");
                 
                 if ($images->length > 0) {
                     foreach ($images as $img) {
@@ -175,8 +174,9 @@ class ImageStructureProcessor {
                         $src = $img->getAttribute('src');
                         $alt = $img->getAttribute('alt');
                         
-                        if (empty($src)) {
-                            continue; // 跳过没有 src 的图片
+                        // 跳过没有src的图片或SVG格式的图片
+                        if (empty($src) || stripos($src, '.svg') !== false) {
+                            continue;
                         }
 
                         // 创建容器元素
