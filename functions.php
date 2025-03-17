@@ -21,7 +21,7 @@ function themeConfig($form) {
     $form->addInput($sitemapurl);
     $cnavatar = new Typecho_Widget_Helper_Form_Element_Text('cnavatar', NULL, 'https://cravatar.cn/avatar/', _t('Gravatar镜像'), _t('默认https://cravatar.cn/avatar/,建议保持默认'));
     $form->addInput($cnavatar);
-    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, './img/', _t('填写分类图片路径,以"/"结尾'), _t('可以使用本地目录或者CDN地址,自动匹配路径下以mid.jpg格式的图片,使用分类页面时需要设置'));
+    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, '/img/', _t('填写分类图片路径,以"/"结尾'), _t('默认使用网站根目录下的img文件夹,也可以填写绝对或者CDN地址,自动匹配目录下以分类ID为文件名的mid.jpg格式的图片'));
     $form->addInput($midimg);
     $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'), _t('不填写则不显示'));
     $form->addInput($donate);
