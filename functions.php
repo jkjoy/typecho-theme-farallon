@@ -52,6 +52,9 @@ function themeConfig($form) {
     '0', _t('是否显示页面加载时间'), _t('选择“是”将在页脚显示加载时间。'));
     $form->addInput($showtime);
 } 
+/*
+* 文章浏览数统计
+*/
 function get_post_view($archive) {
     $cid = $archive->cid;
     $db = Typecho_Db::get();
@@ -79,12 +82,12 @@ function get_post_view($archive) {
     }
     echo $row['views'];
 }
-// 获取Typecho的选项
+
+/** 头像镜像     */
 $options = Typecho_Widget::widget('Widget_Options');
-// 检查cnavatar是否已设置，如果未设置或为空，则使用默认的Gravatar前缀
 $gravatarPrefix = empty($options->cnavatar) ? 'https://cravatar.cn/avatar/' : $options->cnavatar;
-// 定义全局常量__TYPECHO_GRAVATAR_PREFIX__，用于存储Gravatar前缀
 define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
+
 /**
 * 页面加载时间
 */
@@ -107,6 +110,9 @@ function timer_start() {
     return $r;
     }
 
+/**
+* 获取文章第一张图片
+*/    
 function img_postthumb($cid) {
     $db = Typecho_Db::get();
     $rs = $db->fetchRow($db->select('table.contents.text')
@@ -232,7 +238,11 @@ Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($conte
     return ImageStructureProcessor::processContent($content, $widget);
 };
 
-//获取文章卡片
+/**
+ * *获取文章卡片
+ * **
+ * 
+*/
 function get_article_info($atts) {
     $default_atts = array(
         'id' => '',

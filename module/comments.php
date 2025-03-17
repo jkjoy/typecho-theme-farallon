@@ -50,11 +50,9 @@
         </div>
         <?php endif; ?>
     <?php else: ?>
-
     <?php endif; ?>
     <?php if ($comments->have()): ?>
     <?php $comments->listComments(); ?>
-  
     <?php $comments->pageNav(
             ' ',
             ' ',
@@ -77,7 +75,6 @@
     <?php endif; ?>
     <?php $this->options->twikoo(); ?>
 </div>
-
 <!-- 添加JavaScript代码 -->
 <script>
 document.getElementById('comment-form').addEventListener('submit', function() {
@@ -94,7 +91,6 @@ document.getElementById('comment-form').addEventListener('submit', function() {
         setCookie('__typecho_remember_url', url.value, 30);
     }
 });
-
 // Cookie设置函数
 function setCookie(name, value, days) {
     var expires = '';
@@ -106,7 +102,6 @@ function setCookie(name, value, days) {
     document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
 }
 </script>
-
 <?php
 function threadedComments($comments, $options) {
     $commentClass = '';

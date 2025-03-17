@@ -24,7 +24,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <?php endwhile; ?>
         </div>
         <?php else: ?>
-        <p class="text-center pb-2"><?php _e('没有任何标签'); ?></p>
+        <div style="display: grid; place-items: center;">
+            <p style="padding-bottom: 2px;"><?php _e('暂无标签'); ?></p>
+        </div>
         <?php endif; ?>
     </div>
 </section>

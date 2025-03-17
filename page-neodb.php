@@ -14,8 +14,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <h2 class="post--single__subtitle"><?php $this->content(); ?></h2>
     </header>
     <div class="site--main">
-    <div class="neodb-container"></div>
-    <?php $neodb = $this->fields->neodb ? $this->fields->neodb : 'https://neodb.imsun.org'; ?>
+        <div class="neodb-container"></div>
+            <?php $neodb = $this->fields->neodb ? $this->fields->neodb : 'https://neodb.imsun.org'; ?>
 <script>
 const neodb = new NeoDB({
     container: ".neodb-container",
@@ -23,6 +23,6 @@ const neodb = new NeoDB({
     types: ["book", "movie", "tv", "music", "game"],
 });    
 </script>
-</div>
+        </div>
 </section>
 <?php $this->need('./module/footer.php'); ?>

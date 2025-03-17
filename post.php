@@ -129,7 +129,7 @@
     <?php if($this->options->twikoo): ?> 
         <?php $this->options->twikoo(); ?> 
     <?php else: ?>
-        <?php $this->need('comments.php'); ?>
+        <?php $this->need('./module/comments.php'); ?>
     <?php endif; ?>
 <!--翻页-->
     <nav class="navigation post-navigation is-active">
