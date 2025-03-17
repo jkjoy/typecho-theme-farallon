@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tooltip = document.getElementById('copyTooltip');
     let timeoutId = null;
     // 确保初始状态下提示框是隐藏的
-    tooltip.style.display = 'none';
+    //tooltip.style.display = 'none';
     // 复制函数
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
