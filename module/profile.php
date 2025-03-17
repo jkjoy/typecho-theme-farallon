@@ -8,6 +8,6 @@
                 <?php $this->options->description() ?>
             </div>
             <div class="author--sns">
-                <?php $this->need('sns.php'); ?>      
+                <?php $this->need('./module/sns.php'); ?>      
             </div>
 </div>

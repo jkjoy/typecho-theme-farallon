@@ -5,9 +5,9 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('header.php'); ?>
-<link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/neodb.css'); ?>">
-<script src="<?php $this->options->themeUrl('/dist/js/neodb.js'); ?>"></script>
+<?php $this->need('./module/header.php'); ?>
+<link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/neodb.css'); ?>">
+<script src="<?php $this->options->themeUrl('assets/js/neodb.js'); ?>"></script>
 <section class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
@@ -25,4 +25,4 @@ const neodb = new NeoDB({
 </script>
 </div>
 </section>
-<?php $this->need('footer.php'); ?>
+<?php $this->need('./module/footer.php'); ?>

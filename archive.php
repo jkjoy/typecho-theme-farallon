@@ -1,5 +1,5 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('header.php'); ?>
+<?php $this->need('module/header.php'); ?>
 <main class="site--main">
     <header class="archive--header"><?php if ($this->have()): ?>
         <h2 class="post--single__title"><?php $this->archiveTitle(array(
@@ -74,4 +74,4 @@
         </header> 
         </main>        
         <?php endif; ?>   
-<?php $this->need('footer.php'); ?>
+<?php $this->need('module/footer.php'); ?>

@@ -5,7 +5,7 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
-$this->need('header.php');
+$this->need('./module/header.php');
 ?>
 
 <div class="site--main site--main__gears">
@@ -114,5 +114,5 @@ function parseGoodsTable($content) {
     return $goods;
 }
 
-$this->need('footer.php'); 
+$this->need('./module/footer.php'); 
 ?>

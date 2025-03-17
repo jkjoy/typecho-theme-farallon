@@ -1,0 +1,146 @@
+.donate-panel {
+    position: relative;
+    display: inline-block;
+}
+
+.button--like {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.button--like:hover {
+    transform: scale(1.1);
+}
+
+.icon--default {
+    fill: #666;
+    transition: fill 0.3s ease;
+}
+
+.button--like:hover .icon--default {
+    fill: #ff4081;
+}
+
+#qrcode-panel {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+    min-width: 240px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.qrcode-body {
+    text-align: center;
+}
+
+.donate-memo {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+#donate-close {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #666;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+#donate-close:hover {
+    color: #ff4081;
+}
+
+.donate-qrpay img {
+    max-width: 240px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    transition: opacity 0.3s ease;
+}
+
+/* 支付方式切换按钮样式 */
+.donate-methods {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.donate-method-btn {
+    padding: 5px 15px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    background: #f5f5f5;
+    color: #666;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.donate-method-btn.active {
+    background: #ff4081;
+    color: white;
+}
+
+.donate-method-btn:hover {
+    background: #ff4081;
+    color: white;
+}
+
+/* QR码容器样式 */
+.qr-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.qr-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.qr-image.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 小三角形 */
+#qrcode-panel:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+}

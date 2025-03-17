@@ -5,8 +5,8 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('header.php'); ?>
-<script src="<?php $this->options->themeUrl('/dist/js/db.js'); ?>"></script>
+<?php $this->need('./module/header.php'); ?>
+<script src="<?php $this->options->themeUrl('assets/js/db.js'); ?>"></script>
 <section class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
@@ -28,4 +28,4 @@ new Douban({
 </script>
 </div>
 </section>
-<?php $this->need('footer.php'); ?>
+<?php $this->need('./module/footer.php'); ?>

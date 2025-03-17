@@ -1,5 +1,5 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('header.php'); ?>
+<?php $this->need('module/header.php'); ?>
 <style>
 #toc {font-size:14px;padding:10px 15px;background-color:var(--farallon-background-gray);border-radius:10px;margin-bottom:20px}
 #toc  summary{cursor:pointer}
@@ -48,8 +48,8 @@
         <?php if($this->options->donate): ?> 
             <!--打赏  -->
         <div class="post--single__action">   
-        <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/donate.css'); ?>">
-        <script type="text/javascript" src="<?php $this->options->themeUrl('/dist/js/donate.js'); ?>"></script>
+        <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/donate.css'); ?>">
+        <script type="text/javascript" src="<?php $this->options->themeUrl('assets/js/donate.js'); ?>"></script>
             <div class="donate-panel"> 
             <div id="donate-btn">
                 <button class="button--like">
@@ -62,7 +62,7 @@
                 </div> 
                 <div id="qrcode-panel" style="display: none;"> 
                     <div class="qrcode-body"> 
-                        <div class="donate-memo"> 
+                        <div class="hidden"> 
                             <span id="donate-close">关闭</span> 
                         </div> 
                         <div class="donate-qrpay"> 
@@ -76,66 +76,20 @@
         <!-- 复制链接 -->
         <?php if($this->options->showshare): ?>
         <div class="post--share">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <g>
-                            <path d="M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 0 2.73 2.74 2.73 7.17 0 9.9l-1.42 1.42-1.41-1.42 1.41-1.41c1.96-1.96 1.96-5.12 0-7.07zm-2.12 3.53l-7.07 7.07-1.41-1.41 7.07-7.07 1.41 1.41zm-12.02.71l1.42-1.42 1.41 1.42-1.41 1.41c-1.96 1.96-1.96 5.12 0 7.07 1.95 1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z"></path>
-                        </g>
-                    </svg>
-                    <span class="text">复制链接</span>
-                    <span class="link" @click="copy" data-link="<?php $this->permalink(); ?>"><?php $this->permalink(); ?></span>
-                    <script src="<?php $this->options->themeUrl('/dist/js/vue.min.js'); ?>"></script>
-                    <script src="<?php $this->options->themeUrl('/dist/js/clipboard.min.js'); ?>"></script> 
-<script>
-        var app = new Vue({
-        el: '.post--share',  
-        data() {
-            return {
-               msg: "<?php $this->permalink(); ?>",    
-            };
-        },
-        methods: {
-             //复制方法
-            copy: function () {
-            var that = this;
-            var clipboard = new ClipboardJS(".link",{
-                text: function (trigger) {
-                //返回字符串
-                return that.msg;
-                }});
-            clipboard.on("success", (e) => {
-                //复制成功，显示提示
-                this.showCopySuccessToast();
-                clipboard.destroy();
-            });
-            clipboard.on("error", (e) => {
-                //复制失败
-                clipboard.destroy();
-            });
-            },
-            showCopySuccessToast: function() {
-                const toast = document.createElement("div");
-                toast.textContent = "复制成功！";
-                toast.className = "notice--wrapper";
-                document.body.appendChild(toast);
-                setTimeout(() => {
-                    document.body.removeChild(toast);
-                }, 3000);
-            }
-        }
-    });
-</script>
-</div>
-<?php endif; ?>
-<!-- TAG -->
+            <svg viewBox="0 0 24 24" aria-hidden="true"><g><path d="M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 0 2.73 2.74 2.73 7.17 0 9.9l-1.42 1.42-1.41-1.42 1.41-1.41c1.96-1.96 1.96-5.12 0-7.07zm-2.12 3.53l-7.07 7.07-1.41-1.41 7.07-7.07 1.41 1.41zm-12.02.71l1.42-1.42 1.41 1.42-1.41 1.41c-1.96 1.96-1.96 5.12 0 7.07 1.95 1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z"></path></g></svg>
+            <span class="text" data-copy="<?php $this->permalink(); ?>">复制链接</span><span class="link text"><?php $this->permalink(); ?></span><div class="notice--wrapper" id="copyTooltip" style="display: none;">复制成功！</div>
+        </div>
+        <?php endif; ?>   
+        <!-- TAG -->
         <div class="tag--list artile--tag"> 
             <?php $this->tags(' ', true, ' '); ?> 
         </div>     
-<!-- 个人信息-->
-<?php if ($this->options->showProfile): ?>
-    <?php $this->need('profile.php'); ?>
-<?php endif; ?>
-<!-- 分类-->
-<?php if ($this->options->showcate): ?>
+        <!-- 个人信息-->
+        <?php if ($this->options->showProfile): ?>
+           <?php $this->need('module/profile.php'); ?>
+        <?php endif; ?>
+        <!-- 分类-->
+        <?php if ($this->options->showcate): ?>
     <?php
     // 初始化分类图片地址为空
     $categoryImage = '';
@@ -169,7 +123,7 @@
 <?php endif; ?>
 <!-- 相关文章-->
 <?php if ($this->options->showrelated): ?>
-    <?php $this->need('related.php'); ?>
+    <?php $this->need('module/related.php'); ?>
 <?php endif; ?>
     <!-- 如果设置了第三方评论系统则使用第三方评论 -->
     <?php if($this->options->twikoo): ?> 
@@ -191,149 +145,7 @@
 </ul>    
 </article>
 </main>
-<script>
-document.addEventListener('DOMContentLoaded', (event) => {
-    const targetClassElement = document.querySelector('.post--single__title');
-    const postContent = document.querySelector('.post--single__content');
-    if (!postContent) return;
-    let found = false;
-    for (let i = 1; i <= 6 &&!found; i++) {
-        if (postContent.querySelector(`h${i}`)) {
-            found = true;
-        }
-    }
-    if (!found) return;
-    const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    const toc = document.createElement('div');
-    toc.id = 'toc';
-    toc.innerHTML = '<details class="toc" open><summary class="toc-title">目录</summary><nav id="TableOfContents"><ul></ul></nav></details>';
-    // 插入到指定 class 元素之后
-    if (targetClassElement) {
-        targetClassElement.parentNode.insertBefore(toc, targetClassElement.nextSibling);
-    }
-    let currentLevel = 0;
-    let currentList = toc.querySelector('ul');
-    let levelCounts = [0];
-    heads.forEach((head, index) => {
-        const level = parseInt(head.tagName.substring(1));
-        if (levelCounts[level] === undefined) {
-            levelCounts[level] = 1;
-        } else {
-            levelCounts[level]++;
-        }
-        // 重置下级标题的计数器
-        levelCounts = levelCounts.slice(0, level + 1);
-        if (currentLevel === 0) {
-            currentLevel = level;
-        }
-        while (level > currentLevel) {
-            let newList = document.createElement('ul');
-            if (!currentList.lastElementChild) {
-                currentList.appendChild(newList);
-            } else {
-                currentList.lastElementChild.appendChild(newList);
-            }
-            currentList = newList;
-            currentLevel++;
-            levelCounts[currentLevel] = 1;
-        }
-        while (level < currentLevel) {
-            currentList = currentList.parentElement;
-            if (currentList.tagName.toLowerCase() === 'li') {
-                currentList = currentList.parentElement;
-            }
-            currentLevel--;
-        }
-        const anchor = head.textContent.trim().replace(/\s+/g, '-');
-        head.id = anchor;
-        const item = document.createElement('li');
-        const link = document.createElement('a');
-        link.href = `#${anchor}`;
-        link.textContent = `${head.textContent}`;
-        link.style.textDecoration = 'none';
-        item.appendChild(link);
-        currentList.appendChild(item);
-    });
-});
-</script>
-<script>
-function fetchWithRetry(url, retries = 3) {
-    return fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();  // 首先获取文本响应
-        })
-        .then(text => {
-            try {
-                return JSON.parse(text);  // 尝试解析 JSON
-            } catch (e) {
-                console.error('Invalid JSON:', text);
-                throw new Error('Invalid JSON response');
-            }
-        })
-        .catch(error => {
-            if (retries > 0) {
-                console.log(`Retrying... (${retries} attempts left)`);
-                return new Promise(resolve => setTimeout(resolve, 1000))  // 等待1秒
-                    .then(() => fetchWithRetry(url, retries - 1));
-            }
-            throw error;
-        });
-}
-document.addEventListener('DOMContentLoaded', function() {
-    const doubanLinks = document.querySelectorAll('a[href^="https://movie.douban.com/subject/"]');
-    doubanLinks.forEach(link => {
-        const url = link.href;
-        const movieId = url.match(/subject\/(\d+)/)[1];
-        link.innerHTML += ' <span class="loading">(加载中...)</span>';
-        fetchWithRetry(`https://api.loliko.cn/movies/${movieId}`)
-            .then(data => {
-                const movieInfo = createMovieInfoHTML(data, url);
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = movieInfo;
-                link.parentNode.replaceChild(wrapper, link);
-            })
-            .catch(error => {
-                console.error('Error fetching movie data:', error);
-                // 显示错误消息给用户
-                link.innerHTML = `<span style="color: red;">加载失败</span> <a href="${url}" target="_blank">查看豆瓣电影详情</a>`;
-            })
-            .finally(() => {
-                const loadingSpan = link.querySelector('.loading');
-                if (loadingSpan) {
-                    loadingSpan.remove();
-                }
-            });
-    });
-});
-function createMovieInfoHTML(data, originalUrl) {
-    if (!data || data.error || Object.keys(data).length === 0) {
-        return `<a href="${originalUrl}" target="_blank">查看豆瓣电影详情</a>`;
-    }
-    return `
-    <div class=doulist-item>
-    <div class=doulist-subject>
-        <div class=doulist-post>
-           <img decoding=async referrerpolicy=no-referrer src=${data.img}>
-        </div>
-        <div class=doulist-content>
-            <div class=doulist-title>
-               <a href="${originalUrl}" class=cute target="_blank" rel="external nofollow"> ${data.name} </a>
-            </div>
-            <div class=rating>
-                <span class=rating_nums>豆瓣评分 : ${data.rating}</span>
-            </div>
-            <div class=abstract>
-               ${data.year}年 · ${data.country} · ${data.genre}  · 导演: ${data.director} · 演员 : ${data.actor} 
-            </div>
-        </div> 
-    </div>     
-    </div>
-    `;
-}
-</script>
-<link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/lightbox.min.css'); ?>">
-<script src="<?php $this->options->themeUrl('/dist/js/lightbox-plus-jquery.min.js'); ?>"></script>
-<?php $this->need('footer.php'); ?>
+<script src="<?php $this->options->themeUrl('assets/js/post.js'); ?>"></script>
+<link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/lightbox.min.css'); ?>">
+<script src="<?php $this->options->themeUrl('assets/js/lightbox-plus-jquery.min.js'); ?>"></script>
+<?php $this->need('module/footer.php'); ?>

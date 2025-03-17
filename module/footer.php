@@ -2,7 +2,7 @@
 <footer class="site--footer">
     <div class="site--footer__content">
         <div class=site--footer__sns>
-           <?php $this->need('sns.php'); ?>
+           <?php $this->need('./module/sns.php'); ?>
             <?php //sitemap填入
             if($this->options->sitemapurl): ?>
             <a href="<?php $this->options->sitemapurl() ?>" target="_blank" aria-label="网站地图">💗</a>
@@ -30,7 +30,7 @@
         </path>
     </svg>
 </div>
-<script src="<?php $this->options->themeUrl('/dist/js/bundle.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('assets/js/bundle.js'); ?>"></script>
 <?php $this->footer(); ?>
 </div>
 </body>

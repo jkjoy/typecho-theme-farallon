@@ -5,7 +5,7 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('header.php'); ?>
+<?php $this->need('./module/header.php'); ?>
 <div class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
@@ -13,9 +13,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </header>
     <article class="post--single">
     <?php $tooot = $this->fields->tooot ? $this->fields->tooot : 'https://bbapi.ima.cm'; ?>
-    <script src="<?php $this->options->themeUrl('/dist/js/marked.min.js'); ?>"></script>
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('/dist/css/lightbox.min.css'); ?>">
-    <script src="<?php $this->options->themeUrl('/dist/js/lightbox-plus-jquery.min.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('assets/js/marked.min.js'); ?>"></script>
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/lightbox.min.css'); ?>">
+    <script src="<?php $this->options->themeUrl('assets/js/lightbox-plus-jquery.min.js'); ?>"></script>
     <div id="tooot"></div>
     <div class="nav-links" id="loadmore">
         <span class="loadmore">加载更多</span>
@@ -175,4 +175,4 @@ img {
 }  
 </style>  
 </div>
-<?php $this->need('footer.php'); ?>
+<?php $this->need('./module/footer.php'); ?>
