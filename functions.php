@@ -7,6 +7,8 @@ function themeConfig($form) {
     $form->addInput($icoUrl);
     $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('置顶文章cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页展示置顶文章。'));
     $form->addInput($sticky);
+    $travel = new Typecho_Widget_Helper_Form_Element_Text('travel', NULL, '3', _t('travel分类 Mid'), _t('多个分类以`|`符号隔开'), _t('指定分类ID，用于区别展示'));
+    $form->addInput($travel);
     $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, 'https://Instagram.com/', _t('Instagram'), _t('会在个人信息显示'));
     $form->addInput($instagramurl);
     $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, 'https://t.me/', _t('电报'), _t('会在个人信息显示'));
@@ -51,7 +53,11 @@ function themeConfig($form) {
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否显示页面加载时间'), _t('选择“是”将在页脚显示加载时间。'));
     $form->addInput($showtime);
-} 
+}
+function saveThemeConfig($config) {
+    // 可以在这里添加额外的验证或处理逻辑
+    return $config;
+}
 /*
 * 文章浏览数统计
 */
@@ -243,6 +249,30 @@ Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($conte
  * **
  * 
 */
+function get_article_summary($post) {
+    // 首先尝试从自定义字段获取摘要
+    $db = Typecho_Db::get();
+    
+    // 查询自定义字段表
+    $row = $db->fetchRow($db->select()
+        ->from('table.fields')
+        ->where('cid = ?', $post['cid'])
+        ->where('name = ?', 'summary'));
+    
+    // 如果找到自定义摘要字段
+    if ($row && !empty($row['str_value'])) {
+        return $row['str_value'];
+    }
+    
+    // 如果没有自定义摘要，截取文章内容
+    // 去除HTML标签
+    $text = strip_tags($post['text']);
+    
+    // 截取指定长度的摘要
+    return Typecho_Common::subStr($text, 0, 100, '...');
+}
+
+// 在原函数中使用
 function get_article_info($atts) {
     $default_atts = array(
         'id' => '',
@@ -250,6 +280,8 @@ function get_article_info($atts) {
     );
     $atts = array_merge($default_atts, $atts);
     $db = Typecho_Db::get();
+
+    // 根据 ID 或 URL 获取文章
     if (!empty($atts['id'])) {
         $post = $db->fetchRow($db->select()->from('table.contents')
             ->where('cid = ?', $atts['id'])
@@ -261,27 +293,35 @@ function get_article_info($atts) {
     } else {
         return '请提供文章ID或URL';
     }
+
     if (!$post) {
         return '未找到文章';
     }
+
+    // 将文章数据推送到抽象内容小部件中
     $post = Typecho_Widget::widget('Widget_Abstract_Contents')->push($post);
 
+    // 获取摘要
+    $summary = get_article_summary($post);
+
     // 获取缩略图
+    $default_thumbnail = Helper::options()->themeUrl . '/assets/images/nopic.svg';
     $imageToDisplay = img_postthumb($post['cid']);
     if (empty($imageToDisplay)) {
-        $imageToDisplay = 'https://pic.0tz.top/img/nopic.png'; // 设置一个默认图片路径
+        $imageToDisplay = $default_thumbnail;
     }
 
+    // 构建输出
     $output = '<div class="graph--mixtapeEmbed">';
     $output .= '<a class="mixtapeContent" href="' . $post['permalink'] . '" target="_blank">';
-    $output .= '<span class="markup--strong markup--mixtapeEmbed-strong">' . $post['title'] . '</span>';
-    $output .= '<em class="markup--em markup--mixtapeEmbed-em">' . Typecho_Common::subStr(strip_tags($post['text']), 0, 100, '...') . '</em>';
+    $output .= '<span class="markup--strong markup--mixtapeEmbed-strong">' . htmlspecialchars($post['title']) . '</span>';
+    $output .= '<em class="markup--em markup--mixtapeEmbed-em">' . htmlspecialchars($summary) . '</em>';
     $output .= '</a>';
-    $output .= '<a class="mixtapeImage" href="' . $post['permalink'] . '" target="_blank" style="background-image:url(' . $imageToDisplay . ')"></a>';
+    $output .= '<a class="mixtapeImage" href="' . $post['permalink'] . '" target="_blank" style="background-image:url(' . htmlspecialchars($imageToDisplay) . ')"></a>';
     $output .= '</div>';
+
     return $output;
 }
-
 // 创建一个新的类来处理内容过滤
 class ContentFilter
 {
