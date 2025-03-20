@@ -435,8 +435,8 @@ function commentApprove($widget, $email = NULL)
             ->from('table.comments')
             ->where('mail = ?', $email));
         $commentNum = $commentNumSql[0]['commentNum'];
-        $linkSql = $db->fetchAll($db->select()->from('table.links')
-            ->where('user = ?',$email));
+        //$linkSql = $db->fetchAll($db->select()->from('table.links')
+        //    ->where('user = ?',$email));
         if($commentNum==1){
             $result['userLevel'] = '初识';
             $result['bgColor'] = '#999999';
@@ -463,11 +463,11 @@ function commentApprove($widget, $email = NULL)
             }
              $userDesc = '已有'.$commentNum.'条评论'; 
         }
-        if($linkSql){
-            $result['userLevel'] = '博友';
-            $result['bgColor'] = '#21b9bb';
-            $userDesc = '🔗'.$linkSql[0]['description'].'&#10;✌️'.$userDesc;
-        }
+       // if($linkSql){
+        //    $result['userLevel'] = '博友';
+        //    $result['bgColor'] = '#21b9bb';
+        //    $userDesc = '🔗'.$linkSql[0]['description'].'&#10;✌️'.$userDesc;
+       // }
         
         $result['userDesc'] = $userDesc;
         $result['commentNum'] = $commentNum;
