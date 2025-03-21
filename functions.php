@@ -188,45 +188,44 @@ class ImageStructureProcessor {
         if ($widget instanceof Widget_Archive) {
             try {
                 // 使用 DOM 操作确保结构完整性
-                $dom = new DOMDocument('1.0', 'UTF-8');               
+                $dom = new DOMDocument('1.0', 'UTF-8');
                 // 添加错误处理
-                libxml_use_internal_errors(true);               
+                libxml_use_internal_errors(true);
                 // 添加基础 HTML 结构以确保正确解析
-                $content = '<div>' . $content . '</div>';                
-                // 转换编码并加载内容
-                $content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
+                $content = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div>' . $content . '</div></body></html>';
+                // 直接加载内容到 DOM
                 $dom->loadHTML($content, 
                     LIBXML_HTML_NOIMPLIED | 
                     LIBXML_HTML_NODEFDTD | 
                     LIBXML_NOERROR | 
                     LIBXML_NOWARNING
                 );
-                $xpath = new DOMXPath($dom);               
-                // 查找所有没有父 figure 的图片，排除SVG
-                $images = $xpath->query("//img[not(ancestor::figure) and not(contains(@src, '.svg'))]");                
+                $xpath = new DOMXPath($dom);
+                // 查找所有没有父 figure 的图片，排除 SVG
+                $images = $xpath->query("//img[not(ancestor::figure) and not(contains(@src, '.svg'))]");
                 if ($images->length > 0) {
                     foreach ($images as $img) {
                         // 获取必要的属性
                         $src = $img->getAttribute('src');
-                        $alt = $img->getAttribute('alt');                        
-                        // 跳过没有src的图片或SVG格式的图片
+                        $alt = $img->getAttribute('alt');
+                        // 跳过没有 src 的图片或 SVG 格式的图片
                         if (empty($src) || stripos($src, '.svg') !== false) {
                             continue;
                         }
                         // 创建容器元素
                         $figure = $dom->createElement('figure');
-                        $figure->setAttribute('class', 'grap--figure');                       
-                        // 创建链接元素用于lightbox
+                        $figure->setAttribute('class', 'grap--figure');
+                        // 创建链接元素用于 lightbox
                         $link = $dom->createElement('a');
                         $link->setAttribute('href', $src);
                         $link->setAttribute('data-lightbox', 'image-set');
                         $link->setAttribute('data-title', $alt);
-                        $link->setAttribute('class', 'no-style-link');    
+                        $link->setAttribute('class', 'no-style-link');
                         // 只有在有 alt 属性时才创建 figcaption
                         if (!empty($alt)) {
                             $caption = $dom->createElement('figcaption', $alt);
                             $caption->setAttribute('class', 'imageCaption');
-                        }                      
+                        }
                         // 重组 DOM 结构
                         if ($img->parentNode) {
                             $img->parentNode->replaceChild($figure, $img);
@@ -237,19 +236,21 @@ class ImageStructureProcessor {
                             }
                         }
                     }
-                }              
+                }
                 // 获取处理后的内容
-                $content = $dom->saveHTML();                
+                $content = $dom->saveHTML();
+                // 提取 body 部分的内容
+                $content = preg_replace('/^.*<body>(.*)<\/body>.*$/is', '$1', $content);
                 // 清理临时添加的 div 标签
-                $content = preg_replace('/^<div>|<\/div>$/i', '', $content);               
+                $content = preg_replace('/^<div>|<\/div>$/i', '', $content);
                 // 清理 libxml 错误
-                libxml_clear_errors();              
+                libxml_clear_errors();
             } catch (Exception $e) {
                 // 记录错误但返回原始内容
                 error_log('Image processing error: ' . $e->getMessage());
                 return $content;
             }
-        }       
+        }
         return $content;
     }
 }
