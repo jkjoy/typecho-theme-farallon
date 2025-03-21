@@ -4,13 +4,10 @@ document.addEventListener('click', function (e) {
         e.preventDefault();
         var btn = e.target.closest('.loadmore a');
         var nextPage = btn.getAttribute('href');
-
         // 防止重复点击
         if (btn.classList.contains('loading')) return false;
-
         btn.classList.add('loading');
         btn.textContent = '加载中...';
-
         // 发起 AJAX 请求
         fetch(nextPage)
             .then(response => {
@@ -23,22 +20,17 @@ document.addEventListener('click', function (e) {
                 // 创建一个临时的 DOM 元素来解析返回的 HTML
                 var parser = new DOMParser();
                 var htmlDoc = parser.parseFromString(data, 'text/html');
-
                 // 找到新的文章
                 var newPosts = htmlDoc.querySelectorAll('.post--item');
-
                 // 找到新的"加载更多"按钮
                 var newBtn = htmlDoc.querySelector('.nav-links a');
-
                 // 获取文章列表容器和加载更多按钮
                 var postReadMore = document.querySelector('.nav-links');
                 var articleList = document.querySelector('.articleList');
-
                 if (newPosts.length > 0) {
                     newPosts.forEach(post => {
                         articleList.insertBefore(post, postReadMore);
                     });
-
                     // 新文章淡入效果
                     Array.from(newPosts).forEach(post => {
                         post.style.opacity = 0;
@@ -48,7 +40,6 @@ document.addEventListener('click', function (e) {
                         }, 10);
                     });
                 }
-
                 // 更新"加载更多"按钮或移除它
                 if (newBtn) {
                     btn.setAttribute('href', newBtn.getAttribute('href'));
