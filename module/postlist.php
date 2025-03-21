@@ -164,6 +164,7 @@ foreach ($normalPosts as $normalPost) {
     <?php endif; ?>  
     </article>
 	<?php endwhile; ?>
+    <?php if ($this->options->loadmore): ?>    
     <?php
             $this->pageNav(
                 ' ',
@@ -182,3 +183,14 @@ foreach ($normalPosts as $normalPost) {
                 )
             );
         ?>
+    <?php else:?>
+ <?php
+$nextPage = $this->_currentPage + 1;
+$totalPages = ceil($this->getTotal() / $this->parameter->pageSize);
+if ($this->_currentPage < $totalPages): ?>
+    <div class="nav-links">
+    <span class="loadmore"><?php $this->pageLink('加载更多', 'next'); ?></span>
+    </div>
+<?php endif; ?>
+<script src="<?php $this->options->themeUrl('assets/js/loadmore.js'); ?>"></script>       
+<?php endif; ?>

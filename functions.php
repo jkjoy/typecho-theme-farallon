@@ -19,20 +19,6 @@ function themeConfig($form) {
     $form->addInput($twitterurl);
     $mastodonurl = new Typecho_Widget_Helper_Form_Element_Text('mastodonurl', NULL,'https://jiong.us/', _t('mastodon'), _t('会在个人信息显示'));
     $form->addInput($mastodonurl);
-    $sitemapurl = new Typecho_Widget_Helper_Form_Element_Text('sitemapurl', NULL, NULL, _t('sitemap'), _t('会在页脚显示'));
-    $form->addInput($sitemapurl);
-    $cnavatar = new Typecho_Widget_Helper_Form_Element_Text('cnavatar', NULL, 'https://cravatar.cn/avatar/', _t('Gravatar镜像'), _t('默认https://cravatar.cn/avatar/,建议保持默认'));
-    $form->addInput($cnavatar);
-    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, '/img/', _t('填写分类图片路径,以"/"结尾'), _t('默认使用网站根目录下的img文件夹,也可以填写绝对或者CDN地址,自动匹配目录下以分类ID为文件名的mid.jpg格式的图片'));
-    $form->addInput($midimg);
-    $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'), _t('不填写则不显示'));
-    $form->addInput($donate);
-    $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'), _t('不填写则不显示'));
-    $form->addInput($twikoo);
-    $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('添加head'), _t('支持HTML'));
-    $form->addInput($addhead);
-    $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
-    $form->addInput($tongji);
     $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否在文章页面显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
@@ -53,6 +39,24 @@ function themeConfig($form) {
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否显示页面加载时间'), _t('选择“是”将在页脚显示加载时间。'));
     $form->addInput($showtime);
+    $loadmore = new Typecho_Widget_Helper_Form_Element_Radio('loadmore',
+    array('0'=> _t('加载更多'), '1'=> _t('页码模式')),
+    '0', _t('加载文章列表方式'), _t('加载更多将在文章列表底部显示加载更多按钮'));
+    $form->addInput($loadmore);
+    $sitemapurl = new Typecho_Widget_Helper_Form_Element_Text('sitemapurl', NULL, NULL, _t('sitemap'), _t('会在页脚显示'));
+    $form->addInput($sitemapurl);
+    $cnavatar = new Typecho_Widget_Helper_Form_Element_Text('cnavatar', NULL, 'https://cravatar.cn/avatar/', _t('Gravatar镜像'), _t('默认https://cravatar.cn/avatar/,建议保持默认'));
+    $form->addInput($cnavatar);
+    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, '/img/', _t('填写分类图片路径,以"/"结尾'), _t('默认使用网站根目录下的img文件夹,也可以填写绝对或者CDN地址,自动匹配目录下以分类ID为文件名的mid.jpg格式的图片'));
+    $form->addInput($midimg);
+    $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, 'https://blogcdn.loliko.cn/donate/wx.png', _t('赞赏二维码'), _t('不填写则不显示'));
+    $form->addInput($donate);
+    $twikoo = new Typecho_Widget_Helper_Form_Element_Textarea('twikoo', NULL, NULL, _t('引用第三方评论'), _t('不填写则不显示'));
+    $form->addInput($twikoo);
+    $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('添加head'), _t('支持HTML'));
+    $form->addInput($addhead);
+    $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
+    $form->addInput($tongji);
 }
 function saveThemeConfig($config) {
     // 可以在这里添加额外的验证或处理逻辑

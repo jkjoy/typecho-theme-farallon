@@ -1,48 +1,70 @@
-    // 加载更多文章
-    $(document).on('click', '.post-read-more a', function(e){
+document.addEventListener('click', function (e) {
+    // 检查点击的元素是否是 .post-read-more a
+    if (e.target.closest('.loadmore a')) {
         e.preventDefault();
-        var $btn = $(this);
-        var nextPage = $btn.attr('href');
-        
-        if($btn.hasClass('loading')) return false;
-        
-        $btn.addClass('loading').text('加载中...');
-        
-        $.ajax({
-            url: nextPage,
-            type: 'GET',
-            dataType: 'html',
-            success: function(data){
-                // 创建一个临时的DOM元素来解析返回的HTML
-                var $html = $('<div></div>').html(data);
-                
+        var btn = e.target.closest('.loadmore a');
+        var nextPage = btn.getAttribute('href');
+
+        // 防止重复点击
+        if (btn.classList.contains('loading')) return false;
+
+        btn.classList.add('loading');
+        btn.textContent = '加载中...';
+
+        // 发起 AJAX 请求
+        fetch(nextPage)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // 创建一个临时的 DOM 元素来解析返回的 HTML
+                var parser = new DOMParser();
+                var htmlDoc = parser.parseFromString(data, 'text/html');
+
                 // 找到新的文章
-                var $newPosts = $html.find('.post_loop');
-                
+                var newPosts = htmlDoc.querySelectorAll('.post--item');
+
                 // 找到新的"加载更多"按钮
-                var $newBtn = $html.find('.post-read-more a');
-                
-                // 将新文章添加到页面
-                if ($newPosts.length > 0) {
-                    $('.post_box').append($newPosts);
+                var newBtn = htmlDoc.querySelector('.nav-links a');
+
+                // 获取文章列表容器和加载更多按钮
+                var postReadMore = document.querySelector('.nav-links');
+                var articleList = document.querySelector('.articleList');
+
+                if (newPosts.length > 0) {
+                    newPosts.forEach(post => {
+                        articleList.insertBefore(post, postReadMore);
+                    });
+
                     // 新文章淡入效果
-                    $newPosts.hide().fadeIn(500);
+                    Array.from(newPosts).forEach(post => {
+                        post.style.opacity = 0;
+                        setTimeout(() => {
+                            post.style.transition = 'opacity 0.5s';
+                            post.style.opacity = 1;
+                        }, 10);
+                    });
                 }
-                
+
                 // 更新"加载更多"按钮或移除它
-                if($newBtn.length > 0){
-                    $btn.attr('href', $newBtn.attr('href'))
-                       .removeClass('loading')
-                       .text('加载更多');
+                if (newBtn) {
+                    btn.setAttribute('href', newBtn.getAttribute('href'));
+                    btn.classList.remove('loading');
+                    btn.textContent = '加载更多';
                 } else {
-                    $('.post-read-more').remove();
+                    // 如果没有更多的按钮，移除 .post-read-more
+                    if (postReadMore) {
+                        postReadMore.remove();
+                    }
                 }
-            },
-            error: function(xhr, status, error){
-                console.error("AJAX Error:", status, error);
-                $btn.removeClass('loading').text('加载失败，点击重试');
-            }
-        });
-        
-        return false;
-    });
+            })
+            .catch(error => {
+                console.error("AJAX Error:", error);
+                btn.classList.remove('loading');
+                btn.textContent = '加载失败，点击重试';
+            });
+    }
+});

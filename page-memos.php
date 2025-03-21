@@ -166,34 +166,7 @@ img {
     .resimg {
         grid-template-columns: 1fr; /* 修改为一列 */
     }
-} 
-.load-more-btn {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-  }
-.load-more-btn:hover {
-      background-color: #0056b3;
-  } 
-.nav-links .loadmore {
-    border: 1px solid var(--farallon-border-color);
-    cursor: pointer;
-    position: relative;
-    padding: 5px 30px;
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--farallon-text-gray)
 }
-
-.nav-links .loadmore:hover {
-    border-color: var(--farallon-hover-color);
-    color: var(--farallon-hover-color)
-}   
 </style>  
 </div>
 <?php $this->need('./module/footer.php'); ?>
