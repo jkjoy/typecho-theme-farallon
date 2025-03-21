@@ -1,5 +1,6 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+//主题设置
 function themeConfig($form) {
     $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'));
     $form->addInput($logoUrl);
@@ -60,10 +61,13 @@ function themeConfig($form) {
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
     $form->addInput($tongji);
 }
+
 function saveThemeConfig($config) {
     // 可以在这里添加额外的验证或处理逻辑
     return $config;
 }
+
+// 自定义字段
 function themeFields($layout) {
     $summary= new Typecho_Widget_Helper_Form_Element_Textarea('summary', NULL, NULL, _t('文章摘要'), _t('自定义摘要'));
     $layout->addItem($summary);
@@ -82,6 +86,7 @@ function themeFields($layout) {
     $memosnum= new Typecho_Widget_Helper_Form_Element_Text('memosnum', NULL, NULL, _t('Memos数量'), _t('自定义页面Memos数量'));
     $layout->addItem($memosnum);
 }
+
 /*
 * 文章浏览数统计
 */
@@ -162,6 +167,7 @@ function img_postthumb($cid) {
         return "";  // 没有匹配到图片URL，返回空字符串
     }
 }
+
 //回复加上@
 function getPermalinkFromCoid($coid) {
 	$db = Typecho_Db::get();
@@ -169,6 +175,7 @@ function getPermalinkFromCoid($coid) {
 	if (empty($row)) return '';
 	return '<a href="#comment-'.$coid.'" style="text-decoration: none;">@'.$row['author'].'</a>';
 }
+
 /**
  * 图片灯箱
  */
@@ -178,18 +185,14 @@ class ImageStructureProcessor {
         if (empty($content) || !is_string($content)) {
             return $content;
         }
-
         if ($widget instanceof Widget_Archive) {
             try {
                 // 使用 DOM 操作确保结构完整性
-                $dom = new DOMDocument('1.0', 'UTF-8');
-                
+                $dom = new DOMDocument('1.0', 'UTF-8');               
                 // 添加错误处理
-                libxml_use_internal_errors(true);
-                
+                libxml_use_internal_errors(true);               
                 // 添加基础 HTML 结构以确保正确解析
-                $content = '<div>' . $content . '</div>';
-                
+                $content = '<div>' . $content . '</div>';                
                 // 转换编码并加载内容
                 $content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
                 $dom->loadHTML($content, 
@@ -198,40 +201,32 @@ class ImageStructureProcessor {
                     LIBXML_NOERROR | 
                     LIBXML_NOWARNING
                 );
-
-                $xpath = new DOMXPath($dom);
-                
+                $xpath = new DOMXPath($dom);               
                 // 查找所有没有父 figure 的图片，排除SVG
-                $images = $xpath->query("//img[not(ancestor::figure) and not(contains(@src, '.svg'))]");
-                
+                $images = $xpath->query("//img[not(ancestor::figure) and not(contains(@src, '.svg'))]");                
                 if ($images->length > 0) {
                     foreach ($images as $img) {
                         // 获取必要的属性
                         $src = $img->getAttribute('src');
-                        $alt = $img->getAttribute('alt');
-                        
+                        $alt = $img->getAttribute('alt');                        
                         // 跳过没有src的图片或SVG格式的图片
                         if (empty($src) || stripos($src, '.svg') !== false) {
                             continue;
                         }
-
                         // 创建容器元素
                         $figure = $dom->createElement('figure');
-                        $figure->setAttribute('class', 'grap--figure');
-                        
+                        $figure->setAttribute('class', 'grap--figure');                       
                         // 创建链接元素用于lightbox
                         $link = $dom->createElement('a');
                         $link->setAttribute('href', $src);
                         $link->setAttribute('data-lightbox', 'image-set');
                         $link->setAttribute('data-title', $alt);
-                        $link->setAttribute('class', 'no-style-link');
-                        
+                        $link->setAttribute('class', 'no-style-link');    
                         // 只有在有 alt 属性时才创建 figcaption
                         if (!empty($alt)) {
                             $caption = $dom->createElement('figcaption', $alt);
                             $caption->setAttribute('class', 'imageCaption');
-                        }
-                        
+                        }                      
                         // 重组 DOM 结构
                         if ($img->parentNode) {
                             $img->parentNode->replaceChild($figure, $img);
@@ -242,28 +237,22 @@ class ImageStructureProcessor {
                             }
                         }
                     }
-                }
-                
+                }              
                 // 获取处理后的内容
-                $content = $dom->saveHTML();
-                
+                $content = $dom->saveHTML();                
                 // 清理临时添加的 div 标签
-                $content = preg_replace('/^<div>|<\/div>$/i', '', $content);
-                
+                $content = preg_replace('/^<div>|<\/div>$/i', '', $content);               
                 // 清理 libxml 错误
-                libxml_clear_errors();
-                
+                libxml_clear_errors();              
             } catch (Exception $e) {
                 // 记录错误但返回原始内容
                 error_log('Image processing error: ' . $e->getMessage());
                 return $content;
             }
-        }
-        
+        }       
         return $content;
     }
 }
-
 Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($content, $widget) {
     return ImageStructureProcessor::processContent($content, $widget);
 };
@@ -276,18 +265,15 @@ Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($conte
 function get_article_summary($post) {
     // 首先尝试从自定义字段获取摘要
     $db = Typecho_Db::get();
-    
     // 查询自定义字段表
     $row = $db->fetchRow($db->select()
         ->from('table.fields')
         ->where('cid = ?', $post['cid'])
-        ->where('name = ?', 'summary'));
-    
+        ->where('name = ?', 'summary')); 
     // 如果找到自定义摘要字段
     if ($row && !empty($row['str_value'])) {
         return $row['str_value'];
-    }
-    
+    } 
     // 如果没有自定义摘要，截取文章内容
     // 去除HTML标签
     $text = strip_tags($post['text']);
@@ -295,46 +281,34 @@ function get_article_summary($post) {
     // 截取指定长度的摘要
     return Typecho_Common::subStr($text, 0, 100, '...');
 }
-
 // 在原函数中使用
 function get_article_info($atts) {
     $default_atts = array(
         'id' => '',
-        'url' => ''
     );
     $atts = array_merge($default_atts, $atts);
     $db = Typecho_Db::get();
-
-    // 根据 ID 或 URL 获取文章
+    // 根据 ID获取文章
     if (!empty($atts['id'])) {
         $post = $db->fetchRow($db->select()->from('table.contents')
             ->where('cid = ?', $atts['id'])
             ->limit(1));
-    } elseif (!empty($atts['url'])) {
-        $post = $db->fetchRow($db->select()->from('table.contents')
-            ->where('permalink = ?', $atts['url'])
-            ->limit(1));
     } else {
-        return '请提供文章ID或URL';
+        return '请提供文章ID';
     }
-
     if (!$post) {
         return '未找到文章';
     }
-
     // 将文章数据推送到抽象内容小部件中
     $post = Typecho_Widget::widget('Widget_Abstract_Contents')->push($post);
-
     // 获取摘要
     $summary = get_article_summary($post);
-
     // 获取缩略图
     $default_thumbnail = Helper::options()->themeUrl . '/assets/images/nopic.svg';
     $imageToDisplay = img_postthumb($post['cid']);
     if (empty($imageToDisplay)) {
         $imageToDisplay = $default_thumbnail;
     }
-
     // 构建输出
     $output = '<div class="graph--mixtapeEmbed">';
     $output .= '<a class="mixtapeContent" href="' . $post['permalink'] . '" target="_blank">';
@@ -343,7 +317,6 @@ function get_article_info($atts) {
     $output .= '</a>';
     $output .= '<a class="mixtapeImage" href="' . $post['permalink'] . '" target="_blank" style="background-image:url(' . htmlspecialchars($imageToDisplay) . ')"></a>';
     $output .= '</div>';
-
     return $output;
 }
 // 创建一个新的类来处理内容过滤
@@ -353,16 +326,13 @@ class ContentFilter
     {
         // 首先运行之前的过滤器结果
         $content = empty($lastResult) ? $content : $lastResult;
-
         // 然后处理我们的文章短代码
         $content = preg_replace_callback('/\[article\s+([^\]]+)\]/', function($matches) {
             $atts = self::parse_atts($matches[1]);
             return get_article_info($atts);
         }, $content);
-
         return $content;
     }
-
     // 解析短代码属性
     private static function parse_atts($text) {
         $atts = array();
@@ -385,10 +355,8 @@ class ContentFilter
         return $atts;
     }
 }
-
 // 注册钩子
 Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('ContentFilter', 'filterContent');
-
 // 编辑器按钮类
 class EditorButton {
     public static function render()
@@ -406,13 +374,10 @@ $(document).ready(function() {
             var start = textarea.selectionStart;
             var end = textarea.selectionEnd;
             var value = textarea.value;
-
             textarea.value = value.substring(0, start) + text + value.substring(end);
-
             // 将光标移动到插入的文本之后
             textarea.setSelectionRange(start + text.length, start + text.length);
             textarea.focus();
-
             // 触发change事件，确保编辑器更新
             $('#text').trigger('change');
         }
@@ -422,7 +387,6 @@ $(document).ready(function() {
 EOF;
     }
 }
-
 // 注册编辑器按钮钩子
 Typecho_Plugin::factory('admin/write-post.php')->bottom = array('EditorButton', 'render');
 Typecho_Plugin::factory('admin/write-page.php')->bottom = array('EditorButton', 'render');
@@ -491,8 +455,7 @@ function commentApprove($widget, $email = NULL)
         //    $result['userLevel'] = '博友';
         //    $result['bgColor'] = '#21b9bb';
         //    $userDesc = '🔗'.$linkSql[0]['description'].'&#10;✌️'.$userDesc;
-       // }
-        
+       // }       
         $result['userDesc'] = $userDesc;
         $result['commentNum'] = $commentNum;
     } 
