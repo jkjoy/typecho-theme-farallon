@@ -7,8 +7,10 @@ function themeConfig($form) {
     $form->addInput($icoUrl);
     $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('置顶文章cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页展示置顶文章。'));
     $form->addInput($sticky);
-    $travel = new Typecho_Widget_Helper_Form_Element_Text('travel', NULL, '3', _t('travel分类 Mid'), _t('多个分类以`|`符号隔开'), _t('指定分类ID，用于区别展示'));
+    $travel = new Typecho_Widget_Helper_Form_Element_Text('travel', NULL, NULL, _t('travel分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于足迹分类展示'));
     $form->addInput($travel);
+    $memos = new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, NULL, _t('说说分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于说说分类展示'));
+    $form->addInput($memos);    
     $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, 'https://Instagram.com/', _t('Instagram'), _t('会在个人信息显示'));
     $form->addInput($instagramurl);
     $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, 'https://t.me/', _t('电报'), _t('会在个人信息显示'));
@@ -61,6 +63,24 @@ function themeConfig($form) {
 function saveThemeConfig($config) {
     // 可以在这里添加额外的验证或处理逻辑
     return $config;
+}
+function themeFields($layout) {
+    $summary= new Typecho_Widget_Helper_Form_Element_Textarea('summary', NULL, NULL, _t('文章摘要'), _t('自定义摘要'));
+    $layout->addItem($summary);
+    $cover= new Typecho_Widget_Helper_Form_Element_Text('cover', NULL, NULL, _t('文章封面'), _t('自定义文章封面'));
+    $layout->addItem($cover);
+    $douban= new Typecho_Widget_Helper_Form_Element_Text('douban', NULL, NULL, _t('豆瓣API'), _t('自定义页面豆瓣API'));
+    $layout->addItem($douban);
+    $neodb= new Typecho_Widget_Helper_Form_Element_Text('neodb', NULL, NULL, _t('NeoDB API'), _t('自定义页面NeoDB API'));
+    $layout->addItem($neodb);
+    $tooot= new Typecho_Widget_Helper_Form_Element_Text('tooot', NULL, NULL, _t('Mastodon API'), _t('自定义页面Mastodon API'));
+    $layout->addItem($tooot);
+    $memos= new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, NULL, _t('Memos地址'), _t(' 自定义页面Memos地址'));
+    $layout->addItem($memos);
+    $memosID= new Typecho_Widget_Helper_Form_Element_Text('memosID', NULL, NULL, _t('Memos ID'), _t('自定义页面Memos ID'));
+    $layout->addItem($memosID);
+    $memosnum= new Typecho_Widget_Helper_Form_Element_Text('memosnum', NULL, NULL, _t('Memos数量'), _t('自定义页面Memos数量'));
+    $layout->addItem($memosnum);
 }
 /*
 * 文章浏览数统计
