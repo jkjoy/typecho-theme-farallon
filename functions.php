@@ -73,18 +73,18 @@ function themeFields($layout) {
     $layout->addItem($summary);
     $cover= new Typecho_Widget_Helper_Form_Element_Text('cover', NULL, NULL, _t('文章封面'), _t('自定义文章封面'));
     $layout->addItem($cover);
-    $douban= new Typecho_Widget_Helper_Form_Element_Text('douban', NULL, NULL, _t('豆瓣API'), _t('自定义页面豆瓣API'));
-    $layout->addItem($douban);
-    $neodb= new Typecho_Widget_Helper_Form_Element_Text('neodb', NULL, NULL, _t('NeoDB API'), _t('自定义页面NeoDB API'));
-    $layout->addItem($neodb);
-    $tooot= new Typecho_Widget_Helper_Form_Element_Text('tooot', NULL, NULL, _t('Mastodon API'), _t('自定义页面Mastodon API'));
-    $layout->addItem($tooot);
-    $memos= new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, NULL, _t('Memos地址'), _t(' 自定义页面Memos地址'));
-    $layout->addItem($memos);
-    $memosID= new Typecho_Widget_Helper_Form_Element_Text('memosID', NULL, NULL, _t('Memos ID'), _t('自定义页面Memos ID'));
-    $layout->addItem($memosID);
-    $memosnum= new Typecho_Widget_Helper_Form_Element_Text('memosnum', NULL, NULL, _t('Memos数量'), _t('自定义页面Memos数量'));
-    $layout->addItem($memosnum);
+   // $douban= new Typecho_Widget_Helper_Form_Element_Text('douban', NULL, NULL, _t('豆瓣API'), _t('自定义页面豆瓣API'));
+   // $layout->addItem($douban);
+    //$neodb= new Typecho_Widget_Helper_Form_Element_Text('neodb', NULL, NULL, _t('NeoDB API'), _t('自定义页面NeoDB API'));
+    //$layout->addItem($neodb);
+   // $tooot= new Typecho_Widget_Helper_Form_Element_Text('tooot', NULL, NULL, _t('Mastodon API'), _t('自定义页面Mastodon API'));
+   // $layout->addItem($tooot);
+   // $memos= new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, NULL, _t('Memos地址'), _t(' 自定义页面Memos地址'));
+   // $layout->addItem($memos);
+   // $memosID= new Typecho_Widget_Helper_Form_Element_Text('memosID', NULL, NULL, _t('Memos ID'), _t('自定义页面Memos ID'));
+   // $layout->addItem($memosID);
+   // $memosnum= new Typecho_Widget_Helper_Form_Element_Text('memosnum', NULL, NULL, _t('Memos数量'), _t('自定义页面Memos数量'));
+   // $layout->addItem($memosnum);
 }
 
 /*
