@@ -125,12 +125,9 @@
 <?php if ($this->options->showrelated): ?>
     <?php $this->need('module/related.php'); ?>
 <?php endif; ?>
-    <!-- 如果设置了第三方评论系统则使用第三方评论 -->
-    <?php if($this->options->twikoo): ?> 
-        <?php $this->options->twikoo(); ?> 
-    <?php else: ?>
-        <?php $this->need('./module/comments.php'); ?>
-    <?php endif; ?>
+<?php if ($this->allow('comment')): ?>
+    <?php $this->need('./module/comments.php'); ?>
+<?php endif; ?>
 <!--翻页-->
     <nav class="navigation post-navigation is-active">
         <div class="nav-links">

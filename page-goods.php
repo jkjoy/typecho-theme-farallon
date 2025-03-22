@@ -40,6 +40,9 @@ $this->need('./module/header.php');
         }
         ?>
     </div>
+    <?php if ($this->allow('comment')): ?>
+       <?php $this->need('./module/comments.php'); ?>
+    <?php endif; ?>
 </div>
 
 <style>
