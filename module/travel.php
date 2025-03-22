@@ -1,4 +1,6 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<div class="post--cards">
+<?php while($this->next()): ?>
 <?php // 获取文章图片
     $default_thumbnail = Helper::options()->themeUrl . '/assets/images/nopic.svg';
     $firstImage = img_postthumb($this->cid);
@@ -10,9 +12,7 @@
                 if (empty($imageToDisplay)) {
                     $imageToDisplay = $firstImage;
                     }
-?>
-<div class="post--cards">
-<?php while($this->next()): ?>
+?>   
 <article class="post--card">
     <img src="<?php echo $imageToDisplay; ?>" alt="<?php $this->title() ?>" class="cover" itemprop="image"/>
         <div class="content">
