@@ -22,7 +22,7 @@
                     <img src="<?php $this->options->logoUrl() ?>" class="avatar" width="48" height="48" />
                     <a datetime='<?php $this->date('Y-m-d'); ?>' class="humane--time" href="<?php $this->permalink() ?>"
                         itemprop="datePublished">
-                        <?php $this->date('Y-m-d'); ?>
+                        <?php $this->date('Y-m-d H:i'); ?>
                     </a>
                 </header>
                 <div class="description" itemprop="about">
