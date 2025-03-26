@@ -5,7 +5,7 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('./module/header.php'); ?>
+<?php $this->need('header.php'); ?>
 <section class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
@@ -57,4 +57,4 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     ?>
     </div>
 </section>
-<?php $this->need('./module/footer.php'); ?>
+<?php $this->need('footer.php'); ?>

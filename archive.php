@@ -1,5 +1,5 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('module/header.php'); ?>
+<?php $this->need('header.php'); ?>
 <header class="archive--header">
     <h2 class="post--single__title">
         <?php $this->archiveTitle(array(
@@ -37,25 +37,10 @@ $memosId = is_numeric($memosId) ? intval($memosId) : null;
             <?php $this->need('module/postlist.php'); ?>
         <?php endif; ?>
         <!-- 分页导航 -->
-        <?php $this->pageNav(
-            ' ',
-            ' ',
-            1,
-            '...',
-            array(
-                'wrapTag' => 'nav',
-                'wrapClass' => 'nav-links nav-links__comment',
-                'itemTag' => '',
-                'textTag' => 'span',
-                'itemClass'   => 'page-numbers', 
-                'currentClass' => 'page-numbers current',
-                'prevClass' => 'hidden',
-                'nextClass' => 'hidden'
-            )
-        ); ?> 
+        <?php $this->need('module/paging.php'); ?>
     <?php else: ?>
         <!-- 无结果 -->
         <?php $this->need('module/notfound.php'); ?>
     <?php endif; ?>
 </div>
-<?php $this->need('module/footer.php'); ?>
+<?php $this->need('footer.php'); ?>

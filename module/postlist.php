@@ -1,10 +1,10 @@
+<div id="loadposts">
 <?php while($this->next()): ?>
     <?php 
     // 获取当前文章的分类
     $categories = $this->categories;
     $memosMid = $this->options->memos; // 获取主题设置中的说说分类 mid
     $isMemos = false;
-    
     // 检查当前文章是否属于说说分类
     foreach ($categories as $category) {
         if ($category['mid'] == $memosMid) {
@@ -12,10 +12,10 @@
             break;
         }
     }
-    
     // 根据是否为说说分类使用不同的显示模板
     if ($isMemos):
     ?>
+    <div id="loadpost">
         <article class="post--item post--item__status" itemtype="http://schema.org/Article" itemscope="itemscope">
             <div class="content">
                 <header>
@@ -29,9 +29,11 @@
                     <?php $this->excerpt(200, '...'); ?>
                 </div>
             </div>
-        </article>   
+        </article>
+    </div>   
     <?php else: ?>
-        <article class="post--item">
+    <div id="loadpost">
+        <article class="post--item" id="loadpost">
             <div class="content">
                 <h2 class="post--title">
                     <a href="<?php $this->permalink() ?>">
@@ -79,5 +81,7 @@
                 </a>
             <?php endif; ?>  
         </article>
+    </div>
     <?php endif; ?>
 <?php endwhile; ?>
+</div>

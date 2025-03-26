@@ -5,7 +5,7 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('./module/header.php'); ?>
+<?php $this->need('header.php'); ?>
 <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/neodb.css'); ?>">
 <script src="<?php $this->options->themeUrl('assets/js/neodb.js'); ?>"></script>
 <section class="site--main">
@@ -15,14 +15,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </header>
     <div class="site--main">
         <div class="neodb-container"></div>
-            <?php $neodb = $this->fields->neodb ? $this->fields->neodb : 'https://neodb.imsun.org'; ?>
-<script>
-const neodb = new NeoDB({
-    container: ".neodb-container",
-    baseAPI: "<?php echo $neodb; ?>/api",
-    types: ["book", "movie", "tv", "music", "game"],
-});    
-</script>
-        </div>
+        <?php $neodb = $this->fields->neodb ? $this->fields->neodb : 'https://neodb.imsun.org'; ?>
+        <script>
+        const neodb = new NeoDB({
+        container: ".neodb-container",
+        baseAPI: "<?php echo $neodb; ?>/api",
+        types: ["book", "movie", "tv", "music", "game"],
+        });    
+        </script>
+    </div>
 </section>
-<?php $this->need('./module/footer.php'); ?>
+<?php $this->need('footer.php'); ?>

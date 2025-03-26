@@ -1,6 +1,7 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<div id="loadposts">
 <?php while($this->next()): ?>
-    <article class="post--item post--item__status" itemtype="http://schema.org/Article" itemscope="itemscope">
+    <article id="loadpost" class="post--item post--item__status" itemtype="http://schema.org/Article" itemscope="itemscope">
     <div class="content">
         <header>
             <img src="<?php $this->options->logoUrl() ?>" class="avatar" width="48" height="48" />
@@ -15,3 +16,4 @@
     </div>
 </article>   
 <?php endwhile; ?>
+</div>

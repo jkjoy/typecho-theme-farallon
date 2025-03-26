@@ -1,5 +1,5 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<div class="post--cards">
+<div class="post--cards" id="loadposts">
 <?php while($this->next()): ?>
 <?php // 获取文章图片
     $default_thumbnail = Helper::options()->themeUrl . '/assets/images/nopic.svg';
@@ -13,7 +13,7 @@
                     $imageToDisplay = $firstImage;
                     }
 ?>   
-<article class="post--card">
+<article class="post--card" id="loadpost" itemscope itemtype="http://schema.org/Article">
     <img src="<?php echo $imageToDisplay; ?>" alt="<?php $this->title() ?>" class="cover" itemprop="image"/>
         <div class="content">
             <h2 class="post--title">
@@ -35,3 +35,4 @@
         </div>
 </article> 
 <?php endwhile; ?>
+</div>

@@ -5,7 +5,7 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
-$this->need('./module/header.php');
+$this->need('header.php');
 ?>
 
 <div class="site--main site--main__gears">
@@ -77,25 +77,20 @@ $this->need('./module/header.php');
  */
 function parseGoodsTable($content) {
     $goods = array();
-    
     // 创建DOM对象
     $dom = new DOMDocument();
     libxml_use_internal_errors(true); // 禁用libxml错误
     $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
     libxml_clear_errors();
-    
     // 查找表格
     $tables = $dom->getElementsByTagName('table');
-    
     if ($tables->length > 0) {
         $table = $tables->item(0); // 获取第一个表格
-        $rows = $table->getElementsByTagName('tr');
-        
+        $rows = $table->getElementsByTagName('tr');  
         // 跳过表头行
         for ($i = 1; $i < $rows->length; $i++) {
             $row = $rows->item($i);
-            $cells = $row->getElementsByTagName('td');
-            
+            $cells = $row->getElementsByTagName('td');           
             // 确保有足够的单元格
             if ($cells->length >= 5) {
                 $item = array(
@@ -113,9 +108,7 @@ function parseGoodsTable($content) {
             }
         }
     }
-    
     return $goods;
 }
-
-$this->need('./module/footer.php'); 
+$this->need('footer.php'); 
 ?>

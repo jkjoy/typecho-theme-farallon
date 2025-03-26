@@ -1,5 +1,5 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('module/header.php'); ?>
+<?php $this->need('header.php'); ?>
 <style>
 #toc {font-size:14px;padding:10px 15px;background-color:var(--farallon-background-gray);border-radius:10px;margin-bottom:20px}
 #toc  summary{cursor:pointer}
@@ -126,7 +126,7 @@
     <?php $this->need('module/related.php'); ?>
 <?php endif; ?>
 <?php if ($this->allow('comment')): ?>
-    <?php $this->need('./module/comments.php'); ?>
+    <?php $this->need('module/comments.php'); ?>
 <?php endif; ?>
 <!--翻页-->
     <nav class="navigation post-navigation is-active">
@@ -145,4 +145,4 @@
 <script src="<?php $this->options->themeUrl('assets/js/post.js'); ?>"></script>
 <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/lightbox.min.css'); ?>">
 <script src="<?php $this->options->themeUrl('assets/js/lightbox-plus-jquery.min.js'); ?>"></script>
-<?php $this->need('module/footer.php'); ?>
+<?php $this->need('footer.php'); ?>

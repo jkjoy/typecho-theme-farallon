@@ -5,7 +5,7 @@
  * @package custom
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
-<?php $this->need('./module/header.php'); ?>
+<?php $this->need('header.php'); ?>
 <div class="site--main">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
@@ -16,7 +16,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         $memos = $this->fields->memos ? $this->fields->memos : 'https://memos.imsun.org';
         $memosID = $this->fields->memosID ? $this->fields->memosID : '1';
         $memosnum = $this->fields->memosnum ? $this->fields->memosnum : '20';
-        ?>
+    ?>
     <article class="post--single">
     <script src="<?php $this->options->themeUrl('assets/js/marked.min.js'); ?>"></script>
     <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/lightbox.min.css'); ?>">
@@ -32,7 +32,6 @@ const limit = 10; // 每页条数
 let url = '<?php echo $memos; ?>';
 let memosID = '<?php echo $memosID; ?>';
 let memosnum = '<?php echo $memosnum; ?>';
-
 function loadMemos(page) {
     fetch(`${url}/api/v1/memo?creatorId=${memosID}&rowStatus=NORMAL&limit=${limit}&offset=${(page - 1) * limit}`)
     .then(res => res.json())
@@ -64,7 +63,6 @@ function loadMemos(page) {
         // 这里可以添加一些用户提示错误发生的 HTML 更新
     });
 }
-
 function Format(item) {
     let date = getTime(new Date(item.createdTs * 1000).toString()),
         content = item.content,
@@ -94,7 +92,6 @@ function Format(item) {
         text: text.replace(/\[(.*?)\]\((.*?)\)/g, '[链接]' + `${imgs?'[图片]':''}`)
     }
 }
-
 // 页面时间格式化
 function getTime(time) {
     let d = new Date(time),
@@ -105,16 +102,13 @@ function getTime(time) {
     if (new Date().getFullYear() == ls[0]) return ls[1] + '月' + ls[2] + '日 ' + ls[3] +':'+ ls[4]
     else return ls[0] + '年' + ls[1] + '月' + ls[2] + '日 ' + ls[3] +':'+ ls[4]
 }
-
 // 初始加载第一页
 loadMemos(currentPage);
-
 // 点击“加载更多”按钮时加载下一页
 document.getElementById('loadmore').addEventListener('click', function() {
     currentPage++;
     loadMemos(currentPage);
 });
-
 </script>
 <style> 
 div pre code {
@@ -169,4 +163,4 @@ img {
 }
 </style>  
 </div>
-<?php $this->need('./module/footer.php'); ?>
+<?php $this->need('footer.php'); ?>
