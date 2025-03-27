@@ -7,18 +7,15 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $this->need('header.php');
 ?>
-
 <div class="site--main site--main__gears">
     <header class="archive--header">
         <h1 class="post--single__title"><?php $this->title() ?></h1>
     </header>
-    
     <div id="goods" class="good--list">
         <?php
         // 获取内容并解析
         $content = $this->content;
         $goods = parseGoodsTable($content);
-        
         if (!empty($goods)) {
             foreach ($goods as $item): ?>
                 <div class="good--item">
@@ -44,31 +41,7 @@ $this->need('header.php');
        <?php $this->need('./module/comments.php'); ?>
     <?php endif; ?>
 </div>
-
-<style>
-.img40 {
-    height: 137px;
-    width: auto;
-    object-fit: cover;
-}    
-.img-spacer {
-    width: 100%;
-    aspect-ratio: 1;
-    overflow: hidden;
-}
-.brand {
-    font-weight: 500;
-    margin-bottom: 5px;
-}
-.no-goods {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 20px;
-    background: #f5f5f5;
-    border-radius: 8px;
-}
-</style>
-
+<style>.img40{height:137px;width:auto;object-fit:cover;}.img-spacer{width:100%;aspect-ratio:1;overflow:hidden;}.brand{font-weight:500;margin-bottom:5px;}.no-goods{grid-column:1 / -1;text-align:center;padding:20px;background:#f5f5f5;border-radius:8px;}</style>
 <?php
 /**
  * 解析商品表格数据

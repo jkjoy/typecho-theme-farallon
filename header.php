@@ -55,10 +55,10 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <div class="inner">
         <nav>
 		    <ul>
-                    <?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
-                    <?php while($pages->next()): ?>
-                    <li><a <?php if($this->is('page', $pages->slug)): ?> class="current"<?php endif; ?> href="<?php $pages->permalink(); ?>" title="<?php $pages->title(); ?>"><?php $pages->title(); ?></a></li>
-                    <?php endwhile; ?>		 
+            <?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
+            <?php while($pages->next()): ?>
+                <li><a <?php if($this->is('page', $pages->slug)): ?> class="current"<?php endif; ?> href="<?php $pages->permalink(); ?>" title="<?php $pages->title(); ?>"><?php $pages->title(); ?></a></li>
+            <?php endwhile; ?>		 
             </ul>
 		</nav>
                     <!-- 这年头谁会用站内的搜索啊      --> 
