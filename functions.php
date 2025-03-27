@@ -52,8 +52,10 @@ function themeConfig($form) {
     $form->addInput($cnavatar);
     $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, '/img/', _t('填写分类图片路径,以"/"结尾'), _t('默认使用网站根目录下的img文件夹,也可以填写绝对或者CDN地址,自动匹配目录下以分类ID为文件名的mid.jpg格式的图片'));
     $form->addInput($midimg);
-    $donate = new Typecho_Widget_Helper_Form_Element_Text('donate', NULL, NULL, _t('赞赏二维码'), _t('不填写则不显示'));
-    $form->addInput($donate);
+    $wxpay = new Typecho_Widget_Helper_Form_Element_Text('wxpay', NULL, 'https://blog.loliko.cn/images/wechatpay.png', _t('微信收款码'), _t('赞赏二维码'));
+    $form->addInput($wxpay);
+    $alipay= new Typecho_Widget_Helper_Form_Element_Text('alipay', NULL, 'https://blog.loliko.cn/images/alipay.png', _t('支付宝收款码'), _t('赞赏二维码'));
+    $form->addInput($alipay);
     $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('Head内代码用于网站验证等'), _t('支持HTML'));
     $form->addInput($addhead);
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
