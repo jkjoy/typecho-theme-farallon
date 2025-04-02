@@ -3,7 +3,7 @@
  * 一款单栏主题. 移植自HUGO主题 Farallon 原作者 bigfa  
  * @package Farallon
  * @author  老孙 
- * @version 0.7.0
+ * @version 0.7.1
  * @link https://www.imsun.org
  */
 // 确保退出安全
