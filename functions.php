@@ -450,3 +450,59 @@ function commentApprove($widget, $email = NULL)
     } 
     return $result;
 }
+
+/**
+ * 修改附件插入功能
+ */
+// 添加批量插入按钮的JavaScript
+Typecho_Plugin::factory('admin/write-post.php')->bottom = array('MyHelper', 'addBatchInsertButton');
+Typecho_Plugin::factory('admin/write-page.php')->bottom = array('MyHelper', 'addBatchInsertButton');
+
+class MyHelper {
+    public static function addBatchInsertButton() {
+        ?>
+        <script>
+        $(document).ready(function() {
+            // 添加批量插入按钮
+            var batchButton = $('<button type="button" class="btn primary" id="batch-insert">批量插入所有附件</button>');
+            $('#file-list').before(batchButton);
+            
+            // 修改单个附件的插入格式
+            Typecho.insertFileToEditor = function(title, url, isImage) {
+                var textarea = $('#text'), sel = textarea.getSelection(),
+                    insertContent = isImage ? '![' + title + '](' + url + ')' : 
+                                            '[' + title + '](' + url + ')';
+                
+                textarea.replaceSelection(insertContent);
+                textarea.focus();
+            };
+            
+            // 批量插入功能
+            $('#batch-insert').click(function() {
+                var content = '';
+                $('#file-list li').each(function() {
+                    var $this = $(this),
+                        title = $this.find('.insert').text(),
+                        url = $this.data('url'),
+                        isImage = $this.data('image') == 1;
+                        
+                    content += isImage ? '![' + title + '](' + url + ')\n' : 
+                                       '[' + title + '](' + url + ')\n';
+                });
+                
+                var textarea = $('#text');
+                var pos = textarea.getSelection();
+                var newContent = textarea.val();
+                if (pos.start === pos.end) {
+                    newContent = newContent.substring(0, pos.start) + content + newContent.substring(pos.start);
+                } else {
+                    newContent = newContent.substring(0, pos.start) + content + newContent.substring(pos.end);
+                }
+                textarea.val(newContent);
+                textarea.focus();
+            });
+        });
+        </script>
+        <?php
+    }
+}
