@@ -12,6 +12,9 @@
                 if (empty($imageToDisplay)) {
                     $imageToDisplay = $firstImage;
                     }
+                if (!empty($imageToDisplay) && $imageToDisplay != $default_thumbnail) {
+                    $imageToDisplay = process_cover_image($imageToDisplay);
+                }
 ?>   
 <article class="post--card" id="loadpost" itemscope itemtype="http://schema.org/Article">
     <img src="<?php echo $imageToDisplay; ?>" alt="<?php $this->title() ?>" class="cover" itemprop="image"/>

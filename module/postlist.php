@@ -75,6 +75,7 @@
             $cover = $this->fields->cover;
             $imageToDisplay = !empty($cover) ? $cover : $firstImage;
             if($imageToDisplay): 
+                $imageToDisplay = process_cover_image($imageToDisplay);
             ?>
                 <a href="<?php $this->permalink() ?>" class="cover--link">
                     <img src="<?php echo $imageToDisplay; ?>" alt="<?php $this->title() ?>" class="cover" itemprop="image"/>

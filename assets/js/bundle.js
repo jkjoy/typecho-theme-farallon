@@ -17,7 +17,7 @@
       is_single = false;
       post_id = 0;
       is_archive = false;
-      VERSION = "0.7.1";
+      VERSION = "0.7.2";
       constructor() {
         super();
         this.initCopyright();
@@ -46,7 +46,7 @@
       }
       initCopyright() {
         const copyright = `<div class="site--footer__info">由<a href="https://www.typecho.org" target="_blank">Typecho</a> 驱动 <br>
-          Theme <a href="https://fatesinger.com/101971" target="_blank">farallon</a> by bigfa &nbsp;<br>Made with<a href="https://www.imsun.org" target="_blank">jkjoy</a> / version ${this.VERSION}
+          Theme <a href="https://fatesinger.com/101971" target="_blank">farallon</a> by bigfa &nbsp;<br>Made with&nbsp;<a href="https://www.imsun.org" target="_blank">老孙博客</a> / version ${this.VERSION}
       </div>`;
         document.querySelector(".site--footer__content").insertAdjacentHTML("afterend", copyright);
         document.querySelector(".icon--copryrights").addEventListener("click", () => {

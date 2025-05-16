@@ -111,6 +111,17 @@ $options = Typecho_Widget::widget('Widget_Options');
 $gravatarPrefix = empty($options->cnavatar) ? 'https://cravatar.cn/avatar/' : $options->cnavatar;
 define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
 
+// 初始化主题
+function init_theme() {
+    // 检查并创建封面图片目录
+    $coversDir = dirname(__FILE__) . '/assets/images/covers';
+    if (!is_dir($coversDir)) {
+        @mkdir($coversDir, 0755, true);
+    }
+}
+// 在主题加载时执行初始化
+init_theme();
+
 /**
 * 页面加载时间
 */
@@ -138,6 +149,19 @@ function timer_start() {
 */    
 function img_postthumb($cid) {
     $db = Typecho_Db::get();
+    
+    // 首先检查是否设置了自定义封面
+    $cover = $db->fetchRow($db->select('str_value')
+        ->from('table.fields')
+        ->where('cid = ?', $cid)
+        ->where('name = ?', 'cover'));
+    
+    // 如果找到自定义封面，直接返回
+    if ($cover && !empty($cover['str_value'])) {
+        return $cover['str_value'];
+    }
+    
+    // 否则尝试从文章内容中获取第一张图片
     $rs = $db->fetchRow($db->select('table.contents.text')
         ->from('table.contents')
         ->where('table.contents.cid=?', $cid)
@@ -252,6 +276,119 @@ class ImageStructureProcessor {
 // };
 
 /**
+ * 处理图片为封面图（裁剪为5:3，最大宽度500px，转换为webp）
+ * 
+ * @param string $imageUrl 原始图片URL
+ * @return string 处理后的图片URL
+ */
+function process_cover_image($imageUrl) {
+    // 检查GD库是否可用
+    if (!function_exists('imagecreatetruecolor')) {
+        return $imageUrl; // 如果GD库不可用，返回原图
+    }
+    
+    // 分析URL
+    $parsed = parse_url($imageUrl);
+    
+    // 如果图片是外部链接，需要下载
+    $isExternalUrl = !empty($parsed['host']) && $parsed['host'] !== $_SERVER['HTTP_HOST'];
+    
+    // 生成唯一的文件名（使用MD5哈希）
+    $filename = md5($imageUrl) . '.webp';
+    
+    // 处理后图片的保存路径
+    $themeDir = dirname(__FILE__);
+    $savePath = $themeDir . '/assets/images/covers/' . $filename;
+    $webPath = Helper::options()->themeUrl . '/assets/images/covers/' . $filename;
+    
+    // 如果缓存文件已存在，直接返回
+    if (file_exists($savePath)) {
+        return $webPath;
+    }
+    
+    // 获取原始图片内容
+    if ($isExternalUrl) {
+        // 外部图片，需要下载
+        $imageContent = @file_get_contents($imageUrl);
+        if (!$imageContent) {
+            return $imageUrl; // 无法下载，返回原图
+        }
+    } else {
+        // 本地图片
+        $localPath = $_SERVER['DOCUMENT_ROOT'] . $parsed['path'];
+        if (!file_exists($localPath)) {
+            return $imageUrl; // 无法找到本地文件，返回原图
+        }
+        $imageContent = @file_get_contents($localPath);
+    }
+    
+    // 创建图像资源
+    $originalImage = @imagecreatefromstring($imageContent);
+    if (!$originalImage) {
+        return $imageUrl; // 无法创建图像资源，返回原图
+    }
+    
+    // 获取原始图片尺寸
+    $originalWidth = imagesx($originalImage);
+    $originalHeight = imagesy($originalImage);
+    
+    // 计算目标尺寸（5:3比例，最大宽度500px）
+    $targetWidth = min(500, $originalWidth);
+    $targetHeight = intval($targetWidth * 3 / 5);
+    
+    // 计算裁剪坐标（居中裁剪）
+    $cropX = 0;
+    $cropY = 0;
+    $cropWidth = $originalWidth;
+    $cropHeight = $originalHeight;
+    
+    // 计算比例
+    $originalRatio = $originalWidth / $originalHeight;
+    $targetRatio = 5 / 3;
+    
+    if ($originalRatio > $targetRatio) {
+        // 原图过宽，需要裁剪宽度
+        $cropWidth = intval($originalHeight * $targetRatio);
+        $cropX = intval(($originalWidth - $cropWidth) / 2);
+    } else {
+        // 原图过高，需要裁剪高度
+        $cropHeight = intval($originalWidth / $targetRatio);
+        $cropY = intval(($originalHeight - $cropHeight) / 2);
+    }
+    
+    // 创建目标图像
+    $targetImage = imagecreatetruecolor($targetWidth, $targetHeight);
+    
+    // 裁剪并调整大小
+    imagecopyresampled(
+        $targetImage, 
+        $originalImage, 
+        0, 0, 
+        $cropX, $cropY, 
+        $targetWidth, $targetHeight, 
+        $cropWidth, $cropHeight
+    );
+    
+    // 保存为webp格式
+    if (!function_exists('imagewebp')) {
+        // 如果不支持webp，保存为png
+        $filename = md5($imageUrl) . '.png';
+        $savePath = $themeDir . '/assets/images/covers/' . $filename;
+        $webPath = Helper::options()->themeUrl . '/assets/images/covers/' . $filename;
+        imagepng($targetImage, $savePath, 9); // 9是最高压缩质量
+    } else {
+        // 保存为webp
+        imagewebp($targetImage, $savePath, 80); // 80是质量参数
+    }
+    
+    // 释放资源
+    imagedestroy($originalImage);
+    imagedestroy($targetImage);
+    
+    return $webPath;
+}
+
+/**
  * *获取文章卡片
  * **
  * 
@@ -302,6 +439,9 @@ function get_article_info($atts) {
     $imageToDisplay = img_postthumb($post['cid']);
     if (empty($imageToDisplay)) {
         $imageToDisplay = $default_thumbnail;
+    } else {
+        // 处理封面图片
+        $imageToDisplay = process_cover_image($imageToDisplay);
     }
     // 构建输出
     $output = '<div class="graph--mixtapeEmbed">';
