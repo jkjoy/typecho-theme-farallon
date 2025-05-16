@@ -24,23 +24,23 @@ function themeConfig($form) {
     $form->addInput($mastodonurl);
     $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否在文章页面显示作者信息'), _t('选择“是”将在文章页面包含显示作者信息。'));
+    '0', _t('是否在文章页面显示作者信息'), _t('选择"是"将在文章页面包含显示作者信息。'));
     $form->addInput($showProfile);
     $showcate = new Typecho_Widget_Helper_Form_Element_Radio('showcate',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否在文章页面显示文章分类'), _t('选择“是”将在文章页面显示文章的分类信息。'));
+    '0', _t('是否在文章页面显示文章分类'), _t('选择"是"将在文章页面显示文章的分类信息。'));
     $form->addInput($showcate);
     $showrelated = new Typecho_Widget_Helper_Form_Element_Radio('showrelated',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否显示相关文章'), _t('选择“是”将在文章页面显示相关文章。'));
+    '0', _t('是否显示相关文章'), _t('选择"是"将在文章页面显示相关文章。'));
     $form->addInput($showrelated);
     $showshare = new Typecho_Widget_Helper_Form_Element_Radio('showshare',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否显示复制链接'), _t('选择“是”将在文章页面显示复制链接。'));
+    '0', _t('是否显示复制链接'), _t('选择"是"将在文章页面显示复制链接。'));
     $form->addInput($showshare);
     $showtime = new Typecho_Widget_Helper_Form_Element_Radio('showtime',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否显示页面加载时间'), _t('选择“是”将在页脚显示加载时间。'));
+    '0', _t('是否显示页面加载时间'), _t('选择"是"将在页脚显示加载时间。'));
     $form->addInput($showtime);
     $loadmore = new Typecho_Widget_Helper_Form_Element_Radio('loadmore',
     array('0'=> _t('加载更多'), '1'=> _t('页码模式')),
@@ -168,8 +168,11 @@ function getPermalinkFromCoid($coid) {
  * 图片灯箱
  */
 class ImageStructureProcessor {
-    public static function processContent($content, $widget) {
-        // 首先检查内容是否为空
+    public static function processContent($content, $widget, $lastResult = null) {
+        // 首先应用之前的过滤器结果
+        $content = empty($lastResult) ? $content : $lastResult;
+        
+        // 检查内容是否为空
         if (empty($content) || !is_string($content)) {
             return $content;
         }
@@ -236,15 +239,17 @@ class ImageStructureProcessor {
             } catch (Exception $e) {
                 // 记录错误但返回原始内容
                 error_log('Image processing error: ' . $e->getMessage());
-                return $content;
+                // 如果发生错误，返回上一个过滤器结果或原始内容
+                return empty($lastResult) ? $content : $lastResult;
             }
         }
         return $content;
     }
 }
-Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($content, $widget) {
-    return ImageStructureProcessor::processContent($content, $widget);
-};
+// u6ce8u91cau6389u8fd9u884cuff0cu9632u6b62u8986u76d6u8fd9u4e2au94a9u5b50u7684u5176u4ed6u6ce8u518c
+// Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($content, $widget) {
+//     return ImageStructureProcessor::processContent($content, $widget);
+// };
 
 /**
  * *获取文章卡片
@@ -315,11 +320,16 @@ class ContentFilter
     {
         // 首先运行之前的过滤器结果
         $content = empty($lastResult) ? $content : $lastResult;
+        
+        // 处理图片灯箱
+        $content = ImageStructureProcessor::processContent($content, $widget, $content);
+        
         // 然后处理我们的文章短代码
         $content = preg_replace_callback('/\[article\s+([^\]]+)\]/', function($matches) {
             $atts = self::parse_atts($matches[1]);
             return get_article_info($atts);
         }, $content);
+        
         return $content;
     }
     // 解析短代码属性
@@ -377,8 +387,11 @@ EOF;
     }
 }
 // 注册编辑器按钮钩子
-Typecho_Plugin::factory('admin/write-post.php')->bottom = array('EditorButton', 'render');
-Typecho_Plugin::factory('admin/write-page.php')->bottom = array('EditorButton', 'render');
+// 避免重复注册，在最后执行
+if (!Typecho_Plugin::exists('Widget_Abstract_Contents', 'editor')) {
+    Typecho_Plugin::factory('admin/write-post.php')->bottom = array('EditorButton', 'render');
+    Typecho_Plugin::factory('admin/write-page.php')->bottom = array('EditorButton', 'render');
+}
 
 /**    
  * 评论者认证等级 + 身份    
@@ -455,8 +468,11 @@ function commentApprove($widget, $email = NULL)
  * 修改附件插入功能
  */
 // 添加批量插入按钮的JavaScript
-Typecho_Plugin::factory('admin/write-post.php')->bottom = array('MyHelper', 'addBatchInsertButton');
-Typecho_Plugin::factory('admin/write-page.php')->bottom = array('MyHelper', 'addBatchInsertButton');
+// 避免重复注册，使用条件判断
+if (!Typecho_Plugin::exists('admin/write-post.php', 'bottom')) {
+    Typecho_Plugin::factory('admin/write-post.php')->bottom = array('MyHelper', 'addBatchInsertButton');
+    Typecho_Plugin::factory('admin/write-page.php')->bottom = array('MyHelper', 'addBatchInsertButton');
+}
 
 class MyHelper {
     public static function addBatchInsertButton() {
