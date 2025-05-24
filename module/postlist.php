@@ -37,7 +37,7 @@
             <div class="content">
                 <h2 class="post--title">
                     <a href="<?php $this->permalink() ?>">
-                        <?php $this->title() ?>
+                        <?php $this->title() ?><?php if (isset($this->isSticky) && $this->isSticky): ?><?php echo $this->stickyHtml; ?><?php endif; ?>
                         <?php if((time() - $this->created) < 60*60*24*3): ?>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             class="icon--sticky" stroke="currentColor" stroke-width="2" stroke-linecap="round"

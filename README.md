@@ -6,8 +6,11 @@
 
 
 ## 更新日志 & 预览
+
 ### 0.7.2
+
 - 优化页面加载速度,自动裁切封面,并压缩为`webp`格式,并保存在主题目录`assets`-`images`-`covers`下,使用前必须开启`php`的`GD拓展`和主题目录的写入权限
+- 修复了置顶文章和翻页的问题
 
 ### 0.7.1
 
@@ -40,7 +43,7 @@
 
 
 
-[预览](https://www.imsun.org/)
+[预览](https://blog.imsun.org/)
 
 https://www.imsun.org/archives/1640.html
 
