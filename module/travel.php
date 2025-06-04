@@ -16,7 +16,7 @@
                     $imageToDisplay = process_cover_image($imageToDisplay);
                 }
 ?>   
-<article class="post--card" id="loadpost" itemscope itemtype="http://schema.org/Article">
+<article class="post--card" id="loadpost">
     <img src="<?php echo $imageToDisplay; ?>" alt="<?php $this->title() ?>" class="cover" itemprop="image"/>
         <div class="content">
             <h2 class="post--title">
@@ -32,7 +32,7 @@
                     <path d="M512 97.52381c228.912762 0 414.47619 185.563429 414.47619 414.47619s-185.563429 414.47619-414.47619 414.47619S97.52381 740.912762 97.52381 512 283.087238 97.52381 512 97.52381z m0 73.142857C323.486476 170.666667 170.666667 323.486476 170.666667 512s152.81981 341.333333 341.333333 341.333333 341.333333-152.81981 341.333333-341.333333S700.513524 170.666667 512 170.666667z m36.571429 89.697523v229.86362h160.865523v73.142857H512a36.571429 36.571429 0 0 1-36.571429-36.571429V260.388571h73.142858z"></path>
                 </svg>
                 <time datetime='<?php $this->date('Y-m-d'); ?>' class="humane--time">
-                    <?php $this->date('Y-m-d'); ?>
+                    <?php $options = Helper::options();if ($options->friendlyTime == '1') {echo time_ago($this->created);} else {$this->date('Y-m-d H:i'); }?>
                 </time>
             </div>
         </div>

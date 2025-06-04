@@ -7,7 +7,7 @@
             <img src="<?php $this->options->logoUrl() ?>" class="avatar" width="48" height="48" />
             <a datetime='<?php $this->date('Y-m-d'); ?>' class="humane--time" href="<?php $this->permalink() ?>"
                 itemprop="datePublished">
-                <?php $this->date('Y-m-d'); ?>
+                <?php $options = Helper::options();if ($options->friendlyTime == '1') {echo time_ago($this->created);} else {$this->date('Y-m-d H:i'); }?>
             </a>
         </header>
         <div class="description" itemprop="about">

@@ -22,6 +22,11 @@ function themeConfig($form) {
     $form->addInput($twitterurl);
     $mastodonurl = new Typecho_Widget_Helper_Form_Element_Text('mastodonurl', NULL, NULL, _t('mastodon'), _t('会在个人信息显示'));
     $form->addInput($mastodonurl);
+    $friendlyTime = new Typecho_Widget_Helper_Form_Element_Radio('friendlyTime', 
+        array('0' => _t('否'),
+              '1' => _t('是')),
+        '0', _t('是否显示友好时间'), _t('默认不显示友好时间，显示标准时间格式'));
+    $form->addInput($friendlyTime);
     $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否在文章页面显示作者信息'), _t('选择"是"将在文章页面包含显示作者信息。'));
@@ -193,22 +198,15 @@ function getPermalinkFromCoid($coid) {
  */
 class ImageStructureProcessor {
     public static function processContent($content, $widget, $lastResult = null) {
-        // 首先应用之前的过滤器结果
         $content = empty($lastResult) ? $content : $lastResult;
-        
-        // 检查内容是否为空
         if (empty($content) || !is_string($content)) {
             return $content;
         }
         if ($widget instanceof Widget_Archive) {
             try {
-                // 使用 DOM 操作确保结构完整性
                 $dom = new DOMDocument('1.0', 'UTF-8');
-                // 添加错误处理
                 libxml_use_internal_errors(true);
-                // 添加基础 HTML 结构以确保正确解析
                 $content = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div>' . $content . '</div></body></html>';
-                // 直接加载内容到 DOM
                 $dom->loadHTML($content, 
                     LIBXML_HTML_NOIMPLIED | 
                     LIBXML_HTML_NODEFDTD | 
@@ -270,10 +268,6 @@ class ImageStructureProcessor {
         return $content;
     }
 }
-// u6ce8u91cau6389u8fd9u884cuff0cu9632u6b62u8986u76d6u8fd9u4e2au94a9u5b50u7684u5176u4ed6u6ce8u518c
-// Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = function($content, $widget) {
-//     return ImageStructureProcessor::processContent($content, $widget);
-// };
 
 /**
  * 处理图片为封面图（裁剪为5:3，最大宽度500px，转换为webp）
@@ -760,3 +754,30 @@ class AttachmentHelper {
     }
 }
 ?>
+<?php 
+/**
+ * 友好时间显示函数
+ * @param int $time 时间戳
+ * @param int $threshold 阈值（秒），超过此值则显示标准日期格式（Y-m-d）
+ * @return string
+ */
+function time_ago($time, $threshold = 31536000) { // 31536000秒 = 1年
+    $now = time();
+    $difference = $now - $time;
+    
+    // 如果时间差超过阈值（默认1年），则返回标准日期格式（不带时间）
+    if ($difference >= $threshold) {
+        return date('Y-m-d', $time);
+    }
+    
+    // 1年以内的时间，返回友好格式（如 "3天前"）
+    $periods = array("秒", "分钟", "小时", "天", "周", "个月", "年");
+    $lengths = array("60", "60", "24", "7", "4.35", "12");
+    
+    for ($j = 0; $difference >= $lengths[$j] && $j < count($lengths); $j++) {
+        $difference /= $lengths[$j];
+    }
+    
+    $difference = round($difference);
+    return $difference . $periods[$j] . "前";
+}
