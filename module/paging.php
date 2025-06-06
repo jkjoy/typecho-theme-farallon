@@ -7,7 +7,7 @@
                 '...',
                 array(
                     'wrapTag' => 'nav',
-                    'wrapClass' => 'nav-links nav-links__comment',
+                    'wrapClass' => 'nav-links',
                     'itemTag' => '',
                     'textTag' => 'span',
                     'itemClass'   => 'page-numbers', 
