@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     // 给所有复制链接添加点击事件
-    document.querySelectorAll('.text').forEach(link => {
+    document.querySelectorAll('.copy').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const textToCopy = this.getAttribute('data-copy') || this.textContent;
