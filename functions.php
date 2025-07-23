@@ -119,7 +119,7 @@ define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
 // 初始化主题
 function init_theme() {
     // 检查并创建封面图片目录
-    $coversDir = dirname(__FILE__) . '/assets/images/covers';
+    $coversDir = __TYPECHO_ROOT_DIR__ . '/usr/cache/covers';
     if (!is_dir($coversDir)) {
         @mkdir($coversDir, 0755, true);
     }
@@ -214,7 +214,6 @@ class ImageStructureProcessor {
                     LIBXML_NOWARNING
                 );
                 $xpath = new DOMXPath($dom);
-                // 查找所有没有父 figure 的图片，排除 SVG
                 $images = $xpath->query("//img[not(ancestor::figure) and not(contains(@src, '.svg'))]");
                 if ($images->length > 0) {
                     foreach ($images as $img) {
@@ -291,10 +290,9 @@ function process_cover_image($imageUrl) {
     $filename = md5($imageUrl) . '.webp';
     
     // 处理后图片的保存路径
-    $themeDir = dirname(__FILE__);
-    $savePath = $themeDir . '/assets/images/covers/' . $filename;
-    $webPath = Helper::options()->themeUrl . '/assets/images/covers/' . $filename;
-    
+    $savePath = __TYPECHO_ROOT_DIR__ . '/usr/cache/covers/' . $filename;
+    $webPath = Helper::options()->siteUrl . '/usr/cache/covers/' . $filename;
+
     // 如果缓存文件已存在，直接返回
     if (file_exists($savePath)) {
         return $webPath;
@@ -367,8 +365,8 @@ function process_cover_image($imageUrl) {
     if (!function_exists('imagewebp')) {
         // 如果不支持webp，保存为png
         $filename = md5($imageUrl) . '.png';
-        $savePath = $themeDir . '/assets/images/covers/' . $filename;
-        $webPath = Helper::options()->themeUrl . '/assets/images/covers/' . $filename;
+        $savePath = __TYPECHO_ROOT_DIR__ . '/usr/cache/covers/' . $filename;
+        $webPath = Helper::options()->siteUrl . '/usr/cache/covers/' . $filename;
         imagepng($targetImage, $savePath, 9); // 9是最高压缩质量
     } else {
         // 保存为webp
@@ -388,23 +386,60 @@ function process_cover_image($imageUrl) {
  * 
 */
 function get_article_summary($post) {
-    // 首先尝试从自定义字段获取摘要
+    // 优先从自定义字段获取摘要
     $db = Typecho_Db::get();
-    // 查询自定义字段表
-    $row = $db->fetchRow($db->select()
+    $row = $db->fetchRow($db->select('str_value')
         ->from('table.fields')
         ->where('cid = ?', $post['cid'])
         ->where('name = ?', 'summary')); 
-    // 如果找到自定义摘要字段
+
     if ($row && !empty($row['str_value'])) {
-        return $row['str_value'];
-    } 
-    // 如果没有自定义摘要，截取文章内容
-    // 去除HTML标签
+        // 确保自定义摘要不超过 100 字节
+        $text = $row['str_value'];
+        $byte_limit = 280;
+        $summary = '';
+        $byte_count = 0;
+        $length = mb_strlen($text, 'UTF-8');
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = mb_substr($text, $i, 1, 'UTF-8');
+            $char_bytes = strlen($char);
+            if ($byte_count + $char_bytes > $byte_limit) {
+                break;
+            }
+            $summary .= $char;
+            $byte_count += $char_bytes;
+        }
+        return $summary;
+    }
+
+    // 没有自定义摘要，处理文章内容
+    if (empty($post['text']) || !is_string($post['text'])) {
+        return '';
+    }
+
     $text = strip_tags($post['text']);
-    
-    // 截取指定长度的摘要
-    return Typecho_Common::subStr($text, 0, 100, '...');
+    $byte_limit = 277; // 预留 3 字节给省略号
+    $summary = '';
+    $byte_count = 0;
+    $length = mb_strlen($text, 'UTF-8');
+
+    for ($i = 0; $i < $length; $i++) {
+        $char = mb_substr($text, $i, 1, 'UTF-8');
+        $char_bytes = strlen($char);
+        if ($byte_count + $char_bytes > $byte_limit) {
+            break;
+        }
+        $summary .= $char;
+        $byte_count += $char_bytes;
+    }
+
+    // 如果截断了，添加省略号
+    if ($byte_count < strlen($text)) {
+        $summary .= '...';
+    }
+
+    return $summary;
 }
 // 在原函数中使用
 function get_article_info($atts) {
@@ -488,8 +523,6 @@ class ContentFilter
         return $atts;
     }
 }
-// 注册钩子
-Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('ContentFilter', 'filterContent');
 // 编辑器按钮类
 class EditorButton {
     public static function render()
@@ -780,4 +813,90 @@ function time_ago($time, $threshold = 31536000) { // 31536000秒 = 1年
     
     $difference = round($difference);
     return $difference . $periods[$j] . "前";
+}
+
+/***
+ * 获取站点统计信息（带缓存）
+ */
+function getSiteStatsWithCache() {
+    $cacheFile = __TYPECHO_ROOT_DIR__ . '/usr/cache/site_stats.cache';
+    $cacheTime = 3600; // 1小时缓存
+    $currentVersion = '1.1'; // 当前版本号
+
+    // 检查缓存
+    if (file_exists($cacheFile)) {
+        $cacheData = json_decode(file_get_contents($cacheFile), true);
+        if ($cacheData && 
+            isset($cacheData['cache_time']) && 
+            time() - $cacheData['cache_time'] < $cacheTime && 
+            isset($cacheData['cache_version']) && 
+            $cacheData['cache_version'] === $currentVersion) {
+            return $cacheData;
+        }
+    }
+
+    $db = Typecho_Db::get();
+    $stats = [];
+
+    // 1. 总分类数
+    $stats['totalCategories'] = $db->fetchObject($db->select('COUNT(*) AS cnt')
+        ->from('table.metas')
+        ->where('type = ?', 'category'))->cnt;
+
+    // 2. 总标签数
+    $stats['totalTags'] = $db->fetchObject($db->select('COUNT(*) AS cnt')
+        ->from('table.metas')
+        ->where('type = ?', 'tag'))->cnt;
+
+    // 3. 总文章数
+    $stats['totalPosts'] = $db->fetchObject($db->select('COUNT(*) AS cnt')
+        ->from('table.contents')
+        ->where('type = ?', 'post')
+        ->where('status = ?', 'publish'))->cnt;
+
+    // 4. 总文章字数
+    $stats['totalWords'] = $db->fetchObject($db->select('SUM(LENGTH(text)) AS total')
+        ->from('table.contents')
+        ->where('type = ?', 'post')
+        ->where('status = ?', 'publish'))->total ?: 0;
+
+    // 5. 建站时间
+    $oldestPost = $db->fetchObject($db->select('MIN(created) AS created')
+        ->from('table.contents')
+        ->where('type = ?', 'post')
+        ->where('status = ?', 'publish'));
+
+    if ($oldestPost && !empty($oldestPost->created)) {
+        $stats['siteCreationDate'] = date('Y-m-d', $oldestPost->created);
+        $stats['siteCreateYear'] = date('Y', $oldestPost->created);
+        $stats['siteDays'] = ceil((time() - $oldestPost->created) / 86400);
+    } else {
+        $stats['siteCreationDate'] = 'N/A';
+        $stats['siteCreateYear'] = 'N/A';
+        $stats['siteDays'] = 0;
+    }
+
+    // 6. 友情链接数量
+    $stats['totalLinks'] = 0;
+    if (class_exists('Links_Plugin')) {
+        $stats['totalLinks'] = $db->fetchObject($db->select('COUNT(*) AS cnt')
+            ->from('table.links'))->cnt ?: 0;
+    }
+
+    // 7. 总留言数量
+    $stats['totalComments'] = $db->fetchObject($db->select('COUNT(*) AS cnt')
+        ->from('table.comments')
+        ->where('status != ?', 'spam'))->cnt;
+
+    // 保存缓存
+    $stats['cache_time'] = time();
+    $stats['cache_version'] = $currentVersion; // 设置版本号
+    if (!is_dir(dirname($cacheFile))) {
+        mkdir(dirname($cacheFile), 0755, true);
+    }
+    if (!file_put_contents($cacheFile, json_encode($stats))) {
+        error_log('Failed to write site stats cache to ' . $cacheFile);
+    }
+
+    return $stats;
 }

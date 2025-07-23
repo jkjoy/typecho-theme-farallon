@@ -37,7 +37,7 @@
                 <?php endif; ?>
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
-            <div class="post--single__content graph" ><?php $this->content(); ?></div>
+            <div class="post--single__content graph" ><?php //$this->content(); ?><?php echo ContentFilter::filterContent($this->content, $this, null); ?></div>
         <?php if($this->options->wxpay): ?> 
             <!--打赏  -->
         <div class="post--single__action">   

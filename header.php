@@ -39,42 +39,37 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
     </script>
 <div class="main">
     <header class="site--header">
-            <?php if ($this->options->logoUrl): ?>
-                <a href="<?php $this->options->siteUrl(); ?>" class="site--url">
-                    <img src="<?php $this->options->logoUrl() ?>"  class="avatar" alt="<?php $this->options->title() ?>" />
-                </a>
-            <span class="u-xs-show"> 
-                    <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title() ?></a> 
-            </span>
-            <?php else: ?>
-                <span class="u-xs-show"> 
-                    <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title() ?></a> 
-                </span>
-            <?php endif; ?>
-    <div class="site--header__center">
-        <div class="inner">
-        <nav>
-		    <ul>
-            <?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
-            <?php while($pages->next()): ?>
-                <li><a <?php if($this->is('page', $pages->slug)): ?> class="current"<?php endif; ?> href="<?php $pages->permalink(); ?>" title="<?php $pages->title(); ?>"><?php $pages->title(); ?></a></li>
-            <?php endwhile; ?>		 
-            </ul>
-		</nav>
-                    <!-- 这年头谁会用站内的搜索啊      --> 
-            <div class="search--area">
+        <?php if ($this->options->logoUrl): ?>
+        <a href="<?php $this->options->siteUrl(); ?>" class="site--url">
+            <img src="<?php $this->options->logoUrl() ?>"  class="avatar" alt="<?php $this->options->title() ?>" />
+        </a>
+        <span class="u-xs-show"> 
+            <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title() ?></a> 
+        </span>
+        <?php else: ?>
+        <span class="u-xs-show"> 
+            <a href="<?php $this->options->siteUrl(); ?>"><?php $this->options->title() ?></a> 
+        </span>
+        <?php endif; ?>
+        <div class="site--header__center">
+            <div class="inner">
+                <nav>
+		        <ul>
+                <?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
+                <?php while($pages->next()): ?>
+                    <li><a <?php if($this->is('page', $pages->slug)): ?> class="current"<?php endif; ?> href="<?php $pages->permalink(); ?>" title="<?php $pages->title(); ?>"><?php $pages->title(); ?></a></li>
+                <?php endwhile; ?>		 
+                </ul>
+		        </nav>
+                <div class="search--area">
                 <form id="search" method="post" action="./" role="search" class="search-form">
                     <label>
 				        <input type="text" name="s" class="search-field text" placeholder="Search" required/>
                     </label>
                     <button type="submit" class="search-submit submit">搜索</button>
 			    </form>                 
-            </div>
-        </div> 
-    </div>
-     <svg class="svgIcon" width="25" height="25" data-action="show-search">
-		<path
-			d="M20.067 18.933l-4.157-4.157a6 6 0 1 0-.884.884l4.157 4.157a.624.624 0 1 0 .884-.884zM6.5 11c0-2.62 2.13-4.75 4.75-4.75S16 8.38 16 11s-2.13 4.75-4.75 4.75S6.5 13.62 6.5 11z">
-		</path>
-	</svg>   
+                </div>
+            </div> 
+        </div>
+        <svg class="svgIcon" width="25" height="25" data-action="show-search"><path d="M20.067 18.933l-4.157-4.157a6 6 0 1 0-.884.884l4.157 4.157a.624.624 0 1 0 .884-.884zM6.5 11c0-2.62 2.13-4.75 4.75-4.75S16 8.38 16 11s-2.13 4.75-4.75 4.75S6.5 13.62 6.5 11z"></path></svg>   
     </header>
