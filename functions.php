@@ -43,10 +43,6 @@ function themeConfig($form) {
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否显示复制链接'), _t('选择"是"将在文章页面显示复制链接。'));
     $form->addInput($showshare);
-    $showtime = new Typecho_Widget_Helper_Form_Element_Radio('showtime',
-    array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否显示页面加载时间'), _t('选择"是"将在页脚显示加载时间。'));
-    $form->addInput($showtime);
     $loadmore = new Typecho_Widget_Helper_Form_Element_Radio('loadmore',
     array('0'=> _t('加载更多'), '1'=> _t('页码模式')),
     '0', _t('加载文章列表方式'), _t('加载更多将在文章列表底部显示加载更多按钮'));

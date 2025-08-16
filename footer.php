@@ -8,10 +8,6 @@
             <a href="<?php $this->options->sitemapurl() ?>" target="_blank" aria-label="网站地图"></a>
             <?php endif; ?>    
         </div>      
-            <?php //添加加载时间控制
-            if ($this->options->showtime): ?>
-            &nbsp;页面加载耗时<?php echo timer_stop();?> 
-            <?php endif; ?> 
             <?php $this->options->tongji(); ?>   
             <?php $stats = getSiteStatsWithCache(); ?>   
          <div class="copyright"> © <?php echo $stats['siteCreateYear']; ?>-<?php echo date('Y'); ?> 
