@@ -112,17 +112,6 @@ $options = Typecho_Widget::widget('Widget_Options');
 $gravatarPrefix = empty($options->cnavatar) ? 'https://cravatar.cn/avatar/' : $options->cnavatar;
 define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
 
-// 初始化主题
-function init_theme() {
-    // 检查并创建封面图片目录
-    $coversDir = __TYPECHO_ROOT_DIR__ . '/usr/cache/covers';
-    if (!is_dir($coversDir)) {
-        @mkdir($coversDir, 0755, true);
-    }
-}
-// 在主题加载时执行初始化
-init_theme();
-
 /**
 * 页面加载时间
 */
@@ -320,8 +309,8 @@ function process_cover_image($imageUrl) {
     $originalWidth = imagesx($originalImage);
     $originalHeight = imagesy($originalImage);
     
-    // 计算目标尺寸（5:3比例，最大宽度500px）
-    $targetWidth = min(500, $originalWidth);
+    // 计算目标尺寸（5:3比例，最大宽度200px）
+    $targetWidth = min(200, $originalWidth);
     $targetHeight = intval($targetWidth * 3 / 5);
     
     // 计算裁剪坐标（居中裁剪）
@@ -782,8 +771,7 @@ class AttachmentHelper {
         <?php
     }
 }
-?>
-<?php 
+
 /**
  * 友好时间显示函数
  * @param int $time 时间戳
@@ -895,4 +883,45 @@ function getSiteStatsWithCache() {
     }
 
     return $stats;
+}
+
+/**
+ * 解析商品表格数据
+ * @param string $content 页面内容
+ * @return array 解析后的商品数据
+ */
+function parseGoodsTable($content) {
+    $goods = array();
+    // 创建DOM对象
+    $dom = new DOMDocument();
+    libxml_use_internal_errors(true); // 禁用libxml错误
+    $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
+    // 查找表格
+    $tables = $dom->getElementsByTagName('table');
+    if ($tables->length > 0) {
+        $table = $tables->item(0); // 获取第一个表格
+        $rows = $table->getElementsByTagName('tr');  
+        // 跳过表头行
+        for ($i = 1; $i < $rows->length; $i++) {
+            $row = $rows->item($i);
+            $cells = $row->getElementsByTagName('td');           
+            // 确保有足够的单元格
+            if ($cells->length >= 5) {
+                $item = array(
+                    'image' => trim($cells->item(0)->textContent),
+                    'name' => trim($cells->item(1)->textContent),
+                    'price' => trim($cells->item(2)->textContent),
+                    'link' => trim($cells->item(3)->textContent),
+                    'description' => trim($cells->item(4)->textContent)
+                );
+                
+                // 确保必要字段不为空
+                if (!empty($item['image']) && !empty($item['name'])) {
+                    $goods[] = $item;
+                }
+            }
+        }
+    }
+    return $goods;
 }

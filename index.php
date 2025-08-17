@@ -6,7 +6,7 @@
  * * 适配Typecho 1.3.0
  * @package Farallon
  * @author  老孙 
- * @version 0.8
+ * @version 0.8.1
  * @link https://www.imsun.org
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
