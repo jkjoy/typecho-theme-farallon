@@ -366,6 +366,66 @@ function process_cover_image($imageUrl) {
 }
 
 /**
+ * 解析商品表格内容
+ * @param string $content
+ * @return array|null
+ */
+function parseGoodsTable($content) {
+    if (empty($content)) {
+        return null;
+    }
+
+    $dom = new DOMDocument();
+    libxml_use_internal_errors(true);
+    
+    // 添加一个简单的HTML包装，以确保正确解析UTF-8内容
+    $wrapped_content = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . $content . '</body></html>';
+    
+    if (!$dom->loadHTML($wrapped_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOERROR)) {
+        libxml_clear_errors();
+        return null;
+    }
+    
+    $xpath = new DOMXPath($dom);
+    $tables = $xpath->query('//table');
+    
+    if ($tables->length === 0) {
+        return null;
+    }
+    
+    $goods = array();
+    
+    foreach ($tables as $table) {
+        $rows = $xpath->query('.//tr', $table);
+        
+        foreach ($rows as $row) {
+            $cells = $xpath->query('.//td', $row);
+            
+            if ($cells->length >= 4) {
+                $item = array(
+                    'name' => trim($cells->item(0)->textContent),
+                    'description' => trim($cells->item(1)->textContent),
+                    'price' => trim($cells->item(2)->textContent),
+                    'image' => trim($cells->item(3)->textContent),
+                    'link' => trim($cells->item(3)->getElementsByTagName('a')->length > 0 
+                        ? $cells->item(3)->getElementsByTagName('a')->item(0)->getAttribute('href')
+                        : $cells->item(3)->textContent)
+                );
+                
+                // 确保所有必需的字段都不为空
+                if (!empty($item['name']) && !empty($item['description']) && 
+                    !empty($item['price']) && !empty($item['image'])) {
+                    $goods[] = $item;
+                }
+            }
+        }
+    }
+    
+    libxml_clear_errors();
+    return !empty($goods) ? $goods : null;
+}
+
+/**
  * *获取文章卡片
  * **
  * 
@@ -883,45 +943,4 @@ function getSiteStatsWithCache() {
     }
 
     return $stats;
-}
-
-/**
- * 解析商品表格数据
- * @param string $content 页面内容
- * @return array 解析后的商品数据
- */
-function parseGoodsTable($content) {
-    $goods = array();
-    // 创建DOM对象
-    $dom = new DOMDocument();
-    libxml_use_internal_errors(true); // 禁用libxml错误
-    $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-    libxml_clear_errors();
-    // 查找表格
-    $tables = $dom->getElementsByTagName('table');
-    if ($tables->length > 0) {
-        $table = $tables->item(0); // 获取第一个表格
-        $rows = $table->getElementsByTagName('tr');  
-        // 跳过表头行
-        for ($i = 1; $i < $rows->length; $i++) {
-            $row = $rows->item($i);
-            $cells = $row->getElementsByTagName('td');           
-            // 确保有足够的单元格
-            if ($cells->length >= 5) {
-                $item = array(
-                    'image' => trim($cells->item(0)->textContent),
-                    'name' => trim($cells->item(1)->textContent),
-                    'price' => trim($cells->item(2)->textContent),
-                    'link' => trim($cells->item(3)->textContent),
-                    'description' => trim($cells->item(4)->textContent)
-                );
-                
-                // 确保必要字段不为空
-                if (!empty($item['image']) && !empty($item['name'])) {
-                    $goods[] = $item;
-                }
-            }
-        }
-    }
-    return $goods;
 }

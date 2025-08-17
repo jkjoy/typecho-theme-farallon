@@ -13,10 +13,12 @@ $this->need('header.php');
     </header>
     <div id="goods" class="good--list">
         <?php
-        // 获取内容并解析
         $content = $this->content;
-        $goods = parseGoodsTable($content);
-        if (!empty($goods)) {
+        try {
+            $goods = parseGoodsTable($content);
+            if (empty($content) || empty($goods)) {
+                echo '<div class="no-goods">暂无数据，请按照格式书写。</div>';
+            } else {
             foreach ($goods as $item): ?>
                 <div class="good--item">
                     <div class="img-spacer">
@@ -32,8 +34,9 @@ $this->need('header.php');
                     </div>
                 </div>
             <?php endforeach;
-        } else {
-            echo '<div class="no-goods">暂无商品数据，请按照格式填写商品信息。</div>';
+        }
+        } catch (Exception $e) {
+            echo '<div class="no-goods">解析内容时出现错误，请检查格式是否正确。</div>';
         }
         ?>
     </div>
