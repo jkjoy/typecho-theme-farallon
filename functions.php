@@ -63,11 +63,6 @@ function themeConfig($form) {
     $form->addInput($tongji);
 }
 
-function saveThemeConfig($config) {
-    // 可以在这里添加额外的验证或处理逻辑
-    return $config;
-}
-
 // 自定义字段
 function themeFields($layout) {
     $summary= new Typecho_Widget_Helper_Form_Element_Textarea('summary', NULL, NULL, _t('文章摘要'), _t('自定义摘要'));
@@ -111,28 +106,6 @@ function get_post_view($archive) {
 $options = Typecho_Widget::widget('Widget_Options');
 $gravatarPrefix = empty($options->cnavatar) ? 'https://cravatar.cn/avatar/' : $options->cnavatar;
 define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
-
-/**
-* 页面加载时间
-*/
-function timer_start() {
-    global $timestart;
-    $mtime = explode( ' ', microtime() );
-    $timestart = $mtime[1] + $mtime[0];
-    return true;
-    }
-    timer_start();
-    function timer_stop( $display = 0, $precision = 3 ) {
-    global $timestart, $timeend;
-    $mtime = explode( ' ', microtime() );
-    $timeend = $mtime[1] + $mtime[0];
-    $timetotal = number_format( $timeend - $timestart, $precision );
-    $r = $timetotal < 1 ? $timetotal * 1000 . " ms" : $timetotal . " s";
-    if ( $display ) {
-    echo $r;
-    }
-    return $r;
-    }
 
 /**
 * 获取文章第一张图片
@@ -404,12 +377,12 @@ function parseGoodsTable($content) {
             if ($cells->length >= 4) {
                 $item = array(
                     'name' => trim($cells->item(0)->textContent),
-                    'description' => trim($cells->item(1)->textContent),
-                    'price' => trim($cells->item(2)->textContent),
-                    'image' => trim($cells->item(3)->textContent),
+                    'price' => trim($cells->item(1)->textContent),
+                    'image' => trim($cells->item(2)->textContent),
                     'link' => trim($cells->item(3)->getElementsByTagName('a')->length > 0 
                         ? $cells->item(3)->getElementsByTagName('a')->item(0)->getAttribute('href')
-                        : $cells->item(3)->textContent)
+                        : $cells->item(3)->textContent),
+                    'description' => trim($cells->item(4)->textContent)
                 );
                 
                 // 确保所有必需的字段都不为空
@@ -423,186 +396,6 @@ function parseGoodsTable($content) {
     
     libxml_clear_errors();
     return !empty($goods) ? $goods : null;
-}
-
-/**
- * *获取文章卡片
- * **
- * 
-*/
-function get_article_summary($post) {
-    // 优先从自定义字段获取摘要
-    $db = Typecho_Db::get();
-    $row = $db->fetchRow($db->select('str_value')
-        ->from('table.fields')
-        ->where('cid = ?', $post['cid'])
-        ->where('name = ?', 'summary')); 
-
-    if ($row && !empty($row['str_value'])) {
-        // 确保自定义摘要不超过 100 字节
-        $text = $row['str_value'];
-        $byte_limit = 280;
-        $summary = '';
-        $byte_count = 0;
-        $length = mb_strlen($text, 'UTF-8');
-
-        for ($i = 0; $i < $length; $i++) {
-            $char = mb_substr($text, $i, 1, 'UTF-8');
-            $char_bytes = strlen($char);
-            if ($byte_count + $char_bytes > $byte_limit) {
-                break;
-            }
-            $summary .= $char;
-            $byte_count += $char_bytes;
-        }
-        return $summary;
-    }
-
-    // 没有自定义摘要，处理文章内容
-    if (empty($post['text']) || !is_string($post['text'])) {
-        return '';
-    }
-
-    $text = strip_tags($post['text']);
-    $byte_limit = 277; // 预留 3 字节给省略号
-    $summary = '';
-    $byte_count = 0;
-    $length = mb_strlen($text, 'UTF-8');
-
-    for ($i = 0; $i < $length; $i++) {
-        $char = mb_substr($text, $i, 1, 'UTF-8');
-        $char_bytes = strlen($char);
-        if ($byte_count + $char_bytes > $byte_limit) {
-            break;
-        }
-        $summary .= $char;
-        $byte_count += $char_bytes;
-    }
-
-    // 如果截断了，添加省略号
-    if ($byte_count < strlen($text)) {
-        $summary .= '...';
-    }
-
-    return $summary;
-}
-// 在原函数中使用
-function get_article_info($atts) {
-    $default_atts = array(
-        'id' => '',
-    );
-    $atts = array_merge($default_atts, $atts);
-    $db = Typecho_Db::get();
-    // 根据 ID获取文章
-    if (!empty($atts['id'])) {
-        $post = $db->fetchRow($db->select()->from('table.contents')
-            ->where('cid = ?', $atts['id'])
-            ->limit(1));
-    } else {
-        return '请提供文章ID';
-    }
-    if (!$post) {
-        return '未找到文章';
-    }
-    // 将文章数据推送到抽象内容小部件中
-    $post = Typecho_Widget::widget('Widget_Abstract_Contents')->push($post);
-    // 获取摘要
-    $summary = get_article_summary($post);
-    // 获取缩略图
-    $default_thumbnail = Helper::options()->themeUrl . '/assets/images/nopic.svg';
-    $imageToDisplay = img_postthumb($post['cid']);
-    if (empty($imageToDisplay)) {
-        $imageToDisplay = $default_thumbnail;
-    } else {
-        // 处理封面图片
-        $imageToDisplay = process_cover_image($imageToDisplay);
-    }
-    // 构建输出
-    $output = '<div class="graph--mixtapeEmbed">';
-    $output .= '<a class="mixtapeContent" href="' . $post['permalink'] . '" target="_blank">';
-    $output .= '<span class="markup--strong markup--mixtapeEmbed-strong">' . htmlspecialchars($post['title']) . '</span>';
-    $output .= '<em class="markup--em markup--mixtapeEmbed-em">' . htmlspecialchars($summary) . '</em>';
-    $output .= '</a>';
-    $output .= '<a class="mixtapeImage" href="' . $post['permalink'] . '" target="_blank" style="background-image:url(' . htmlspecialchars($imageToDisplay) . ')"></a>';
-    $output .= '</div>';
-    return $output;
-}
-// 创建一个新的类来处理内容过滤
-class ContentFilter
-{
-    public static function filterContent($content, $widget, $lastResult)
-    {
-        // 首先运行之前的过滤器结果
-        $content = empty($lastResult) ? $content : $lastResult;
-        
-        // 处理图片灯箱
-        $content = ImageStructureProcessor::processContent($content, $widget, $content);
-        
-        // 然后处理我们的文章短代码
-        $content = preg_replace_callback('/\[article\s+([^\]]+)\]/', function($matches) {
-            $atts = self::parse_atts($matches[1]);
-            return get_article_info($atts);
-        }, $content);
-        
-        return $content;
-    }
-    // 解析短代码属性
-    private static function parse_atts($text) {
-        $atts = array();
-        $pattern = '/(\w+)\s*=\s*"([^"]*)"(?:\s|$)|(\w+)\s*=\s*\'([^\']*)\'(?:\s|$)|(\w+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|(\S+)(?:\s|$)/';
-        $text = preg_replace("/[\x{00a0}\x{200b}]+/u", " ", $text);
-        if (preg_match_all($pattern, $text, $match, PREG_SET_ORDER)) {
-            foreach ($match as $m) {
-                if (!empty($m[1]))
-                    $atts[strtolower($m[1])] = stripcslashes($m[2]);
-                elseif (!empty($m[3]))
-                    $atts[strtolower($m[3])] = stripcslashes($m[4]);
-                elseif (!empty($m[5]))
-                    $atts[strtolower($m[5])] = stripcslashes($m[6]);
-                elseif (isset($m[7]) && strlen($m[7]))
-                    $atts[] = stripcslashes($m[7]);
-                elseif (isset($m[8]))
-                    $atts[] = stripcslashes($m[8]);
-            }
-        }
-        return $atts;
-    }
-}
-// 编辑器按钮类
-class EditorButton {
-    public static function render()
-    {
-        echo <<<EOF
-<script>
-$(document).ready(function() {
-    $('#wmd-button-row').append('<li class="wmd-button" id="wmd-article-button" title="插入文章引用"><span style="background: none;"><svg t="1687164718203" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4158" width="20" height="20"><path d="M810.666667 213.333333H213.333333c-46.933333 0-85.333333 38.4-85.333333 85.333334v426.666666c0 46.933333 38.4 85.333333 85.333333 85.333334h597.333334c46.933333 0 85.333333-38.4 85.333333-85.333334V298.666667c0-46.933333-38.4-85.333333-85.333333-85.333334z m0 512H213.333333V298.666667h597.333334v426.666666z" p-id="4159"></path><path d="M298.666667 384h426.666666v85.333333H298.666667zM298.666667 554.666667h426.666666v85.333333H298.666667z" p-id="4160"></path></svg></span></li>');
-
-    $('#wmd-article-button').click(function() {
-        var articleId = prompt("请输入要引用的文章ID：");
-        if (articleId) {
-            var text = "[article id=\"" + articleId + "\"]";
-            var textarea = $('#text')[0];
-            var start = textarea.selectionStart;
-            var end = textarea.selectionEnd;
-            var value = textarea.value;
-            textarea.value = value.substring(0, start) + text + value.substring(end);
-            // 将光标移动到插入的文本之后
-            textarea.setSelectionRange(start + text.length, start + text.length);
-            textarea.focus();
-            // 触发change事件，确保编辑器更新
-            $('#text').trigger('change');
-        }
-    });
-});
-</script>
-EOF;
-    }
-}
-// 注册编辑器按钮钩子
-// 避免重复注册，在最后执行
-if (!Typecho_Plugin::exists('Widget_Abstract_Contents', 'editor')) {
-    Typecho_Plugin::factory('admin/write-post.php')->bottom = array('EditorButton', 'render');
-    Typecho_Plugin::factory('admin/write-page.php')->bottom = array('EditorButton', 'render');
 }
 
 /**    

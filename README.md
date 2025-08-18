@@ -40,10 +40,10 @@ https://www.imsun.org/archives/1640.html
 
 在编辑器中使用表格的方式进行书写,以下为示例
 ```markdown
-| 图片链接 | 商品名称 | 价格 | 商品链接 | 推荐理由 |
+| 商品名称 | 价格 |  图片链接 |商品链接 | 推荐理由 |
 |---------|---------|------|----------|----------|
-| https://example.com/image1.jpg | 商品A | ¥99 | https://example.com/product1 | 这是一个很好的产品 |
-| https://example.com/image2.jpg | 商品B | ¥199 | https://example.com/product2 | 非常推荐购买 |
+ | 商品A | ¥99 | https://cdn.wanne.cn/ali.png| https://wanne.cn | 这是一个很好的产品 |
+ | 商品B | ¥199 | https://cdn.wanne.cn/wx.png| https://wanne.cn | 非常推荐购买 |
 ```
 
 

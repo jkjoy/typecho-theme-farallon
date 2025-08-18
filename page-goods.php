@@ -28,9 +28,9 @@ $this->need('header.php');
                     </div>
                     <div class="good--name">
                         <div class="brand">
-                            <?php echo htmlspecialchars($item['name']); ?>·<?php echo htmlspecialchars($item['description']); ?>
+                            <?php echo htmlspecialchars($item['name']); ?>·<?php echo htmlspecialchars($item['price']); ?>
                         </div>
-                        <?php echo htmlspecialchars($item['price']); ?>
+                    <?php echo htmlspecialchars($item['description']); ?>  
                     </div>
                 </div>
             <?php endforeach;
