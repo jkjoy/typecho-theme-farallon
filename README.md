@@ -22,6 +22,8 @@
 - 移除了文章内的图片灯箱效果
 - 移除了打赏的相关功能
 
+- 修复了点赞的功能
+
 [预览](https://blog.imsun.org/)
 
 https://www.imsun.org/archives/1640.html

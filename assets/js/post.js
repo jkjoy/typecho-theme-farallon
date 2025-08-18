@@ -237,8 +237,9 @@ class LikeHandler {
         newSvg.setAttribute('aria-hidden', 'false');
         // 使用 icon--active，确保在按钮变为 is-active 时显示
         newSvg.classList.add('icon--active');
-        // 与文本颜色保持一致
-        newSvg.style.fill = 'currentColor';
+        // 与文本颜色保持一致（已点赞显示为红色）
+        newSvg.style.fill = '#ff4d4f';
+        newSvg.style.color = '#ff4d4f';
         // 构造路径，显式设置 fill 与 stroke，避免被 CSS 覆盖导致看不见
         const path = document.createElementNS(NS, 'path');
         path.setAttribute('d', 'M780.8 204.8c-83.2-44.8-179.2-19.2-243.2 44.8L512 275.2 486.4 249.6c-64-64-166.4-83.2-243.2-44.8C108.8 275.2 89.6 441.6 185.6 537.6l32 32 153.6 153.6 102.4 102.4c25.6 25.6 57.6 25.6 83.2 0l102.4-102.4 153.6-153.6 32-32C934.4 441.6 915.2 275.2 780.8 204.8z');
@@ -262,7 +263,6 @@ class LikeHandler {
             if (this.getCookie('extend_contents_likes_' + cid) ||
                 localStorage.getItem('extend_contents_likes_' + cid)) {
                 button.classList.add('is-active');
-                button.disabled = true;
                 this.replaceSvg(button);
             }
             button.addEventListener('click', () => this.handleLike(button, cid));
@@ -270,18 +270,18 @@ class LikeHandler {
     }
 
     handleLike(button, cid) {
+        if (this.getCookie('extend_contents_likes_' + cid) ||
+            localStorage.getItem('extend_contents_likes_' + cid)) {
+            this.showNotice('请勿重复点赞', 'error');
+            return;
+        }
+
         const currentTime = new Date().getTime();
         if (currentTime - this.lastSendTime < this.throttleTimeMs) {
             this.showNotice('操作过于频繁', 'error');
             return;
         }
         this.lastSendTime = currentTime;
-
-        if (this.getCookie('extend_contents_likes_' + cid) ||
-            localStorage.getItem('extend_contents_likes_' + cid)) {
-            this.showNotice('您已经点过赞了', 'error');
-            return;
-        }
 
         fetch('/', {
             method: 'POST',
@@ -298,7 +298,6 @@ class LikeHandler {
             if (data.success) {
                 button.querySelector('.count').textContent = data.likes;
                 button.classList.add('is-active');
-                button.disabled = true;
                 this.replaceSvg(button);
                 this.setCookie('extend_contents_likes_' + cid, '1', 30);
                 localStorage.setItem('extend_contents_likes_' + cid, '1');
