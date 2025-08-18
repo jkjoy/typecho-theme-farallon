@@ -37,26 +37,16 @@
                 <?php endif; ?>
         </div>         
             <h2 class="post--single__title"><?php $this->title() ?></h2>
-            <div class="post--single__content graph" ><?php //$this->content(); ?><?php echo ContentFilter::filterContent($this->content, $this, null); ?></div>
-        <?php if($this->options->wxpay): ?> 
-            <!--打赏  -->
-        <div class="post--single__action">   
-            <button class="button--like" onclick="openModal()">
-                <svg class="icon--default" viewBox="0 0 1024 1024" width="32" height="32"><path d="M332.8 249.6c38.4 0 83.2 19.2 108.8 44.8L467.2 320 512 364.8 556.8 320l25.6-25.6c32-32 70.4-44.8 108.8-44.8 19.2 0 38.4 6.4 57.6 12.8 44.8 25.6 70.4 57.6 76.8 108.8 6.4 44.8-6.4 89.6-38.4 121.6L512 774.4 236.8 492.8C204.8 460.8 185.6 416 192 371.2c6.4-44.8 38.4-83.2 76.8-108.8C288 256 313.6 249.6 332.8 249.6L332.8 249.6M332.8 185.6C300.8 185.6 268.8 192 243.2 204.8 108.8 275.2 89.6 441.6 185.6 537.6l281.6 281.6C480 832 499.2 838.4 512 838.4s32-6.4 38.4-19.2l281.6-281.6c96-96 76.8-262.4-57.6-332.8-25.6-12.8-57.6-19.2-89.6-19.2-57.6 0-115.2 25.6-153.6 64L512 275.2 486.4 249.6C448 211.2 390.4 185.6 332.8 185.6L332.8 185.6z"></path></svg>
-            </button>           
-        </div>
-        <!-- 弹窗 -->
-        <div class="modal" id="modal" onclick="closeModal()">
-            <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-                <p>如果觉得文章对你有帮助，可以请作者喝杯咖啡 ☕️</p>
-                <img src="<?php $this->options->wxpay() ?>" alt="微信二维码">
-                <img src="<?php $this->options->alipay() ?>" alt="支付宝二维码">
-            </div>
-        </div>
-        <script>function openModal(){document.getElementById('modal').style.display='flex'}function closeModal(){document.getElementById('modal').style.display='none'}</script>
-        <style>.button--like{background:none;border:none;padding:0;cursor:pointer;transition:transform 0.3s ease;}.button--like:hover{transform:scale(1.1);}.icon--default{fill:#666;transition:fill 0.3s ease;}.button--like:hover .icon--default{fill:#ff4081;}.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.1);justify-content:center;align-items:center;z-index:1000;}.modal-content{background-color:white;padding:20px;border-radius:10px;text-align:center;position:relative;}.modal-content img{width:200px;height:200px;margin-top:10px;}.close-btn{position:absolute;top:10px;right:10px;cursor:pointer;font-size:20px;color:#888;}</style>
-        <?php endif; ?>
+            <div class="post--single__content graph" ><?php $this->content(); ?></div>
+<!-- 点赞按钮 HTML -->
+<div class="post--single__action">
+    <button class="button--like like-btn" aria-label="like the post" data-cid="<?php echo $this->cid; ?>">
+        <svg class="icon--default" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M332.8 249.6c38.4 0 83.2 19.2 108.8 44.8L467.2 320 512 364.8 556.8 320l25.6-25.6c32-32 70.4-44.8 108.8-44.8 19.2 0 38.4 6.4 57.6 12.8 44.8 25.6 70.4 57.6 76.8 108.8 6.4 44.8-6.4 89.6-38.4 121.6L512 774.4 236.8 492.8C204.8 460.8 185.6 416 192 371.2c6.4-44.8 38.4-83.2 76.8-108.8C288 256 313.6 249.6 332.8 249.6L332.8 249.6M332.8 185.6C300.8 185.6 268.8 192 243.2 204.8 108.8 275.2 89.6 441.6 185.6 537.6l281.6 281.6C480 832 499.2 838.4 512 838.4s32-6.4 38.4-19.2l281.6-281.6c96-96 76.8-262.4-57.6-332.8-25.6-12.8-57.6-19.2-89.6-19.2-57.6 0-115.2 25.6-153.6 64L512 275.2 486.4 249.6C448 211.2 390.4 185.6 332.8 185.6L332.8 185.6z"></path>
+        </svg>
+        <span class="count"><?php get_post_like($this); ?></span>
+    </button>
+</div>
         <!-- 复制链接 -->
         <?php if($this->options->showshare): ?>
         <div class="post--share">
@@ -129,6 +119,4 @@
 </article>
 </main>
 <script src="<?php $this->options->themeUrl('assets/js/post.js'); ?>"></script>
-<link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/lightbox.min.css'); ?>">
-<script src="<?php $this->options->themeUrl('assets/js/lightbox-plus-jquery.min.js'); ?>"></script>
 <?php $this->need('footer.php'); ?>

@@ -2,13 +2,13 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 //主题设置
 function themeConfig($form) {
-    $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'));
+    $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'), _t('说说列表显示头像'));
     $form->addInput($logoUrl);
-    $icoUrl = new Typecho_Widget_Helper_Form_Element_Text('icoUrl', NULL, NULL, _t('站点 Favicon 地址'));
+    $icoUrl = new Typecho_Widget_Helper_Form_Element_Text('icoUrl', NULL, NULL, _t('站点 Favicon 地址'), _t('请填写站点Favicon的URL地址'));
     $form->addInput($icoUrl);
-    $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('置顶文章cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页展示置顶文章。'));
+    $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('置顶文章的cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页列表中置顶文章。'));
     $form->addInput($sticky);
-    $travel = new Typecho_Widget_Helper_Form_Element_Text('travel', NULL, NULL, _t('travel分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于足迹分类展示'));
+    $travel = new Typecho_Widget_Helper_Form_Element_Text('travel', NULL, NULL, _t('图文分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于大图文章列表展示'));
     $form->addInput($travel);
     $memos = new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, NULL, _t('说说分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于说说分类展示'));
     $form->addInput($memos);    
@@ -16,11 +16,11 @@ function themeConfig($form) {
     $form->addInput($instagramurl);
     $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, 'https://t.me/', _t('电报'), _t('会在个人信息显示'));
     $form->addInput($telegramurl);
-    $githuburl = new Typecho_Widget_Helper_Form_Element_Text('githuburl', NULL, 'https://github.com/', _t('github'), _t('会在个人信息显示'));
+    $githuburl = new Typecho_Widget_Helper_Form_Element_Text('githuburl', NULL, 'https://github.com/', _t('GitHub'), _t('会在个人信息显示'));
     $form->addInput($githuburl);
-    $twitterurl = new Typecho_Widget_Helper_Form_Element_Text('twitterurl', NULL, NULL, _t('twitter'), _t('会在个人信息显示'));
+    $twitterurl = new Typecho_Widget_Helper_Form_Element_Text('twitterurl', NULL, NULL, _t('Twitter'), _t('会在个人信息显示'));
     $form->addInput($twitterurl);
-    $mastodonurl = new Typecho_Widget_Helper_Form_Element_Text('mastodonurl', NULL, NULL, _t('mastodon'), _t('会在个人信息显示'));
+    $mastodonurl = new Typecho_Widget_Helper_Form_Element_Text('mastodonurl', NULL, NULL, _t('Mastodon'), _t('会在个人信息显示'));
     $form->addInput($mastodonurl);
     $friendlyTime = new Typecho_Widget_Helper_Form_Element_Radio('friendlyTime', 
         array('0' => _t('否'),
@@ -53,10 +53,6 @@ function themeConfig($form) {
     $form->addInput($cnavatar);
     $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, '/img/', _t('填写分类图片路径,以"/"结尾'), _t('默认使用网站根目录下的img文件夹,也可以填写绝对或者CDN地址,自动匹配目录下以分类ID为文件名的mid.jpg格式的图片'));
     $form->addInput($midimg);
-    $wxpay = new Typecho_Widget_Helper_Form_Element_Text('wxpay', NULL, 'https://blog.loliko.cn/images/wechatpay.png', _t('微信收款码'), _t('赞赏二维码'));
-    $form->addInput($wxpay);
-    $alipay= new Typecho_Widget_Helper_Form_Element_Text('alipay', NULL, 'https://blog.loliko.cn/images/alipay.png', _t('支付宝收款码'), _t('赞赏二维码'));
-    $form->addInput($alipay);
     $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('Head内代码用于网站验证等'), _t('支持HTML'));
     $form->addInput($addhead);
     $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
@@ -102,7 +98,67 @@ function get_post_view($archive) {
     echo $row['views'];
 }
 
-/** 头像镜像     */
+ 
+/**
+ * 文章点赞数
+ */
+function get_post_like($archive) {
+    $cid = $archive->cid;
+    $db = Typecho_Db::get();
+    $prefix = $db->getPrefix();
+
+    if (!array_key_exists('likes', $db->fetchRow($db->select()->from('table.contents')))) {
+        $db->query('ALTER TABLE `' . $prefix . 'contents` ADD `likes` INT(10) DEFAULT 0;');
+        echo 0;
+        return;
+    }
+
+    $row = $db->fetchRow($db->select('likes')->from('table.contents')->where('cid = ?', $cid));
+    echo $row['likes'] ?? 0;
+}
+
+// AJAX 处理函数
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['likeup']) && isset($_POST['cid'])) {
+    $cid = intval($_POST['cid']);
+    $db = Typecho_Db::get();
+    $prefix = $db->getPrefix();
+
+    // 检查是否已点赞
+    if (isset($_COOKIE['extend_contents_likes_' . $cid])) {
+        header('Content-Type: application/json');
+        echo json_encode(array(
+            'success' => false,
+            'msg' => '您已经点过赞了',
+            'likes' => 0
+        ));
+        exit;
+    }
+
+    // 更新点赞数
+    $row = $db->fetchRow($db->select('likes')->from('table.contents')->where('cid = ?', $cid));
+    $newLikes = ($row['likes'] ?? 0) + 1;
+    
+    $db->query($db->update('table.contents')
+        ->rows(array('likes' => $newLikes))
+        ->where('cid = ?', $cid));
+
+    // 设置cookie防止重复点赞(30天有效期)
+    setcookie('extend_contents_likes_' . $cid, '1', time() + 2592000, '/');
+
+    // 返回结果
+    header('Content-Type: application/json');
+    echo json_encode(array(
+        'success' => true,
+        'msg' => '点赞成功',
+        'likes' => $newLikes
+    ));
+    exit;
+}
+
+/** 
+ * Gravatar镜像     
+ * @package custom
+*/
 $options = Typecho_Widget::widget('Widget_Options');
 $gravatarPrefix = empty($options->cnavatar) ? 'https://cravatar.cn/avatar/' : $options->cnavatar;
 define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
@@ -143,87 +199,16 @@ function img_postthumb($cid) {
     }
 }
 
-//回复加上@
+/**
+ * 回复加上@
+ * @param int $coid 评论ID
+ * @return string
+ */
 function getPermalinkFromCoid($coid) {
 	$db = Typecho_Db::get();
 	$row = $db->fetchRow($db->select('author')->from('table.comments')->where('coid = ? AND status = ?', $coid, 'approved'));
 	if (empty($row)) return '';
 	return '<a href="#comment-'.$coid.'" style="text-decoration: none;">@'.$row['author'].'</a>';
-}
-
-/**
- * 图片灯箱
- */
-class ImageStructureProcessor {
-    public static function processContent($content, $widget, $lastResult = null) {
-        $content = empty($lastResult) ? $content : $lastResult;
-        if (empty($content) || !is_string($content)) {
-            return $content;
-        }
-        if ($widget instanceof Widget_Archive) {
-            try {
-                $dom = new DOMDocument('1.0', 'UTF-8');
-                libxml_use_internal_errors(true);
-                $content = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div>' . $content . '</div></body></html>';
-                $dom->loadHTML($content, 
-                    LIBXML_HTML_NOIMPLIED | 
-                    LIBXML_HTML_NODEFDTD | 
-                    LIBXML_NOERROR | 
-                    LIBXML_NOWARNING
-                );
-                $xpath = new DOMXPath($dom);
-                $images = $xpath->query("//img[not(ancestor::figure) and not(contains(@src, '.svg'))]");
-                if ($images->length > 0) {
-                    foreach ($images as $img) {
-                        // 获取必要的属性
-                        $src = $img->getAttribute('src');
-                        $alt = $img->getAttribute('alt');
-                        // 跳过没有 src 的图片或 SVG 格式的图片
-                        if (empty($src) || stripos($src, '.svg') !== false) {
-                            continue;
-                        }
-                        // 创建容器元素
-                        $figure = $dom->createElement('figure');
-                        $figure->setAttribute('class', 'grap--figure');
-                        // 创建链接元素用于 lightbox
-                        $link = $dom->createElement('a');
-                        $link->setAttribute('href', $src);
-                        $link->setAttribute('data-lightbox', 'image-set');
-                        $link->setAttribute('data-title', $alt);
-                        $link->setAttribute('class', 'no-style-link');
-                        // 只有在有 alt 属性时才创建 figcaption
-                        if (!empty($alt)) {
-                            $caption = $dom->createElement('figcaption', $alt);
-                            $caption->setAttribute('class', 'imageCaption');
-                        }
-                        // 重组 DOM 结构
-                        if ($img->parentNode) {
-                            $img->parentNode->replaceChild($figure, $img);
-                            $link->appendChild($img);
-                            $figure->appendChild($link);
-                            if (isset($caption)) {
-                                $figure->appendChild($caption);
-                            }
-                        }
-                    }
-                }
-                // 获取处理后的内容
-                $content = $dom->saveHTML();
-                // 提取 body 部分的内容
-                $content = preg_replace('/^.*<body>(.*)<\/body>.*$/is', '$1', $content);
-                // 清理临时添加的 div 标签
-                $content = preg_replace('/^<div>|<\/div>$/i', '', $content);
-                // 清理 libxml 错误
-                libxml_clear_errors();
-            } catch (Exception $e) {
-                // 记录错误但返回原始内容
-                error_log('Image processing error: ' . $e->getMessage());
-                // 如果发生错误，返回上一个过滤器结果或原始内容
-                return empty($lastResult) ? $content : $lastResult;
-            }
-        }
-        return $content;
-    }
 }
 
 /**
@@ -339,7 +324,7 @@ function process_cover_image($imageUrl) {
 }
 
 /**
- * 解析商品表格内容
+ * 解析好物表格内容
  * @param string $content
  * @return array|null
  */
@@ -379,10 +364,7 @@ function parseGoodsTable($content) {
                     'name' => trim($cells->item(0)->textContent),
                     'price' => trim($cells->item(1)->textContent),
                     'image' => trim($cells->item(2)->textContent),
-                    'link' => trim($cells->item(3)->getElementsByTagName('a')->length > 0 
-                        ? $cells->item(3)->getElementsByTagName('a')->item(0)->getAttribute('href')
-                        : $cells->item(3)->textContent),
-                    'description' => trim($cells->item(4)->textContent)
+                    'description' => trim($cells->item(3)->textContent)
                 );
                 
                 // 确保所有必需的字段都不为空

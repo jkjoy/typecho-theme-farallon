@@ -184,3 +184,116 @@ function createMovieInfoHTML(data, originalUrl) {
     </div>
     `;
 }
+
+class LikeHandler {
+    constructor() {
+        this.likeButtons = document.querySelectorAll('.like-btn');
+        this.lastSendTime = 0;
+        this.throttleTimeMs = 3000; // 3秒节流
+        this.init();
+    }
+
+    getCookie(name) {
+        if (document.cookie.length > 0) {
+            let start = document.cookie.indexOf(name + '=');
+            if (start !== -1) {
+                start = start + name.length + 1;
+                let end = document.cookie.indexOf(';', start);
+                if (end === -1) end = document.cookie.length;
+                return document.cookie.substring(start, end);
+            }
+        }
+        return '';
+    }
+
+    setCookie(name, value, days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        let expires = '; expires=' + date.toUTCString();
+        document.cookie = name + '=' + value + expires + '; path=/';
+    }
+
+    showNotice(message, type = 'success') {
+        let notice = `<div class="notice--wrapper ${type}">${message}</div>`;
+        document.querySelector('body').insertAdjacentHTML('beforeend', notice);
+        let wrapper = document.querySelector('.notice--wrapper');
+        wrapper.classList.add('is-active');
+        setTimeout(() => {
+            wrapper.remove();
+        }, 3000);
+    }
+
+    replaceSvg(button) {
+        const svg = button.querySelector('.icon--default');
+        // 添加动画类
+        svg.classList.add('animate-like');
+        // 立即更新SVG确保可见
+        svg.innerHTML = `<svg class="icon--default" viewBox="0 0 1024 1024" width="12" height="12" style="fill: currentColor !important;"><path d="M780.8 204.8c-83.2-44.8-179.2-19.2-243.2 44.8L512 275.2 486.4 249.6c-64-64-166.4-83.2-243.2-44.8C108.8 275.2 89.6 441.6 185.6 537.6l32 32 153.6 153.6 102.4 102.4c25.6 25.6 57.6 25.6 83.2 0l102.4-102.4 153.6-153.6 32-32C934.4 441.6 915.2 275.2 780.8 204.8z"></path></svg>`;
+        // 动画结束后移除类
+        setTimeout(() => {
+            svg.classList.remove('animate-like');
+        }, 600);
+    }
+
+    init() {
+        this.likeButtons.forEach(button => {
+            let cid = button.getAttribute('data-cid');
+            // 同时检查cookie和localStorage
+            if (this.getCookie('extend_contents_likes_' + cid) ||
+                localStorage.getItem('extend_contents_likes_' + cid)) {
+                button.classList.add('is-active');
+                button.disabled = true;
+                this.replaceSvg(button);
+            }
+            button.addEventListener('click', () => this.handleLike(button, cid));
+        });
+    }
+
+    handleLike(button, cid) {
+        const currentTime = new Date().getTime();
+        if (currentTime - this.lastSendTime < this.throttleTimeMs) {
+            this.showNotice('操作过于频繁', 'error');
+            return;
+        }
+        this.lastSendTime = currentTime;
+
+        if (this.getCookie('extend_contents_likes_' + cid) ||
+            localStorage.getItem('extend_contents_likes_' + cid)) {
+            this.showNotice('您已经点过赞了', 'error');
+            return;
+        }
+
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'likeup=1&cid=' + cid
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('网络响应错误');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                button.querySelector('.count').textContent = data.likes;
+                button.classList.add('is-active');
+                button.disabled = true;
+                this.replaceSvg(button);
+                this.setCookie('extend_contents_likes_' + cid, '1', 30);
+                localStorage.setItem('extend_contents_likes_' + cid, '1');
+                this.showNotice('感谢您的点赞！');
+            } else {
+                this.showNotice(data.msg || '点赞失败', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('错误:', error);
+            this.showNotice('点赞异常', 'error');
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new LikeHandler();
+});

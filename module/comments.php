@@ -22,6 +22,17 @@
         </h3> 
         <ol class="commentlist sulliComment--list"></ol>   
         <div id="<?php $this->respondId(); ?>" class="comment-respond">
+            <h3 id=reply-title class=comment-reply-title>发表评论
+                <small></small>
+            </h3>
+            <form method=post id=commentform class=comment-form novalidate>
+                <p class=comment-notes>
+                    <span id=email-notes>您的电子邮箱地址不会被公开。</span> 
+                    <span class=required-field-message>必填项已用
+                        <span class=required>*</span>标注
+                    </span>
+                </p>
+            </form>
             <div class="cancel-comment-reply cancel-comment-reply-link"><?php $comments->cancelReply(); ?></div>
             <form method="post" action="<?php $this->commentUrl() ?>" id="comment-form" role="form" class="comment-form">
                 <?php if($this->user->hasLogin()): ?>
@@ -37,7 +48,7 @@
                     <input placeholder="邮箱<?php if ($this->options->commentsRequireMail): ?> *<?php endif; ?>" type="email" name="mail" id="mail" class="text" value="<?php echo $previousEmail; ?>"<?php if ($this->options->commentsRequireMail): ?> required<?php endif; ?> />
                 </p>
                 <p class="comment-form-url">
-                    <input type="url" name="url" id="url" class="text" placeholder="http(s)://<?php if ($this->options->commentsRequireURL): ?> *<?php endif; ?>" value="<?php echo $previousUrl; ?>"<?php if ($this->options->commentsRequireURL): ?> required<?php endif; ?> />
+                    <input type="url" name="url" id="url" class="text" placeholder="http(s)://<?php if ($this->options->commentsRequireURL): ?> <?php endif; ?>" value="<?php echo $previousUrl; ?>"<?php if ($this->options->commentsRequireURL): ?> required<?php endif; ?> />
                 </p>
                 <?php endif; ?>
                 <p class="comment-form-comment">

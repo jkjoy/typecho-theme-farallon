@@ -20,19 +20,16 @@ $this->need('header.php');
                 echo '<div class="no-goods">暂无数据，请按照格式书写。</div>';
             } else {
             foreach ($goods as $item): ?>
-                <div class="good--item">
-                    <div class="img-spacer">
-                        <a href="<?php echo htmlspecialchars($item['link']); ?>" target="_blank" rel="noopener noreferrer">
-                            <img src="<?php echo htmlspecialchars($item['image']); ?>" class="img40" alt="<?php echo htmlspecialchars($item['name']); ?>">
-                        </a>
-                    </div>
-                    <div class="good--name">
-                        <div class="brand">
-                            <?php echo htmlspecialchars($item['name']); ?>·<?php echo htmlspecialchars($item['price']); ?>
-                        </div>
-                    <?php echo htmlspecialchars($item['description']); ?>  
-                    </div>
+            <div class=good--item>
+                <div class=img-spacer>
+                    <img src=<?php echo htmlspecialchars($item['image']); ?> alt=<?php echo htmlspecialchars($item['name']); ?>>
                 </div>
+                <div class=good--name>
+                    <div class=brand>
+                        <?php echo htmlspecialchars($item['name']); ?> · <?php echo htmlspecialchars($item['price']); ?>
+                    </div><?php echo htmlspecialchars($item['description']); ?> 
+                </div>
+            </div>
             <?php endforeach;
         }
         } catch (Exception $e) {
@@ -44,5 +41,4 @@ $this->need('header.php');
        <?php $this->need('./module/comments.php'); ?>
     <?php endif; ?>
 </div>
-<style>.img40{height:137px;width:auto;object-fit:cover;}.img-spacer{width:100%;aspect-ratio:1;overflow:hidden;}.brand{font-weight:500;margin-bottom:5px;}.no-goods{grid-column:1 / -1;text-align:center;padding:20px;background:#f5f5f5;border-radius:8px;}</style>
 <?php $this->need('footer.php'); ?>
