@@ -1,38 +1,75 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const tooltip = document.getElementById('copyTooltip');
-    let timeoutId = null;
-    // 确保初始状态下提示框是隐藏的
-    //tooltip.style.display = 'none';
+    // 创建独立的复制提示元素
+    const copyTip = document.createElement('div');
+    copyTip.id = 'copyTip';
+    copyTip.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.9);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 9999;
+        pointer-events: none;
+    `;
+    document.body.appendChild(copyTip);
+
+    let copyTimeout = null;
+    
     // 复制函数
     function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            // 显示提示
-            tooltip.style.display = 'block';
-            tooltip.style.opacity = '1';           
-            // 清除之前的定时器（如果存在）
-            if (timeoutId) clearTimeout(timeoutId);           
-            // 设置新的定时器
-            timeoutId = setTimeout(() => {
-                tooltip.style.opacity = '0';
-                setTimeout(() => {
-                    tooltip.style.display = 'none';
-                }, 300); // 等待淡出动画完成后再隐藏
-            }, 1500);
-        }).catch(err => {
-            tooltip.textContent = '复制失败，请重试';
-            tooltip.style.display = 'block';
-            tooltip.style.opacity = '1';
-            
-            if (timeoutId) clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                tooltip.style.opacity = '0';
-                setTimeout(() => {
-                    tooltip.style.display = 'none';
-                    tooltip.textContent = '复制成功！'; // 重置文本
-                }, 300);
-            }, 1500);
-            console.error('复制失败:', err);
-        });
+        // 检查剪贴板API是否可用
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyTip('复制成功！');
+            }).catch(err => {
+                console.error('剪贴板API失败:', err);
+                fallbackCopy(text);
+            });
+        } else {
+            fallbackCopy(text);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        document.body.appendChild(textarea);
+        textarea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopyTip('复制成功！');
+            } else {
+                showCopyTip('复制失败，请手动复制');
+            }
+        } catch (err) {
+            showCopyTip('复制失败，请手动复制');
+            console.error('备用复制方法失败:', err);
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+
+    function showCopyTip(message) {
+        // 清除之前的定时器
+        if (copyTimeout) clearTimeout(copyTimeout);
+        
+        // 更新提示内容并显示
+        copyTip.textContent = message;
+        copyTip.style.opacity = '1';
+        
+        // 1.5秒后淡出
+        copyTimeout = setTimeout(() => {
+            copyTip.style.opacity = '0';
+        }, 1500);
     }
     // 给所有复制链接添加点击事件
     document.querySelectorAll('.copy').forEach(link => {
@@ -214,13 +251,28 @@ class LikeHandler {
     }
 
     showNotice(message, type = 'success') {
-        let notice = `<div class="notice--wrapper ${type}">${message}</div>`;
-        document.querySelector('body').insertAdjacentHTML('beforeend', notice);
-        let wrapper = document.querySelector('.notice--wrapper');
-        wrapper.classList.add('is-active');
+        // 移除现有提示
+        const oldNotice = document.querySelector('.notice--wrapper');
+        if (oldNotice) oldNotice.remove();
+
+        // 创建新提示
+        const notice = document.createElement('div');
+        notice.className = `notice--wrapper ${type}`;
+        notice.textContent = message;
+        notice.style.cssText = `
+            display: block;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        `;
+        document.body.appendChild(notice);
+
+        // 1.5秒后淡出并移除
         setTimeout(() => {
-            wrapper.remove();
-        }, 3000);
+            notice.style.opacity = '0';
+            setTimeout(() => {
+                notice.remove();
+            }, 300);
+        }, 1500);
     }
 
     replaceSvg(button) {
@@ -272,7 +324,7 @@ class LikeHandler {
     handleLike(button, cid) {
         if (this.getCookie('extend_contents_likes_' + cid) ||
             localStorage.getItem('extend_contents_likes_' + cid)) {
-            this.showNotice('请勿重复点赞', 'error');
+            this.showNotice('您已经点过喜欢了!~请不要重复点击吆!~谢谢您的支持!~', 'error');
             return;
         }
 
@@ -301,7 +353,7 @@ class LikeHandler {
                 this.replaceSvg(button);
                 this.setCookie('extend_contents_likes_' + cid, '1', 30);
                 localStorage.setItem('extend_contents_likes_' + cid, '1');
-                this.showNotice('感谢您的点赞！');
+                this.showNotice('点赞成功!~感谢您的喜爱！');
             } else {
                 this.showNotice(data.msg || '点赞失败', 'error');
             }
