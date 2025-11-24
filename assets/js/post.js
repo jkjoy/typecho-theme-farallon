@@ -253,7 +253,14 @@ class LikeHandler {
     showNotice(message, type = 'success') {
         // 移除现有提示
         const oldNotice = document.querySelector('.notice--wrapper');
-        if (oldNotice) oldNotice.remove();
+        if (oldNotice) {
+            oldNotice.style.opacity = '0';
+            setTimeout(() => {
+                if (oldNotice.parentNode) {
+                    oldNotice.remove();
+                }
+            }, 300);
+        }
 
         // 创建新提示
         const notice = document.createElement('div');
@@ -261,17 +268,29 @@ class LikeHandler {
         notice.textContent = message;
         notice.style.cssText = `
             display: block;
-            opacity: 1;
-            transition: opacity 0.3s ease;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 9999;
+            pointer-events: none;
         `;
         document.body.appendChild(notice);
 
+        // 强制重绘，确保过渡效果生效
+        notice.offsetHeight;
+        
+        // 淡入
+        notice.style.opacity = '1';
+
         // 1.5秒后淡出并移除
         setTimeout(() => {
-            notice.style.opacity = '0';
-            setTimeout(() => {
-                notice.remove();
-            }, 300);
+            if (notice.parentNode) {
+                notice.style.opacity = '0';
+                setTimeout(() => {
+                    if (notice.parentNode) {
+                        notice.remove();
+                    }
+                }, 300);
+            }
         }, 1500);
     }
 
@@ -366,5 +385,8 @@ class LikeHandler {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new LikeHandler();
+    // 确保DOM完全加载后再初始化
+    setTimeout(() => {
+        new LikeHandler();
+    }, 100);
 });

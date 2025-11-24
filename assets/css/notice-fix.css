@@ -1,0 +1,24 @@
+/* 修复提示窗口样式问题 */
+.notice--wrapper {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease-in-out !important;
+}
+
+.notice--wrapper[style*="opacity: 1"] {
+    opacity: 1 !important;
+}
+
+/* 确保提示窗口在移动设备上正确显示 */
+@media (max-width: 768px) {
+    .notice--wrapper {
+        width: 80% !important;
+        max-width: 300px !important;
+    }
+}
+
+/* 防止与其他动画冲突 */
+.notice--wrapper {
+    animation: none !important;
+    transform: translateX(-50%) !important;
+}

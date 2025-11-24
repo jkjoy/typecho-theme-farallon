@@ -18,6 +18,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <?php if ($this->is('index')) $this->options->description() ?>
     </title>
     <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/style.min.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/notice-fix.css'); ?>">
     <?php if ($this->options->icoUrl): ?>
     <link rel='icon' href='<?php $this->options->icoUrl() ?>' type='image/x-icon' />
     <?php endif; ?>
