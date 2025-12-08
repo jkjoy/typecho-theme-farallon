@@ -3,10 +3,6 @@
     <div class="site--footer__content">
         <div class=site--footer__sns>
            <?php $this->need('./module/sns.php'); ?>
-            <?php //sitemap填入
-            if($this->options->sitemapurl): ?>
-            <a href="<?php $this->options->sitemapurl() ?>" target="_blank" aria-label="网站地图"></a>
-            <?php endif; ?>    
         </div>      
             <?php $this->options->tongji(); ?>   
             <?php $stats = getSiteStatsWithCache(); ?>   

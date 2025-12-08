@@ -2,17 +2,23 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 //主题设置
 function themeConfig($form) {
+    echo '<style>.typecho-page-title h2 {font-weight: 600;color: #737373;}.typecho-page-title h2:before {content: "#";margin-right: 6px;color: #ff6d6d; font-size: 20px;font-weight: 600;}.themeConfig h3 {color: #737373;font-size: 20px;}.themeConfig h3:before {content: "[";margin-right: 5px;color: #ff6d6d;font-size: 25px;}.themeConfig h3:after {content: "]";margin-left: 5px;color: #ff6d6d;font-size: 25px;}.info{border: 1px solid #ffadad;padding: 20px;margin: -15px 10px 25px 0;background: #ffffff;border-radius: 5px;color: #ff6d6d;}</style>';
+    // 直接在主题设置页面调用更新检查
+    themeAutoUpgradeNotice();
+    echo '<span class="themeConfig"><h3>博客设置</h3></span>';
     $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'), _t('说说列表显示头像'));
     $form->addInput($logoUrl);
     $icoUrl = new Typecho_Widget_Helper_Form_Element_Text('icoUrl', NULL, NULL, _t('站点 Favicon 地址'), _t('请填写站点Favicon的URL地址'));
     $form->addInput($icoUrl);
-    $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('置顶文章的cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页列表中置顶文章。'));
-    $form->addInput($sticky);
-    $travel = new Typecho_Widget_Helper_Form_Element_Text('travel', NULL, NULL, _t('图文分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于大图文章列表展示'));
-    $form->addInput($travel);
-    $memos = new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, NULL, _t('说说分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于说说分类展示'));
-    $form->addInput($memos);    
-    $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, NULL, _t('Instagram'), _t('会在个人信息显示'));
+    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, '/img/', _t('填写分类图片路径,以"/"结尾'), _t('默认使用网站根目录下的img文件夹,也可以填写绝对或者CDN地址,自动匹配目录下以分类ID为文件名的mid.jpg格式的图片'));
+    $form->addInput($midimg);
+    $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('Head内代码用于网站验证等'), _t('支持HTML'));
+    $form->addInput($addhead);
+    $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
+    $form->addInput($tongji);
+    $sticky = new Typecho_Widget_Helper_Form_Element_Text('sticky', NULL, NULL, _t('<br><span class="themeConfig"><h3>文章置顶</h3></span><div class="info">文章的CID类型为数字</div>置顶文章的cid'), _t('多篇文章以`|`符号隔开'), _t('会在首页列表中置顶文章。'));
+    $form->addInput($sticky);  
+    $instagramurl = new Typecho_Widget_Helper_Form_Element_Text('instagramurl', NULL, NULL, _t('<br><span class="themeConfig"><h3>个人信息</h3></span><div class="info">不填写相关信息时可以隐藏该信息和图标</div>Instagram'), _t('会在个人信息显示'));
     $form->addInput($instagramurl);
     $telegramurl = new Typecho_Widget_Helper_Form_Element_Text('telegramurl', NULL, 'https://t.me/', _t('电报'), _t('会在个人信息显示'));
     $form->addInput($telegramurl);
@@ -22,14 +28,22 @@ function themeConfig($form) {
     $form->addInput($twitterurl);
     $mastodonurl = new Typecho_Widget_Helper_Form_Element_Text('mastodonurl', NULL, NULL, _t('Mastodon'), _t('会在个人信息显示'));
     $form->addInput($mastodonurl);
+    $travel = new Typecho_Widget_Helper_Form_Element_Text('travel', NULL, NULL, _t('<br><span class="themeConfig"><h3>个性化设置</h3></span><div class="info">根据自己的需求进行设置</div>图文分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于大图文章列表展示'));
+    $form->addInput($travel);
+    $memos = new Typecho_Widget_Helper_Form_Element_Text('memos', NULL, NULL, _t('说说分类 Mid'), _t('填写分类的mid'), _t('指定分类ID，用于说说分类展示'));
+    $form->addInput($memos);  
     $friendlyTime = new Typecho_Widget_Helper_Form_Element_Radio('friendlyTime', 
         array('0' => _t('否'),
               '1' => _t('是')),
         '0', _t('是否显示友好时间'), _t('默认不显示友好时间，显示标准时间格式'));
     $form->addInput($friendlyTime);
+    $loadmore = new Typecho_Widget_Helper_Form_Element_Radio('loadmore',
+    array('0'=> _t('加载更多'), '1'=> _t('页码模式')),
+    '0', _t('加载文章列表方式'), _t('加载更多将在文章列表底部显示加载更多按钮'));
+    $form->addInput($loadmore);
     $showProfile = new Typecho_Widget_Helper_Form_Element_Radio('showProfile',
     array('0'=> _t('否'), '1'=> _t('是')),
-    '0', _t('是否在文章页面显示作者信息'), _t('选择"是"将在文章页面包含显示作者信息。'));
+    '0', _t('<br><span class="themeConfig"><h3>文章页设置</h3></span><div class="info">文章页面设置</div>是否在文章页面显示作者信息'), _t('选择"是"将在文章页面包含显示作者信息。'));
     $form->addInput($showProfile);
     $showcate = new Typecho_Widget_Helper_Form_Element_Radio('showcate',
     array('0'=> _t('否'), '1'=> _t('是')),
@@ -43,20 +57,9 @@ function themeConfig($form) {
     array('0'=> _t('否'), '1'=> _t('是')),
     '0', _t('是否显示复制链接'), _t('选择"是"将在文章页面显示复制链接。'));
     $form->addInput($showshare);
-    $loadmore = new Typecho_Widget_Helper_Form_Element_Radio('loadmore',
-    array('0'=> _t('加载更多'), '1'=> _t('页码模式')),
-    '0', _t('加载文章列表方式'), _t('加载更多将在文章列表底部显示加载更多按钮'));
-    $form->addInput($loadmore);
-    $sitemapurl = new Typecho_Widget_Helper_Form_Element_Text('sitemapurl', NULL, NULL, _t('sitemap'), _t('网站地图链接'));
-    $form->addInput($sitemapurl);
-    $cnavatar = new Typecho_Widget_Helper_Form_Element_Text('cnavatar', NULL, NULL , _t('Gravatar镜像'), _t('默认https://cravatar.cn/avatar/'));
+    $cnavatar = new Typecho_Widget_Helper_Form_Element_Text('cnavatar', NULL, NULL , _t('<br><span class="themeConfig"><h3>头像加速设置</h3></span><div class="info">默认https://cravatar.cn/avatar/</div>Gravatar镜像'), _t('默认https://cravatar.cn/avatar/'));
     $form->addInput($cnavatar);
-    $midimg = new Typecho_Widget_Helper_Form_Element_Text('midimg', NULL, '/img/', _t('填写分类图片路径,以"/"结尾'), _t('默认使用网站根目录下的img文件夹,也可以填写绝对或者CDN地址,自动匹配目录下以分类ID为文件名的mid.jpg格式的图片'));
-    $form->addInput($midimg);
-    $addhead = new Typecho_Widget_Helper_Form_Element_Textarea('addhead', NULL, NULL, _t('Head内代码用于网站验证等'), _t('支持HTML'));
-    $form->addInput($addhead);
-    $tongji = new Typecho_Widget_Helper_Form_Element_Textarea('tongji', NULL, NULL, _t('统计代码'), _t('支持HTML'));
-    $form->addInput($tongji);
+
 }
 
 // 自定义字段
@@ -718,4 +721,111 @@ function getSiteStatsWithCache() {
     }
 
     return $stats;
+}
+/**
+ * 自动检查主题更新
+ */
+function themeAutoUpgradeNotice()
+{
+    // 1. 定义当前主题版本 (从主题的 info.txt 或 functions.php 中读取)
+    // 为了演示，我们直接定义
+    $current_version = '0.8.1';
+
+    // 2. 定义 GitHub API 地址
+    $api_url = 'https://api.github.com/repos/jkjoy/typecho-theme-farallon/releases/latest';
+
+    // 3. 设置缓存，避免每次请求都调用 API，减轻服务器压力
+    // 使用主题目录下的缓存文件，确保有写入权限
+    $cache_dir = __TYPECHO_ROOT_DIR__ . '/usr/cache';
+    $cache_file = $cache_dir . '/version.json';
+    $cache_time = 12 * 3600; // 缓存12小时
+
+    // 确保缓存目录存在
+    if (!file_exists($cache_dir)) {
+        @mkdir($cache_dir, 0755, true);
+    }
+
+    $latest_version = null;
+    
+    // 检查缓存文件是否存在且未过期
+    if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_time) {
+        $cache_data = json_decode(file_get_contents($cache_file), true);
+        if ($cache_data && isset($cache_data['tag_name'])) {
+            $latest_version = $cache_data['tag_name'];
+        }
+    } else {
+        // 缓存过期或不存在，重新请求 API
+        $ctx = stream_context_create([
+            'http' => [
+                'header' => 'User-Agent: Typecho-Theme-Updater', // GitHub API 要求有 User-Agent
+                'timeout' => 10 // 设置超时时间
+            ]
+        ]);
+        
+        $response = @file_get_contents($api_url, false, $ctx);
+
+        if ($response) {
+            $release_data = json_decode($response, true);
+            if (isset($release_data['tag_name'])) {
+                $latest_version = $release_data['tag_name'];
+                // 更新缓存文件
+                $result = file_put_contents($cache_file, json_encode(['tag_name' => $latest_version, 'time' => time()]));
+                // 如果缓存写入失败，记录错误但不影响显示
+                if (!$result) {
+                    error_log('Failed to write upgrade cache to ' . $cache_file);
+                }
+            }
+        } else {
+            // API请求失败，记录错误
+            error_log('Failed to fetch release data from ' . $api_url);
+            // 如果有旧缓存，使用旧缓存数据
+            if (file_exists($cache_file)) {
+                $cache_data = json_decode(file_get_contents($cache_file), true);
+                if ($cache_data && isset($cache_data['tag_name'])) {
+                    $latest_version = $cache_data['tag_name'];
+                }
+            }
+        }
+    }
+    // 4. 如果获取到了最新版本，则进行比较
+    if ($latest_version && version_compare($current_version, $latest_version, '<')) {
+        
+        $notice_html = '
+        <span class="themeConfig"><h3>主题更新</h3>
+            <div class="info">发现新版本 ' . $latest_version . '，您当前使用的是 ' . $current_version . '。建议立即更新以获得最新功能和安全性修复。
+                <a href="https://github.com/jkjoy/typecho-theme-farallon/releases/latest" target="_blank">查看更新</a>
+                <a href="https://github.com/jkjoy/typecho-theme-farallon/releases" target="_blank">立即下载</a>
+            </div>';
+        echo $notice_html;
+    }
+}
+
+/**
+ * 将提示函数挂载到后台页面的底部钩子
+ */
+// 只有在Typecho环境中才注册钩子
+if (class_exists('Typecho_Plugin')) {
+    // 在主题列表页面显示更新提示
+    Typecho_Plugin::factory('admin/themes.php')->bottom = function() {
+        try {
+            themeAutoUpgradeNotice();
+        } catch (Exception $e) {
+            error_log('Theme update check error: ' . $e->getMessage());
+        }
+    };
+    
+    // 在主题设置页面也显示
+    Typecho_Plugin::factory('admin/footer.php')->execute = function() {
+        try {
+            // 检查是否在主题设置页面
+            $request = Typecho_Request::getInstance();
+            $screen = $request->getScreen();
+            
+            if ($screen && (strpos($screen, 'theme') !== false || strpos($screen, 'options-theme') !== false)) {
+                themeAutoUpgradeNotice();
+            }
+        } catch (Exception $e) {
+            error_log('Theme update check error: ' . $e->getMessage());
+        }
+    };
 }
