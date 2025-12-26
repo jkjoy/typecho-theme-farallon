@@ -163,8 +163,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['likeup']) && isset($_
  * @package custom
 */
 $options = Typecho_Widget::widget('Widget_Options');
-$gravatarPrefix = empty($options->cnavatar) ? 'https://cravatar.cn/avatar/' : $options->cnavatar;
-define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
+$gravatarPrefix = empty($options->cnavatar) ? 'https://cn.cravatar.com/avatar/' : $options->cnavatar;
+if (!defined('TYPECHO_GRAVATAR_PREFIX')) {
+	define('__TYPECHO_GRAVATAR_PREFIX__', $gravatarPrefix);
+}
 
 /**
 * 获取文章第一张图片
