@@ -7,7 +7,7 @@
 
 ## 预览
 
-![预览图](/screenshots.png)
+![预览图](/screenshot.png)
 
 [Demo](https://blog.imsun.org/)
 
