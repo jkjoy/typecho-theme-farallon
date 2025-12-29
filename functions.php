@@ -245,6 +245,14 @@ function process_cover_image($imageUrl) {
     if (file_exists($savePath)) {
         return $webPath;
     }
+
+    // 确保缓存目录存在（避免 imagewebp/imagepng 写入时报 “No such file or directory”）
+    $cacheDir = dirname($savePath);
+    if (!is_dir($cacheDir)) {
+        if (!@mkdir($cacheDir, 0755, true) && !is_dir($cacheDir)) {
+            return $imageUrl;
+        }
+    }
     
     // 获取原始图片内容
     if ($isExternalUrl) {
@@ -315,10 +323,18 @@ function process_cover_image($imageUrl) {
         $filename = md5($imageUrl) . '.png';
         $savePath = __TYPECHO_ROOT_DIR__ . '/usr/cache/covers/' . $filename;
         $webPath = Helper::options()->siteUrl . '/usr/cache/covers/' . $filename;
-        imagepng($targetImage, $savePath, 9); // 9是最高压缩质量
+        if (!@imagepng($targetImage, $savePath, 9)) { // 9是最高压缩质量
+            imagedestroy($originalImage);
+            imagedestroy($targetImage);
+            return $imageUrl;
+        }
     } else {
         // 保存为webp
-        imagewebp($targetImage, $savePath, 80); // 80是质量参数
+        if (!@imagewebp($targetImage, $savePath, 80)) { // 80是质量参数
+            imagedestroy($originalImage);
+            imagedestroy($targetImage);
+            return $imageUrl;
+        }
     }
     
     // 释放资源

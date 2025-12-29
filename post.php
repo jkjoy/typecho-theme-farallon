@@ -67,15 +67,19 @@
         <!-- 分类-->
         <?php if ($this->options->showcate): ?>
     <?php
-    // 初始化分类图片地址为空
+    // 初始化分类信息为空（避免 PHP 8.1+ 下 null 传入 htmlspecialchars 的弃用提示）
+    $category = null;
+    $categoryId = null;
+    $categoryName = '';
+    $categoryDescription = '';
     $categoryImage = '';
     // 检查文章是否有分类
     if ($this->categories) {
         // 获取第一个分类的信息
         $category = $this->categories[0];
-        $categoryId = $category['mid'];
-        $categoryName = $category['name'];
-        $categoryDescription = $category['description'];  // 如果分类有说明（描述）
+        $categoryId = $category['mid'] ?? null;
+        $categoryName = $category['name'] ?? '';
+        $categoryDescription = $category['description'] ?? '';  // 如果分类有说明（描述）
         // 获取主题选项中的分类图片基本 URL
         $themeUrl = $this->options->midimg;
         // 生成分类图片地址
