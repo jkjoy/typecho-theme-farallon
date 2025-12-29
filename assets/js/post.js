@@ -1,392 +1,481 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // 创建独立的复制提示元素
-    const copyTip = document.createElement('div');
-    copyTip.id = 'copyTip';
-    copyTip.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.9);
-        color: white;
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-size: 14px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        z-index: 9999;
-        pointer-events: none;
-    `;
-    document.body.appendChild(copyTip);
-
-    let copyTimeout = null;
-    
-    // 复制函数
-    function copyToClipboard(text) {
-        // 检查剪贴板API是否可用
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(text).then(() => {
-                showCopyTip('复制成功！');
-            }).catch(err => {
-                console.error('剪贴板API失败:', err);
-                fallbackCopy(text);
-            });
+(() => {
+    const onReady = (fn) => {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fn, { once: true });
         } else {
-            fallbackCopy(text);
+            fn();
         }
-    }
+    };
 
-    function fallbackCopy(text) {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed';
-        document.body.appendChild(textarea);
-        textarea.select();
-        
+    const showNotice = (() => {
+        let el = null;
+        let timer = null;
+
+        const ensure = () => {
+            if (el) return el;
+            el = document.getElementById('farallonNotice');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'farallonNotice';
+                el.className = 'notice--wrapper';
+                el.setAttribute('role', 'status');
+                el.setAttribute('aria-live', 'polite');
+                el.style.display = 'block';
+                el.style.opacity = '0';
+                el.style.pointerEvents = 'none';
+                el.style.transition = 'opacity 0.3s ease-in-out';
+                document.body.appendChild(el);
+            }
+            return el;
+        };
+
+        return (message, type = 'success') => {
+            const node = ensure();
+            node.classList.remove('success', 'error');
+            node.classList.add(type);
+            node.textContent = String(message || '');
+            node.style.opacity = '1';
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                node.style.opacity = '0';
+            }, 1500);
+        };
+    })();
+
+    const copyToClipboard = async (text) => {
+        const value = (text ?? '').toString().trim();
+        if (!value) {
+            showNotice('没有可复制的内容', 'error');
+            return;
+        }
+
         try {
-            const successful = document.execCommand('copy');
-            if (successful) {
-                showCopyTip('复制成功！');
-            } else {
-                showCopyTip('复制失败，请手动复制');
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(value);
+                showNotice('复制成功！', 'success');
+                return;
             }
         } catch (err) {
-            showCopyTip('复制失败，请手动复制');
-            console.error('备用复制方法失败:', err);
+            console.error('Clipboard API failed:', err);
+        }
+
+        const textarea = document.createElement('textarea');
+        textarea.value = value;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+
+        try {
+            const ok = document.execCommand('copy');
+            showNotice(ok ? '复制成功！' : '复制失败，请手动复制', ok ? 'success' : 'error');
+        } catch (err) {
+            console.error('execCommand copy failed:', err);
+            showNotice('复制失败，请手动复制', 'error');
         } finally {
-            document.body.removeChild(textarea);
+            textarea.remove();
         }
-    }
+    };
 
-    function showCopyTip(message) {
-        // 清除之前的定时器
-        if (copyTimeout) clearTimeout(copyTimeout);
-        
-        // 更新提示内容并显示
-        copyTip.textContent = message;
-        copyTip.style.opacity = '1';
-        
-        // 1.5秒后淡出
-        copyTimeout = setTimeout(() => {
-            copyTip.style.opacity = '0';
-        }, 1500);
-    }
-    // 给所有复制链接添加点击事件
-    document.querySelectorAll('.copy').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const textToCopy = this.getAttribute('data-copy') || this.textContent;
-            copyToClipboard(textToCopy);
+    const initCopy = () => {
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-copy], .copy, .cpoy');
+            if (!target) return;
+            if (target.tagName && target.tagName.toLowerCase() === 'a') {
+                e.preventDefault();
+            }
+            const text = target.getAttribute('data-copy') || target.textContent;
+            copyToClipboard(text);
         });
-    });
-});
-    
-document.addEventListener('DOMContentLoaded', (event) => {
-    const targetClassElement = document.querySelector('.post--single__title');
-    const postContent = document.querySelector('.post--single__content');
-    if (!postContent) return;
-    let found = false;
-    for (let i = 1; i <= 6 &&!found; i++) {
-        if (postContent.querySelector(`h${i}`)) {
-            found = true;
-        }
-    }
-    if (!found) return;
-    const heads = postContent.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    const toc = document.createElement('div');
-    toc.id = 'toc';
-    toc.innerHTML = '<details class="toc" open><summary class="toc-title">目录</summary><nav id="TableOfContents"><ul></ul></nav></details>';
-    // 插入到指定 class 元素之后
-    if (targetClassElement) {
-        targetClassElement.parentNode.insertBefore(toc, targetClassElement.nextSibling);
-    }
-    let currentLevel = 0;
-    let currentList = toc.querySelector('ul');
-    let levelCounts = [0];
-    heads.forEach((head, index) => {
-        const level = parseInt(head.tagName.substring(1));
-        if (levelCounts[level] === undefined) {
-            levelCounts[level] = 1;
-        } else {
-            levelCounts[level]++;
-        }
-        // 重置下级标题的计数器
-        levelCounts = levelCounts.slice(0, level + 1);
-        if (currentLevel === 0) {
-            currentLevel = level;
-        }
-        while (level > currentLevel) {
-            let newList = document.createElement('ul');
-            if (!currentList.lastElementChild) {
-                currentList.appendChild(newList);
-            } else {
-                currentList.lastElementChild.appendChild(newList);
-            }
-            currentList = newList;
-            currentLevel++;
-            levelCounts[currentLevel] = 1;
-        }
-        while (level < currentLevel) {
-            currentList = currentList.parentElement;
-            if (currentList.tagName.toLowerCase() === 'li') {
-                currentList = currentList.parentElement;
-            }
-            currentLevel--;
-        }
-        const anchor = head.textContent.trim().replace(/\s+/g, '-');
-        head.id = anchor;
-        const item = document.createElement('li');
-        const link = document.createElement('a');
-        link.href = `#${anchor}`;
-        link.textContent = `${head.textContent}`;
-        link.style.textDecoration = 'none';
-        item.appendChild(link);
-        currentList.appendChild(item);
-    });
-});
+    };
 
-function fetchWithRetry(url, retries = 3) {
-    return fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+    const initToc = () => {
+        const postContent = document.querySelector('.post--single__content');
+        if (!postContent) return;
+        if (document.getElementById('toc')) return;
+
+        const headings = Array.from(postContent.querySelectorAll('h1, h2, h3, h4, h5, h6')).filter(
+            (h) => (h.textContent || '').trim().length > 0
+        );
+        if (!headings.length) return;
+
+        const toc = document.createElement('div');
+        toc.id = 'toc';
+        toc.innerHTML =
+            '<details class="toc" open><summary class="toc-title">目录</summary><nav id="TableOfContents"><ul></ul></nav></details>';
+
+        const titleEl = document.querySelector('.post--single__title');
+        if (titleEl && titleEl.parentNode) {
+            titleEl.parentNode.insertBefore(toc, titleEl.nextSibling);
+        } else if (postContent.parentNode) {
+            postContent.parentNode.insertBefore(toc, postContent);
+        }
+
+        const rootUl = toc.querySelector('#TableOfContents > ul');
+        if (!rootUl) return;
+
+        const usedIds = new Set();
+        const ensureId = (h, idx) => {
+            if (h.id) {
+                h.id = h.id.replace(/\s+/g, '-');
+                usedIds.add(h.id);
+                return h.id;
             }
-            return response.text();  // 首先获取文本响应
-        })
-        .then(text => {
+            const base =
+                (h.textContent || 'heading')
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/[#?&%]/g, '') || `heading-${idx + 1}`;
+            let id = base;
+            let n = 1;
+            while (usedIds.has(id) || document.getElementById(id)) {
+                id = `${base}-${n++}`;
+            }
+            h.id = id;
+            usedIds.add(id);
+            return id;
+        };
+
+        const firstLevel = parseInt(headings[0].tagName.substring(1), 10) || 1;
+        let currentLevel = firstLevel;
+        const stack = [rootUl];
+
+        headings.forEach((h, idx) => {
+            const level = parseInt(h.tagName.substring(1), 10) || currentLevel;
+            const id = ensureId(h, idx);
+
+            while (level > currentLevel) {
+                const parent = stack[stack.length - 1];
+                const lastLi = parent.lastElementChild;
+                const ul = document.createElement('ul');
+                (lastLi || parent).appendChild(ul);
+                stack.push(ul);
+                currentLevel++;
+            }
+            while (level < currentLevel && stack.length > 1) {
+                stack.pop();
+                currentLevel--;
+            }
+
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `#${id}`;
+            a.textContent = (h.textContent || '').trim();
+            a.style.textDecoration = 'none';
+            li.appendChild(a);
+            stack[stack.length - 1].appendChild(li);
+        });
+    };
+
+    const initDouban = () => {
+        const links = Array.from(document.querySelectorAll('a[href^="https://movie.douban.com/subject/"]'));
+        if (!links.length) return;
+
+        const memoryCache = new Map();
+        const inFlight = new Map();
+        const cacheKey = (id) => `farallon_douban_${id}`;
+
+        const readCache = (id) => {
+            if (memoryCache.has(id)) return memoryCache.get(id);
             try {
-                return JSON.parse(text);  // 尝试解析 JSON
-            } catch (e) {
-                console.error('Invalid JSON:', text);
-                throw new Error('Invalid JSON response');
+                const raw = sessionStorage.getItem(cacheKey(id));
+                if (!raw) return null;
+                const data = JSON.parse(raw);
+                memoryCache.set(id, data);
+                return data;
+            } catch {
+                return null;
             }
-        })
-        .catch(error => {
-            if (retries > 0) {
-                console.log(`Retrying... (${retries} attempts left)`);
-                return new Promise(resolve => setTimeout(resolve, 1000))  // 等待1秒
-                    .then(() => fetchWithRetry(url, retries - 1));
+        };
+
+        const writeCache = (id, data) => {
+            memoryCache.set(id, data);
+            try {
+                sessionStorage.setItem(cacheKey(id), JSON.stringify(data));
+            } catch {
+                // ignore
             }
-            throw error;
-        });
-}
-document.addEventListener('DOMContentLoaded', function() {
-    const doubanLinks = document.querySelectorAll('a[href^="https://movie.douban.com/subject/"]');
-    doubanLinks.forEach(link => {
-        const url = link.href;
-        const movieId = url.match(/subject\/(\d+)/)[1];
-        link.innerHTML += ' <span class="loading">(加载中...)</span>';
-        fetchWithRetry(`https://api.loliko.cn/movies/${movieId}`)
-            .then(data => {
-                const movieInfo = createMovieInfoHTML(data, url);
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = movieInfo;
-                link.parentNode.replaceChild(wrapper, link);
-            })
-            .catch(error => {
-                console.error('Error fetching movie data:', error);
-                // 显示错误消息给用户
-                link.innerHTML = `<span style="color: red;">加载失败</span> <a href="${url}" target="_blank">查看豆瓣电影详情</a>`;
-            })
-            .finally(() => {
-                const loadingSpan = link.querySelector('.loading');
-                if (loadingSpan) {
-                    loadingSpan.remove();
+        };
+
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+        const fetchJsonWithRetry = async (url, { retries = 2, timeoutMs = 8000 } = {}) => {
+            let lastErr = null;
+            for (let i = 0; i <= retries; i++) {
+                const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                const tid = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+                try {
+                    const res = await fetch(url, {
+                        signal: controller ? controller.signal : undefined,
+                        headers: { Accept: 'application/json' }
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    try {
+                        return await res.json();
+                    } catch {
+                        const text = await res.text();
+                        return JSON.parse(text);
+                    }
+                } catch (err) {
+                    lastErr = err;
+                    if (i < retries) await sleep(800 * Math.pow(2, i));
+                } finally {
+                    if (tid) clearTimeout(tid);
+                }
+            }
+            throw lastErr || new Error('Fetch failed');
+        };
+
+        const createMovieNode = (data, originalUrl) => {
+            if (!data || data.error || Object.keys(data).length === 0) {
+                const a = document.createElement('a');
+                a.href = originalUrl;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer external nofollow';
+                a.textContent = '查看豆瓣电影详情';
+                return a;
+            }
+
+            const wrap = document.createElement('div');
+            wrap.className = 'doulist-item';
+            const subject = document.createElement('div');
+            subject.className = 'doulist-subject';
+
+            const poster = document.createElement('div');
+            poster.className = 'doulist-post';
+            const img = document.createElement('img');
+            img.decoding = 'async';
+            img.referrerPolicy = 'no-referrer';
+            img.src = data.img || '';
+            img.alt = (data.name || '').toString();
+            poster.appendChild(img);
+
+            const content = document.createElement('div');
+            content.className = 'doulist-content';
+            const title = document.createElement('div');
+            title.className = 'doulist-title';
+            const a = document.createElement('a');
+            a.href = originalUrl;
+            a.className = 'cute';
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer external nofollow';
+            a.textContent = (data.name || '').toString();
+            title.appendChild(a);
+
+            const rating = document.createElement('div');
+            rating.className = 'rating';
+            const ratingSpan = document.createElement('span');
+            ratingSpan.className = 'rating_nums';
+            ratingSpan.textContent = `豆瓣评分 : ${(data.rating ?? '').toString()}`;
+            rating.appendChild(ratingSpan);
+
+            const abstract = document.createElement('div');
+            abstract.className = 'abstract';
+            abstract.textContent = `${(data.year ?? '').toString()}年 · ${(data.country ?? '').toString()} · ${(data.genre ?? '').toString()} · 导演: ${(data.director ?? '').toString()} · 演员 : ${(data.actor ?? '').toString()}`;
+
+            content.appendChild(title);
+            content.appendChild(rating);
+            content.appendChild(abstract);
+
+            subject.appendChild(poster);
+            subject.appendChild(content);
+            wrap.appendChild(subject);
+            return wrap;
+        };
+
+        const replaceWithError = (link) => {
+            const url = link.href;
+            const wrap = document.createElement('span');
+            const err = document.createElement('span');
+            err.style.color = 'red';
+            err.textContent = '加载失败 ';
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer external nofollow';
+            a.textContent = '查看豆瓣电影详情';
+            wrap.appendChild(err);
+            wrap.appendChild(a);
+            link.replaceWith(wrap);
+        };
+
+        const MAX_CONCURRENT = 3;
+        let active = 0;
+        const queue = [];
+        const runNext = () => {
+            while (active < MAX_CONCURRENT && queue.length) {
+                const job = queue.shift();
+                active++;
+                job()
+                    .catch(() => {})
+                    .finally(() => {
+                        active--;
+                        runNext();
+                    });
+            }
+        };
+        const enqueue = (job) => {
+            queue.push(job);
+            runNext();
+        };
+
+        const loadOne = (link) => {
+            if (link.dataset.doubanLoaded === '1') return;
+            link.dataset.doubanLoaded = '1';
+
+            const url = link.href;
+            const match = url.match(/subject\/(\d+)/);
+            const movieId = match ? match[1] : null;
+            if (!movieId) return;
+
+            const loading = document.createElement('span');
+            loading.className = 'loading';
+            loading.textContent = '(加载中...)';
+            link.appendChild(document.createTextNode(' '));
+            link.appendChild(loading);
+
+            const cached = readCache(movieId);
+            if (cached) {
+                link.replaceWith(createMovieNode(cached, url));
+                return;
+            }
+
+            if (inFlight.has(movieId)) {
+                inFlight.get(movieId)
+                    .then((data) => link.replaceWith(createMovieNode(data, url)))
+                    .catch(() => replaceWithError(link));
+                return;
+            }
+
+            enqueue(async () => {
+                try {
+                    const apiUrl = `https://api.loliko.cn/movies/${movieId}`;
+                    const p = fetchJsonWithRetry(apiUrl);
+                    inFlight.set(movieId, p);
+                    const data = await p;
+                    writeCache(movieId, data);
+                    link.replaceWith(createMovieNode(data, url));
+                } catch (err) {
+                    console.error('Douban fetch failed:', err);
+                    replaceWithError(link);
+                } finally {
+                    inFlight.delete(movieId);
                 }
             });
-    });
-});
-function createMovieInfoHTML(data, originalUrl) {
-    if (!data || data.error || Object.keys(data).length === 0) {
-        return `<a href="${originalUrl}" target="_blank">查看豆瓣电影详情</a>`;
-    }
-    return `
-    <div class=doulist-item>
-    <div class=doulist-subject>
-        <div class=doulist-post>
-           <img decoding=async referrerpolicy=no-referrer src=${data.img}>
-        </div>
-        <div class=doulist-content>
-            <div class=doulist-title>
-               <a href="${originalUrl}" class=cute target="_blank" rel="external nofollow"> ${data.name} </a>
-            </div>
-            <div class=rating>
-                <span class=rating_nums>豆瓣评分 : ${data.rating}</span>
-            </div>
-            <div class=abstract>
-               ${data.year}年 · ${data.country} · ${data.genre}  · 导演: ${data.director} · 演员 : ${data.actor} 
-            </div>
-        </div> 
-    </div>     
-    </div>
-    `;
-}
+        };
 
-class LikeHandler {
-    constructor() {
-        this.likeButtons = document.querySelectorAll('.like-btn');
-        this.lastSendTime = 0;
-        this.throttleTimeMs = 3000; // 3秒节流
-        this.init();
-    }
-
-    getCookie(name) {
-        if (document.cookie.length > 0) {
-            let start = document.cookie.indexOf(name + '=');
-            if (start !== -1) {
-                start = start + name.length + 1;
-                let end = document.cookie.indexOf(';', start);
-                if (end === -1) end = document.cookie.length;
-                return document.cookie.substring(start, end);
-            }
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            io.unobserve(entry.target);
+                            loadOne(entry.target);
+                        }
+                    });
+                },
+                { rootMargin: '200px 0px' }
+            );
+            links.forEach((link) => io.observe(link));
+        } else {
+            links.forEach((link) => loadOne(link));
         }
-        return '';
-    }
+    };
 
-    setCookie(name, value, days) {
-        let date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        let expires = '; expires=' + date.toUTCString();
-        document.cookie = name + '=' + value + expires + '; path=/';
-    }
+    const initLike = () => {
+        const buttons = Array.from(document.querySelectorAll('.like-btn'));
+        if (!buttons.length) return;
 
-    showNotice(message, type = 'success') {
-        // 移除现有提示
-        const oldNotice = document.querySelector('.notice--wrapper');
-        if (oldNotice) {
-            oldNotice.style.opacity = '0';
-            setTimeout(() => {
-                if (oldNotice.parentNode) {
-                    oldNotice.remove();
+        const getCookie = (name) => {
+            if (!document.cookie) return '';
+            const parts = document.cookie.split(';').map((p) => p.trim());
+            const kv = parts.find((p) => p.startsWith(`${name}=`));
+            if (!kv) return '';
+            return kv.substring(name.length + 1);
+        };
+
+        const setCookie = (name, value, days) => {
+            const date = new Date();
+            date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+            document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+        };
+
+        const hasLiked = (cid) => {
+            const key = `extend_contents_likes_${cid}`;
+            return getCookie(key) || localStorage.getItem(key);
+        };
+
+        const markLiked = (cid) => {
+            const key = `extend_contents_likes_${cid}`;
+            setCookie(key, '1', 30);
+            localStorage.setItem(key, '1');
+        };
+
+        const setActive = (button) => {
+            button.classList.add('is-active');
+            button.setAttribute('aria-pressed', 'true');
+            const svg = button.querySelector('svg');
+            if (svg) {
+                svg.style.color = '#ff4d4f';
+                svg.style.fill = '#ff4d4f';
+            }
+        };
+
+        buttons.forEach((button) => {
+            const cid = button.getAttribute('data-cid');
+            if (!cid) return;
+
+            if (hasLiked(cid)) setActive(button);
+
+            button.addEventListener('click', async () => {
+                if (hasLiked(cid)) {
+                    showNotice('您已经点过喜欢了，请不要重复点击～', 'error');
+                    return;
                 }
-            }, 300);
-        }
+                if (button.dataset.loading === '1') return;
+                button.dataset.loading = '1';
 
-        // 创建新提示
-        const notice = document.createElement('div');
-        notice.className = `notice--wrapper ${type}`;
-        notice.textContent = message;
-        notice.style.cssText = `
-            display: block;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            z-index: 9999;
-            pointer-events: none;
-        `;
-        document.body.appendChild(notice);
+                try {
+                    const body = new URLSearchParams({ likeup: '1', cid: String(cid) });
+                    const res = await fetch('/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            Accept: 'application/json'
+                        },
+                        body: body.toString(),
+                        credentials: 'same-origin'
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        // 强制重绘，确保过渡效果生效
-        notice.offsetHeight;
-        
-        // 淡入
-        notice.style.opacity = '1';
-
-        // 1.5秒后淡出并移除
-        setTimeout(() => {
-            if (notice.parentNode) {
-                notice.style.opacity = '0';
-                setTimeout(() => {
-                    if (notice.parentNode) {
-                        notice.remove();
+                    const data = await res.json();
+                    if (data && data.success) {
+                        const countEl = button.querySelector('.count');
+                        if (countEl) countEl.textContent = data.likes;
+                        setActive(button);
+                        markLiked(cid);
+                        showNotice('点赞成功！感谢你的喜爱～', 'success');
+                    } else {
+                        showNotice((data && data.msg) || '点赞失败', 'error');
                     }
-                }, 300);
-            }
-        }, 1500);
-    }
-
-    replaceSvg(button) {
-        const oldSvg = button.querySelector('.icon--default');
-        if (!oldSvg) return;
-        // 添加动画类
-        oldSvg.classList.add('animate-like');
-        // 使用命名空间安全的方式重建 SVG，避免 innerHTML/SVG 子节点解析问题
-        const NS = 'http://www.w3.org/2000/svg';
-        const newSvg = document.createElementNS(NS, 'svg');
-        newSvg.setAttribute('viewBox', '0 0 1024 1024');
-        newSvg.setAttribute('width', '32');
-        newSvg.setAttribute('height', '32');
-        newSvg.setAttribute('aria-hidden', 'false');
-        // 使用 icon--active，确保在按钮变为 is-active 时显示
-        newSvg.classList.add('icon--active');
-        // 与文本颜色保持一致（已点赞显示为红色）
-        newSvg.style.fill = '#ff4d4f';
-        newSvg.style.color = '#ff4d4f';
-        // 构造路径，显式设置 fill 与 stroke，避免被 CSS 覆盖导致看不见
-        const path = document.createElementNS(NS, 'path');
-        path.setAttribute('d', 'M780.8 204.8c-83.2-44.8-179.2-19.2-243.2 44.8L512 275.2 486.4 249.6c-64-64-166.4-83.2-243.2-44.8C108.8 275.2 89.6 441.6 185.6 537.6l32 32 153.6 153.6 102.4 102.4c25.6 25.6 57.6 25.6 83.2 0l102.4-102.4 153.6-153.6 32-32C934.4 441.6 915.2 275.2 780.8 204.8z');
-        path.setAttribute('fill', 'currentColor');
-        path.setAttribute('stroke', 'currentColor');
-        path.setAttribute('stroke-width', '0');
-        newSvg.appendChild(path);
-        // 用新 SVG 替换旧 SVG，避免空节点闪烁或解析兼容性问题
-        oldSvg.parentNode.replaceChild(newSvg, oldSvg);
-        // 动画结束后移除类
-        setTimeout(() => {
-            const currentSvg = button.querySelector('.icon--default');
-            if (currentSvg) currentSvg.classList.remove('animate-like');
-        }, 600);
-    }
-
-    init() {
-        this.likeButtons.forEach(button => {
-            let cid = button.getAttribute('data-cid');
-            // 同时检查cookie和localStorage
-            if (this.getCookie('extend_contents_likes_' + cid) ||
-                localStorage.getItem('extend_contents_likes_' + cid)) {
-                button.classList.add('is-active');
-                this.replaceSvg(button);
-            }
-            button.addEventListener('click', () => this.handleLike(button, cid));
+                } catch (err) {
+                    console.error('Like error:', err);
+                    showNotice('点赞异常', 'error');
+                } finally {
+                    button.dataset.loading = '0';
+                }
+            });
         });
-    }
+    };
 
-    handleLike(button, cid) {
-        if (this.getCookie('extend_contents_likes_' + cid) ||
-            localStorage.getItem('extend_contents_likes_' + cid)) {
-            this.showNotice('您已经点过喜欢了!~请不要重复点击吆!~谢谢您的支持!~', 'error');
-            return;
-        }
-
-        const currentTime = new Date().getTime();
-        if (currentTime - this.lastSendTime < this.throttleTimeMs) {
-            this.showNotice('操作过于频繁', 'error');
-            return;
-        }
-        this.lastSendTime = currentTime;
-
-        fetch('/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'likeup=1&cid=' + cid
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('网络响应错误');
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                button.querySelector('.count').textContent = data.likes;
-                button.classList.add('is-active');
-                this.replaceSvg(button);
-                this.setCookie('extend_contents_likes_' + cid, '1', 30);
-                localStorage.setItem('extend_contents_likes_' + cid, '1');
-                this.showNotice('点赞成功!~感谢您的喜爱！');
-            } else {
-                this.showNotice(data.msg || '点赞失败', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('错误:', error);
-            this.showNotice('点赞异常', 'error');
-        });
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 确保DOM完全加载后再初始化
-    setTimeout(() => {
-        new LikeHandler();
-    }, 100);
-});
+    onReady(() => {
+        initCopy();
+        initToc();
+        initDouban();
+        initLike();
+    });
+})();

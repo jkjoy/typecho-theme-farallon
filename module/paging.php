@@ -1,3 +1,4 @@
+<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php if ($this->options->loadmore): ?>    
     <?php
             $this->pageNav(
@@ -16,7 +17,7 @@
                     'nextClass' => 'hidden'
                 )
             );
-        ?>
+    ?>
     <?php else:?>
     <?php
         $nextPage = $this->_currentPage + 1;

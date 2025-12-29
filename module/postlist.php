@@ -1,4 +1,8 @@
+<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php $wrapLoadposts = !(defined('FARALLON_LOADMORE_JSON') && FARALLON_LOADMORE_JSON); ?>
+<?php if ($wrapLoadposts): ?>
 <div id="loadposts">
+<?php endif; ?>
 <?php while($this->next()): ?>
     <?php 
     // 获取当前文章的分类
@@ -15,7 +19,7 @@
     // 根据是否为说说分类使用不同的显示模板
     if ($isMemos):
     ?>
-    <div id="loadpost">
+    <div class="loadpost">
         <article class="post--item post--item__status" itemtype="http://schema.org/Article" itemscope="itemscope">
             <div class="content">
                 <header>
@@ -32,8 +36,8 @@
         </article>
     </div>   
     <?php else: ?>
-    <div id="loadpost">
-        <article class="post--item" id="loadpost">
+    <div class="loadpost">
+        <article class="post--item">
             <div class="content">
                 <h2 class="post--title">
                     <a href="<?php $this->permalink() ?>">
@@ -85,4 +89,6 @@
     </div>
     <?php endif; ?>
 <?php endwhile; ?>
+<?php if ($wrapLoadposts): ?>
 </div>
+<?php endif; ?>

@@ -1,4 +1,39 @@
-<?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php
+if (!defined('__TYPECHO_ROOT_DIR__')) exit;
+
+if (function_exists('farallon_is_json_request') && farallon_is_json_request()) {
+    // 获取分类ID配置（保持与页面模板一致）
+    $travelId = Helper::options()->travel;
+    $memosId = Helper::options()->memos;
+    $currentCategory = isset($this->categories[0]['mid']) ? intval($this->categories[0]['mid']) : null;
+    $travelId = is_numeric($travelId) ? intval($travelId) : null;
+    $memosId = is_numeric($memosId) ? intval($memosId) : null;
+
+    if (!defined('FARALLON_LOADMORE_JSON')) {
+        define('FARALLON_LOADMORE_JSON', true);
+    }
+
+    ob_start();
+    if ($this->have()) {
+        if ($currentCategory === $travelId) {
+            $this->need('module/travel.php');
+        } elseif ($currentCategory === $memosId) {
+            $this->need('module/memos.php');
+        } else {
+            $this->need('module/postlist.php');
+        }
+    }
+    $html = trim(ob_get_clean());
+
+    $nextUrl = function_exists('farallon_get_next_page_url') ? farallon_get_next_page_url($this) : '';
+    farallon_send_json([
+        'success' => true,
+        'html' => $html,
+        'next' => $nextUrl,
+        'hasMore' => (bool)$nextUrl
+    ]);
+}
+?>
 <?php $this->need('header.php'); ?>
 <header class="archive--header">
     <h2 class="post--single__title">

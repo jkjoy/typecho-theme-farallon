@@ -17,8 +17,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
         <?php $this->options->title(); ?><?php if ($this->is('index')) echo ' - '; ?>
         <?php if ($this->is('index')) $this->options->description() ?>
     </title>
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/style.min.css'); ?>">
-    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/notice-fix.css'); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/style.min.css'); ?>?v=<?php echo get_theme_version_from_index(); ?>">
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('assets/css/notice-fix.css'); ?>?v=<?php echo get_theme_version_from_index(); ?>">
     <?php if ($this->options->icoUrl): ?>
     <link rel='icon' href='<?php $this->options->icoUrl() ?>' type='image/x-icon' />
     <?php endif; ?>

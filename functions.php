@@ -719,8 +719,13 @@ function getSiteStatsWithCache() {
     // 6. 友情链接数量
     $stats['totalLinks'] = 0;
     if (class_exists('Links_Plugin')) {
-        $stats['totalLinks'] = $db->fetchObject($db->select('COUNT(*) AS cnt')
-            ->from('table.links'))->cnt ?: 0;
+        try {
+            $db->fetchRow($db->select()->from('table.links')->limit(1));
+            $stats['totalLinks'] = $db->fetchObject($db->select('COUNT(*) AS cnt')
+                ->from('table.links'))->cnt ?: 0;
+        } catch (Exception $e) {
+            $stats['totalLinks'] = 0;
+        }
     }
 
     // 7. 总留言数量
@@ -743,11 +748,82 @@ function getSiteStatsWithCache() {
 /**
  * 自动检查主题更新
  */
+function farallon_is_json_request()
+{
+    $format = isset($_GET['format']) ? strtolower((string)$_GET['format']) : '';
+    return $format === 'json';
+}
+
+function farallon_send_json($payload, $statusCode = 200)
+{
+    if (!headers_sent()) {
+        header('Content-Type: application/json; charset=utf-8');
+        if (function_exists('http_response_code')) {
+            http_response_code((int)$statusCode);
+        }
+    }
+
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+function farallon_get_next_page_url($archive)
+{
+    if (!is_object($archive) || !method_exists($archive, 'pageLink')) {
+        return '';
+    }
+
+    ob_start();
+    $archive->pageLink('__NEXT__', 'next');
+    $html = ob_get_clean();
+
+    if (!$html) {
+        return '';
+    }
+
+    if (preg_match('/href=(["\'])(.*?)\\1/i', $html, $m)) {
+        return html_entity_decode($m[2], ENT_QUOTES, 'UTF-8');
+    }
+
+    return '';
+}
+
+function get_theme_version_from_index()
+{
+    static $cached = null;
+    if ($cached !== null) {
+        return $cached;
+    }
+
+    $indexFile = __DIR__ . '/index.php';
+    if (!is_file($indexFile)) {
+        $cached = '';
+        return $cached;
+    }
+
+    // 只读取开头部分即可（版本信息一般在文件头注释里）
+    $head = @file_get_contents($indexFile, false, null, 0, 4096);
+    if ($head === false) {
+        $cached = '';
+        return $cached;
+    }
+
+    if (preg_match('/@version\\s+([^\\s\\*]+)/i', $head, $m)) {
+        $cached = trim($m[1]);
+        return $cached;
+    }
+
+    $cached = '';
+    return $cached;
+}
+
 function themeAutoUpgradeNotice()
 {
-    // 1. 定义当前主题版本 (从主题的 info.txt 或 functions.php 中读取)
-    // 为了演示，我们直接定义
-    $current_version = '0.8.1';
+    // 1. 当前主题版本（从 index.php 文件头注释读取）
+    $current_version = get_theme_version_from_index();
+    if (!$current_version) {
+        $current_version = '0.0.0';
+    }
 
     // 2. 定义 GitHub API 地址
     $api_url = 'https://api.github.com/repos/jkjoy/typecho-theme-farallon/releases/latest';
@@ -806,7 +882,9 @@ function themeAutoUpgradeNotice()
         }
     }
     // 4. 如果获取到了最新版本，则进行比较
-    if ($latest_version && version_compare($current_version, $latest_version, '<')) {
+    $current_compare = ltrim((string)$current_version, "vV");
+    $latest_compare = $latest_version ? ltrim((string)$latest_version, "vV") : null;
+    if ($latest_compare && version_compare($current_compare, $latest_compare, '<')) {
         
         $notice_html = '
         <span class="themeConfig"><h3>主题更新</h3>

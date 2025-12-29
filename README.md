@@ -1,38 +1,25 @@
 
 ## 说明
 
-移植自 `bigfa `大大的 `hugo-theme-farallon` 主题,并在此基础上进行了一些修改.
+移植自`hugo-theme-farallon` 主题,并在此基础上进行了一些修改.
 由于是自用,有很多主观上的修改,可能不适合所有人.
 
 
-## 更新日志 & 预览
-### 0.8.1
+## 预览
 
-移除部分依靠第三方实现的功能 
-精简代码
+![预览图](/screenshots.png)
 
-- 移除了豆瓣API获取观影页面的功能
-- 移除了页面加载时间的显示功能
-- 移除了主题设置中的页面加载时间选项
-- 移除了基于长毛象实现的说说页面
-- 移除了基于memos实现的说说页面
-- 移除了基于Neodb API 实现的观影页面
+[Demo](https://blog.imsun.org/)
 
-- 移除了文章内的引用
-- 移除了文章内的图片灯箱效果
-- 移除了打赏的相关功能
-
-- 修复了点赞的功能
-
-[预览](https://blog.imsun.org/)
-
-https://www.imsun.org/archives/1640.html
+可去我的博客反馈 <a href="https://www.imsun.org/archives/1640.html" target="_blank">https://www.imsun.org/archives/1640.html</a>
 
 ## 功能
 
 ### 封面
 
 优先使用自定义字段`cover`的值作为封面,若没有则使用文章内的第一张图片作为封面
+开启php拓展`gd`可自动裁剪封面图片,否则使用原图
+需要`usr`文件夹的写权限
 
 ### 友情链接
 

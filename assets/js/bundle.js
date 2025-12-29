@@ -17,7 +17,7 @@
       is_single = false;
       post_id = 0;
       is_archive = false;
-      VERSION = "0.8.1";
+      VERSION = "1.0.0";
       constructor() {
         super();
         this.initCopyright();
@@ -46,7 +46,7 @@
       }
       initCopyright() {
         const copyright = `<div class="site--footer__info">
-          Theme <a href="https://github.com/jkjoy/typecho-theme-farallon" target="_blank">farallon</a> Designed by <a href="https://fatesinger.com/" target="_blank">bigfa</a> &nbsp;
+          Theme <a href="https://github.com/jkjoy/typecho-theme-farallon" target="_blank">Farallon</a> Designed by <a href="https://fatesinger.com/" target="_blank">bigfa</a> &nbsp;
           <p><a href="https://www.imsun.org" target="_blank"> 老孙博客</a> 移植 / version ${this.VERSION}</p>
       </div>`;
         document.querySelector(".site--footer__content").insertAdjacentHTML("afterend", copyright);

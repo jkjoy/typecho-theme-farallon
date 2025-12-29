@@ -1,5 +1,8 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
+<?php $wrapLoadposts = !(defined('FARALLON_LOADMORE_JSON') && FARALLON_LOADMORE_JSON); ?>
+<?php if ($wrapLoadposts): ?>
 <div class="post--cards" id="loadposts">
+<?php endif; ?>
 <?php while($this->next()): ?>
 <?php // 获取文章图片
     $default_thumbnail = Helper::options()->themeUrl . '/assets/images/nopic.svg';
@@ -16,7 +19,7 @@
                     $imageToDisplay = process_cover_image($imageToDisplay);
                 }
 ?>   
-<article class="post--card" id="loadpost">
+<article class="loadpost post--card">
     <img src="<?php echo $imageToDisplay; ?>" alt="<?php $this->title() ?>" class="cover" itemprop="image"/>
         <div class="content">
             <h2 class="post--title">
@@ -38,4 +41,6 @@
         </div>
 </article> 
 <?php endwhile; ?>
+<?php if ($wrapLoadposts): ?>
 </div>
+<?php endif; ?>

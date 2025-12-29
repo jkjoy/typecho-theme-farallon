@@ -1,66 +1,121 @@
-document.addEventListener('click', function (e) {
-    // 检查点击的元素是否是 .loadmore a
-    if (e.target.closest('.loadmore a')) {
+(() => {
+    let inFlightController = null;
+
+    const toJsonUrl = (url) => {
+        try {
+            const u = new URL(url, window.location.href);
+            u.searchParams.set('format', 'json');
+            u.hash = '';
+            return u.toString();
+        } catch {
+            // 兜底：尽量在原 URL 后追加 format=json
+            const parts = String(url).split('#');
+            const base = parts[0];
+            const hash = parts[1] ? `#${parts[1]}` : '';
+            if (base.includes('?')) return `${base}&format=json${hash}`;
+            return `${base}?format=json${hash}`;
+        }
+    };
+
+    const parsePostsFromHtml = (html) => {
+        const tpl = document.createElement('template');
+        tpl.innerHTML = html || '';
+        return tpl.content.querySelectorAll('.loadpost');
+    };
+
+    const setLoadingState = (btn, loading, text) => {
+        if (!btn.dataset.originalText) {
+            btn.dataset.originalText = btn.textContent || '加载更多';
+        }
+        btn.classList.toggle('loading', loading);
+        btn.setAttribute('aria-busy', loading ? 'true' : 'false');
+        btn.setAttribute('aria-disabled', loading ? 'true' : 'false');
+        if (loading) {
+            btn.dataset.href = btn.getAttribute('href') || '';
+            btn.removeAttribute('href');
+        } else if (!btn.getAttribute('href') && btn.dataset.href) {
+            btn.setAttribute('href', btn.dataset.href);
+        }
+        btn.textContent = text || (loading ? '加载中...' : btn.dataset.originalText);
+    };
+
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.loadmore a');
+        if (!btn) return;
+
         e.preventDefault();
-        var btn = e.target.closest('.loadmore a');
-        var nextPage = btn.getAttribute('href');      
-        // 防止重复点击
-        if (btn.classList.contains('loading')) return false;
-        btn.classList.add('loading');
-        btn.textContent = '加载中...';      
-        // 发起 AJAX 请求
-        fetch(nextPage)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+
+        if (btn.classList.contains('loading')) return;
+
+        const nextPage = btn.getAttribute('href');
+        if (!nextPage) return;
+
+        const articleList =
+            document.querySelector('#loadposts') ||
+            document.querySelector('.posts-container');
+        const navLinks = document.querySelector('.nav-links');
+        if (!articleList) return;
+
+        // 取消上一条未完成请求（防抖/避免并发插入）
+        if (inFlightController && typeof inFlightController.abort === 'function') {
+            inFlightController.abort();
+        }
+        inFlightController = typeof AbortController !== 'undefined' ? new AbortController() : null;
+
+        setLoadingState(btn, true, '加载中...');
+
+        try {
+            const res = await fetch(toJsonUrl(nextPage), {
+                signal: inFlightController ? inFlightController.signal : undefined,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
                 }
-                return response.text();
-            })
-            .then(data => {
-                // 创建一个临时的 DOM 元素来解析返回的 HTML
-                var parser = new DOMParser();
-                var htmlDoc = parser.parseFromString(data, 'text/html');            
-                // 调试代码：检查选择器
-                console.log('Searching for #loadpost:', htmlDoc.querySelectorAll('#loadpost'));
-                console.log('Searching for .nav-links:', htmlDoc.querySelector('.nav-links'));              
-                // 找到新的文章和按钮
-                var newPosts = htmlDoc.querySelectorAll('#loadpost');
-                var newBtn = htmlDoc.querySelector('.nav-links a');            
-                // 更健壮的元素选择
-                var articleList = document.querySelector('#loadposts') || 
-                                  document.querySelector('.posts-container') || 
-                                  document.body;
-                var postReadMore = document.querySelector('.nav-links');               
-                if (newPosts.length > 0) {
-                    newPosts.forEach(post => {
-                        // 使用 appendChild 替代 insertBefore
-                        articleList.appendChild(post);
-                    });                    
-                    // 新文章淡入效果
-                    Array.from(newPosts).forEach(post => {
-                        post.style.opacity = 0;
-                        setTimeout(() => {
-                            post.style.transition = 'opacity 0.5s';
-                            post.style.opacity = 1;
-                        }, 10);
-                    });
-                }               
-                // 更新"加载更多"按钮或移除它
-                if (newBtn) {
-                    btn.setAttribute('href', newBtn.getAttribute('href'));
-                    btn.classList.remove('loading');
-                    btn.textContent = '加载更多';
-                } else {
-                    // 如果没有更多的按钮，移除 .post-read-more
-                    if (postReadMore) {
-                        postReadMore.remove();
-                    }
-                }
-            })
-            .catch(error => {
-                console.error("AJAX Error:", error);
-                btn.classList.remove('loading');
-                btn.textContent = '加载失败，点击重试';
             });
-    }
-});
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const data = await res.json();
+            if (!data || data.success !== true) {
+                throw new Error('Invalid JSON response');
+            }
+
+            const newPosts = parsePostsFromHtml(data.html);
+
+            if (newPosts && newPosts.length) {
+                const fragment = document.createDocumentFragment();
+                newPosts.forEach((post) => {
+                    post.style.opacity = 0;
+                    fragment.appendChild(post);
+                });
+                articleList.appendChild(fragment);
+
+                // 淡入（尊重减少动画偏好）
+                const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (!reduceMotion) {
+                    requestAnimationFrame(() => {
+                        newPosts.forEach((post) => {
+                            post.style.transition = 'opacity 0.35s';
+                            post.style.opacity = 1;
+                        });
+                    });
+                } else {
+                    newPosts.forEach((post) => (post.style.opacity = 1));
+                }
+            }
+
+            if (data.next) {
+                btn.setAttribute('href', data.next);
+                setLoadingState(btn, false, btn.dataset.originalText);
+            } else {
+                if (navLinks) navLinks.remove();
+            }
+        } catch (err) {
+            // Abort 不提示错误
+            if (err && err.name === 'AbortError') return;
+            console.error('Load more error:', err);
+            setLoadingState(btn, false, '加载失败，点击重试');
+        } finally {
+            inFlightController = null;
+        }
+    });
+})();

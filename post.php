@@ -122,5 +122,5 @@
 </ul>    
 </article>
 </main>
-<script src="<?php $this->options->themeUrl('assets/js/post.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('assets/js/post.js'); ?>?v=<?php echo get_theme_version_from_index(); ?>"></script>
 <?php $this->need('footer.php'); ?>

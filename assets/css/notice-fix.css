@@ -22,3 +22,24 @@
     animation: none !important;
     transform: translateX(-50%) !important;
 }
+
+/* 友情链接页面：描述信息换行显示 */
+.link-item .description {
+    display: block;
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--farallon-text-gray);
+}
+
+/* 文章点赞：点击后保持红色图标可见 */
+.post--single__action .button--like.is-active svg {
+    fill: #ff4d4f !important;
+}
+
+.post--single__action .button--like.is-active .count {
+    color: #ff4d4f !important;
+}
+
+.post--single__action .button--like.is-active .icon--default {
+    display: block !important;
+}
